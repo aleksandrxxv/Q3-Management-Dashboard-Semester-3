@@ -1,13 +1,14 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.5'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
-group = 'nl.fsd'
+group = 'nl.fsd.backend'
 version = '0.0.1-SNAPSHOT'
 description = 'backend'
 
+// Java version
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -19,9 +20,16 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // ✅ MySQL driver
+    runtimeOnly 'com.mysql:mysql-connector-j:8.0.33'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
