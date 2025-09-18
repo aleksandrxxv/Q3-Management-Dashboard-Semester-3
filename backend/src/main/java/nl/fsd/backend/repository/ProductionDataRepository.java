@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductionDataRepository extends JpaRepository<ProductionData, Long> {
-    List<ProductionData> findByMachineId(Long machineId);
-    List<ProductionData> findByMoldId(Long moldId);
+    // Note the underscore to drill into nested entity's id
+    List<ProductionData> findByMachine_Id(Long machineId);
 
-    Optional<ProductionData> findTopByMachineIdOrderByEndDateDescEndTimeDesc(Long machineId);
+    List<ProductionData> findByMold_Id(Long moldId);
+
+    Optional<ProductionData> findTopByMachine_IdOrderByEndDateDescEndTimeDesc(Long machineId);
 }

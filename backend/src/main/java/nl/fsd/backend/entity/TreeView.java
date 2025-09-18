@@ -13,7 +13,11 @@ import lombok.Setter;
 public class TreeView {
     @Id
     private Long id;
-    private String object; // M = Machine, O = Mold
+
+    /** 'M' = Machine, 'O' = Mold */
+    private String object;
+
     private String naam;
-    // other fields…
+
+    // other fields as needed…
 }

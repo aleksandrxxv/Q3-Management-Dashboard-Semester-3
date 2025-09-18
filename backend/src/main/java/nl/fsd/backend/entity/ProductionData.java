@@ -15,19 +15,21 @@ import java.util.function.Predicate;
 public class ProductionData {
     @Id
     private Long id;
+
     private LocalDate startDate;
     private LocalTime startTime;
     private LocalDate endDate;
     private LocalTime endTime;
+
     private Double amount;
     private String name;
     private String description;
-    @ManyToOne
-    @JoinColumn(name="treeview_id")
-    private Treeview machine;
-    @ManyToOne @JoinColumn(name="treeview2_id")
-    private Treeview mold;
 
-    public <T> Predicate<T> getEndDate() {
-    }
+    @ManyToOne
+    @JoinColumn(name="treeview_id")   // Machine
+    private TreeView machine;
+
+    @ManyToOne
+    @JoinColumn(name="treeview2_id")  // Mold
+    private TreeView mold;
 }

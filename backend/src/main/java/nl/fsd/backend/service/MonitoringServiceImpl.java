@@ -3,35 +3,65 @@ package nl.fsd.backend.service;
 import lombok.RequiredArgsConstructor;
 import nl.fsd.backend.dto.MachineStatusDTO;
 import nl.fsd.backend.dto.MoldHealthDTO;
+import nl.fsd.backend.entity.ProductionData;
 import nl.fsd.backend.entity.TreeView;
 import nl.fsd.backend.repository.ProductionDataRepository;
 import nl.fsd.backend.repository.TreeViewRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.WeekFields;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MonitoringServiceImpl implements MonitoringService {
-
     private final TreeViewRepository treeviewRepo;
     private final ProductionDataRepository productionRepo;
 
     @Override
     public List<MachineStatusDTO> getAllMachineStatuses() {
-        List<TreeView> machines = treeviewRepo.findByObject("M");
-        return machines.stream()
+        return treeviewRepo.findByObject("M").stream()
                 .map(this::buildMachineStatus)
                 .collect(Collectors.toList());
     }
 
-    // ===== private helpers (same as before) =====
+    @Override
+    public List<MoldHealthDTO> getAllMoldHealth() {
+        return treeviewRepo.findByObject("O").stream()
+                .map(this::buildMoldHealth)
+                .collect(Collectors.toList());
+    }
+
     private MachineStatusDTO buildMachineStatus(TreeView machine) {
-        // same code as earlier to compute DTO …
+        Optional<ProductionData> lastRunOpt =
+                productionRepo.findTopByMachine_IdOrderByEndDateDescEndTimeDesc(machine.getId());
+
+        boolean activeNow = false;
+        LocalDate lastStartDate = null;
+        LocalTime lastStartTime = null;
+        LocalDate lastEndDate = null;
+        LocalTime lastEndTime = null;
+        Long currentMoldId = null;
+        String currentMoldName = null;
+
+        if (lastRunOpt.isPresent()) {
+            ProductionData lastRun = lastRunOpt.get();
+            lastStartDate = lastRun.getStartDate();
+            lastStartTime = lastRun.getStartTime();
+            lastEndDate = lastRun.getEndDate();
+            lastEndTime = lastRun.getEndTime();
+
+            activeNow = lastRun.getEndDate().isEqual(LocalDate.now());
+
+            if (lastRun.getMold() != null) {
+                currentMoldId = lastRun.getMold().getId();
+                currentMoldName = lastRun.getMold().getNaam();
+            }
+        }
+
         return new MachineStatusDTO(
                 machine.getId(),
                 machine.getNaam(),
@@ -43,7 +73,22 @@ public class MonitoringServiceImpl implements MonitoringService {
     }
 
     private MoldHealthDTO buildMoldHealth(TreeView mold) {
-        // same code as earlier to compute DTO …
+        List<ProductionData> runs = productionRepo.findByMold_Id(mold.getId());
+
+        long totalOps = runs.stream()
+                .mapToLong(r -> r.getAmount().longValue())
+                .sum();
+
+        Set<String> machines = runs.stream()
+                .map(r -> r.getMachine().getNaam())
+                .collect(Collectors.toSet());
+
+        Map<String, Long> opsPerWeek = runs.stream()
+                .collect(Collectors.groupingBy(
+                        r -> getYearWeek(r.getStartDate()),
+                        Collectors.summingLong(r -> r.getAmount().longValue())
+                ));
+
         return new MoldHealthDTO(
                 mold.getId(),
                 mold.getNaam(),
@@ -51,15 +96,6 @@ public class MonitoringServiceImpl implements MonitoringService {
                 machines,
                 opsPerWeek
         );
-    }
-
-
-    @Override
-    public List<MoldHealthDTO> getAllMoldHealth() {
-        List<TreeView> molds = treeviewRepo.findByObject("O");
-        return molds.stream()
-                .map(this::buildMoldHealth)
-                .collect(Collectors.toList());
     }
 
     private String getYearWeek(LocalDate date) {

@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
-    private final MonitoringService monitoringService; // note: interface, not implementation
+    private final MonitoringService monitoringService; // interface injected
 
     @GetMapping("/machines")
     public List<MachineStatusDTO> getMachineStatuses() {
