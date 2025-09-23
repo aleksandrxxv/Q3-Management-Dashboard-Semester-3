@@ -23,14 +23,18 @@ public class MonitoringServiceImpl implements MonitoringService {
 
     @Override
     public List<MachineStatusDTO> getAllMachineStatuses() {
-        return treeviewRepo.findByObject("M").stream()
-                .map(this::buildMachineStatus)
+        return treeviewRepo.findAll().stream()
+                .map(t -> new MachineStatusDTO(
+                        t.getId(),
+                        t.getNaam(),
+                        false, null, null, null, null, null, null))
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public List<MoldHealthDTO> getAllMoldHealth() {
-        return treeviewRepo.findByObject("O").stream()
+        return treeviewRepo.findByObject("Y").stream()
                 .map(this::buildMoldHealth)
                 .collect(Collectors.toList());
     }
