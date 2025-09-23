@@ -21,23 +21,30 @@ public class MonitoringServiceImpl implements MonitoringService {
     private final TreeViewRepository treeviewRepo;
     private final ProductionDataRepository productionRepo;
 
+
+    private boolean isMachine(TreeView entity) {
+        // Matches 1 uppercase letter followed by 1+ digits
+        return entity.getNaam() != null && entity.getNaam().matches("^[A-Z]\\d+$");
+    }
+
     @Override
     public List<MachineStatusDTO> getAllMachineStatuses() {
         return treeviewRepo.findAll().stream()
-                .map(t -> new MachineStatusDTO(
-                        t.getId(),
-                        t.getNaam(),
-                        false, null, null, null, null, null, null))
+                .filter(this::isMachine)
+                .map(this::buildMachineStatus)
                 .collect(Collectors.toList());
     }
+
 
 
     @Override
     public List<MoldHealthDTO> getAllMoldHealth() {
-        return treeviewRepo.findByObject("Y").stream()
+        return treeviewRepo.findAll().stream()
+                .filter(t -> !isMachine(t))
                 .map(this::buildMoldHealth)
                 .collect(Collectors.toList());
     }
+
 
     private MachineStatusDTO buildMachineStatus(TreeView machine) {
         Optional<ProductionData> lastRunOpt =
@@ -84,7 +91,7 @@ public class MonitoringServiceImpl implements MonitoringService {
                 .sum();
 
         Set<String> machines = runs.stream()
-                .map(r -> r.getMachine().getNaam())
+                .map(r -> r.getMachine() != null ? r.getMachine().getNaam() : "UNKNOWN" + r.getId())
                 .collect(Collectors.toSet());
 
         Map<String, Long> opsPerWeek = runs.stream()
