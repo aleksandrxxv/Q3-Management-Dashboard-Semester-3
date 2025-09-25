@@ -22,10 +22,11 @@ public interface MachineRepository extends JpaRepository<Machine, Integer> {
     List<Machine> getMachines();
 
     @Query(value = """
-            SELECT DISTINCT mmp.id, mmp.name, md.timestamp, md.shot_time
+            SELECT DISTINCT t.id, mmp.name, md.timestamp, md.shot_time
             FROM machine_monitoring_poorten AS mmp
             JOIN production_data AS pd ON (mmp.board = pd.board AND mmp.port = pd.port)
             JOIN monitoring_data_202009 AS md ON (pd.board = md.board AND pd.port = md.port)
+            JOIN treeview AS t ON (mmp.name = t.naam)
             WHERE (md.datum >= :startDate AND md.datum <= :endDate)
             AND (md.timestamp >= :startTimestamp AND md.timestamp <= :endTimestamp)
             AND mmp.visible = 1
