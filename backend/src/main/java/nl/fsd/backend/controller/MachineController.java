@@ -1,12 +1,15 @@
 package nl.fsd.backend.controller;
 
 import lombok.AllArgsConstructor;
+import nl.fsd.backend.dto.MachineDataDTO;
 import nl.fsd.backend.entity.Machine;
+import nl.fsd.backend.entity.MachineData;
 import nl.fsd.backend.service.MachineService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -24,4 +27,12 @@ public class MachineController {
     //get installed molds per machine
 
     //get machine data
+    @GetMapping("/{name}")
+    public List<MachineDataDTO> getMachineData(@PathVariable String name,
+                                            @RequestParam LocalDate startDate,
+                                            @RequestParam LocalDate endDate,
+                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTimestamp,
+                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTimestamp) {
+        return machineService.getMachineData(name, startDate, endDate, startTimestamp, endTimestamp);
+    }
 }
