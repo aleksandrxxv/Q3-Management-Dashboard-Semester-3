@@ -85,19 +85,26 @@ public class MonitoringServiceImpl implements MonitoringService {
 
     private MoldHealthDTO buildMoldHealth(TreeView mold) {
         List<ProductionData> runs = productionRepo.findByMold_Id(mold.getId());
+        if (runs == null) runs = Collections.emptyList();
 
         long totalOps = runs.stream()
-                .mapToLong(r -> r.getAmount().longValue())
+                .mapToLong(r -> r.getAmount() != null ? r.getAmount().longValue() : 0L)
                 .sum();
 
         Set<String> machines = runs.stream()
-                .map(r -> r.getMachine() != null ? r.getMachine().getNaam() : "UNKNOWN" + r.getId())
+                .map(r -> {
+                    if (r.getMachine() != null && r.getMachine().getNaam() != null) {
+                        return r.getMachine().getNaam();
+                    }
+                    return "UNKNOWN" + r.getId();
+                })
                 .collect(Collectors.toSet());
 
         Map<String, Long> opsPerWeek = runs.stream()
+                .filter(r -> r.getStartDate() != null)
                 .collect(Collectors.groupingBy(
                         r -> getYearWeek(r.getStartDate()),
-                        Collectors.summingLong(r -> r.getAmount().longValue())
+                        Collectors.summingLong(r -> r.getAmount() != null ? r.getAmount().longValue() : 0L)
                 ));
 
         return new MoldHealthDTO(
@@ -109,10 +116,13 @@ public class MonitoringServiceImpl implements MonitoringService {
         );
     }
 
+
     private String getYearWeek(LocalDate date) {
+        if (date == null) return "UNKNOWN";
         WeekFields wf = WeekFields.of(Locale.getDefault());
         int weekNumber = date.get(wf.weekOfWeekBasedYear());
         int year = date.getYear();
         return year + "-W" + weekNumber;
     }
+
 }
