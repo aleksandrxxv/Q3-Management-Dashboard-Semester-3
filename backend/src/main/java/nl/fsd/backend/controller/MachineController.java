@@ -3,7 +3,6 @@ package nl.fsd.backend.controller;
 import lombok.AllArgsConstructor;
 import nl.fsd.backend.dto.MachineDataDTO;
 import nl.fsd.backend.entity.Machine;
-import nl.fsd.backend.entity.MachineData;
 import nl.fsd.backend.service.MachineService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
