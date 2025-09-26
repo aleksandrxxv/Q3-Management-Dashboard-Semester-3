@@ -2,7 +2,7 @@
 FROM node:20 AS build
 WORKDIR /app
 
-# Copy dependency files first (for better caching)
+# Copy dependency files
 COPY package*.json ./
 
 # Install dependencies
@@ -21,8 +21,5 @@ WORKDIR /usr/share/nginx/html
 # Copy build output from previous stage
 COPY --from=build /app/dist ./
 
-# Expose Nginx HTTP port
 EXPOSE 80
-
-# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,6 +1,11 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import MachineRow from "./MachineRow";
 import MachineGraph from "./MachineGraph";
+import MoldPill from "./MoldPill";
+
+
+
 
 const machineData = [
   {
@@ -9,7 +14,10 @@ const machineData = [
     status: "Operational",
     output: "Active",
     lastChecked: "24/08/2023 08:42 AM",
-    molds: ["Mold A", "Mold B"],
+    molds: [
+      { moldId: 1, moldName: "Mold A" },
+      { moldId: 2, moldName: "Mold B" },
+    ],
     shots: [
         { timestamp: "2025-09-22T08:00:00", shotTime: 12.4 },
         { timestamp: "2025-09-25T09:00:00", shotTime: 11.8 },
@@ -24,7 +32,10 @@ const machineData = [
     status: "Maintenance",
     output: "Inactive",
     lastChecked: "24/08/2023 11:23 PM",
-    molds: ["Mold A", "Mold B"],
+    molds: [
+      { moldId: 3, moldName: "Mold A" },
+      { moldId: 4, moldName: "Mold B" },
+    ],
     shots: [
       { timestamp: "08:00", shotTime: 20.2 },
       { timestamp: "08:15", shotTime: 18.9 },
@@ -38,7 +49,10 @@ const machineData = [
     status: "Inactive",
     output: "Inactive",
     lastChecked: "24/08/2023 11:23 PM",
-    molds: ["Mold A", "Mold B"],
+    molds: [
+      { moldId: 5, moldName: "Mold A" },
+      { moldId: 6, moldName: "Mold B" },
+    ],
     shots: [
       { timestamp: "08:00", shotTime: 20.2 },
       { timestamp: "08:15", shotTime: 18.9 },
@@ -104,13 +118,8 @@ export default function MachineTable() {
                         <div className="space-y-4">
                           {/* Pills Row */}
                           <div className="flex flex-wrap gap-2">
-                            {machine.molds.map((mold, i) => (
-                              <span
-                                key={i}
-                                className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 border border-blue-300 shadow-sm"
-                              >
-                                {mold}
-                              </span>
+                            {machine.molds.map((mold) => (
+                              <MoldPill key={mold.moldId} mold={mold} />
                             ))}
                           </div>
 

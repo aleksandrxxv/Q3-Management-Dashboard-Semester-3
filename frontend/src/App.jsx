@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import StatusPage from "./pages/StatusPage";
-import MoldDetailPage from "./pages/MoldDetailPage";
+import MoldHealthPage from "./pages/MoldHealthPage";
 
 function App() {
   return (
@@ -16,10 +16,18 @@ function App() {
           }
         />
         <Route
+          path="/molds"
+          element={
+            <Layout>
+              <MoldHealthPage />
+            </Layout>
+          }
+        />
+        <Route
           path="/molds/:moldId"
           element={
             <Layout>
-              <MoldDetailPage />
+              <MoldHealthPage />
             </Layout>
           }
         />
