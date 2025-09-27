@@ -18,28 +18,28 @@ public class ProductionData {
     @Id
     private Integer id;
 
-    @Column(name = "start_date")
+
     private LocalDate startDate;
 
-    @Column(name = "start_time")
+
     private LocalTime startTime;
 
-    @Column(name = "end_date")
+
     private LocalDate endDate;
 
-    @Column(name = "end_time")
+
     private LocalTime endTime;
 
-    @Column(name = "treeview_id")
+
     private Integer treeviewId;
 
-    @Column(name = "treeview2_id")
+
     private Integer treeview2Id;
 
-    @Column(name = "board")
+
     private Integer board;
 
-    @Column(name = "port")
+
     private Integer port;
 
 
