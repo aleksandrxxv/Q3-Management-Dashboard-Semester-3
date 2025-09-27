@@ -21,12 +21,12 @@ public class MoldService {
     }
 
 
-    public List<MoldOperationCountDTO> getMoldOperationCounts(LocalDate getStartDate, LocalTime getStartTime, LocalDate getEndDate, LocalTime getEndTime) {
+    public List<MoldOperationCountDTO> getMoldOperationCounts(LocalDate getStartDate, LocalDate getEndDate) {
 
         return moldRepository.countOperationsPerMold(getStartDate, getEndDate);
     }
 
-    public List<MoldMachineHistoryDTO> getMachineHistoryForMold(Integer moldId, LocalDate startDate, LocalTime getStartTime, LocalDate endDate, LocalTime getEndTime) {
+    public List<MoldMachineHistoryDTO> getMachineHistoryForMold(Integer moldId, LocalDate startDate, LocalDate endDate) {
         return moldRepository.findMachineHistoryForMold(moldId, startDate, endDate);
     }
 

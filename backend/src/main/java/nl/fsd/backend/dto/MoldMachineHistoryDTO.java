@@ -10,9 +10,9 @@ public interface MoldMachineHistoryDTO {
     String getName();
     String getDescription();
     Integer getParent();
-    LocalDate getStartDate();
-    LocalTime getStartTime();
-    LocalDate getEndDate();
-    LocalTime getEndTime();
+    LocalDate getStart_Date();
+    LocalTime getStart_Time();
+    LocalDate getEnd_Date();
+    LocalTime getEnd_Time();
 
 }

@@ -10,8 +10,4 @@ public interface MoldOperationCountDTO {
     String getName();
     String getDescription();
     Integer getParent();
-    LocalDate getStartDate();
-    LocalTime getStartTime();
-    LocalDate getEndDate();
-    LocalTime getEndTime();
 }
