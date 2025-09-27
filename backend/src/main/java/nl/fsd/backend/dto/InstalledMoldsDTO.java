@@ -1,5 +1,7 @@
 package nl.fsd.backend.dto;
 
+import java.time.LocalDate;
+
 public interface InstalledMoldsDTO {
     String getName();         // machine name
     int getMold1_id();
@@ -8,5 +10,5 @@ public interface InstalledMoldsDTO {
     int getMold2_id();
     String getMold2_name();
     String getMold2_desc();
-    String getEnd_date();     // or LocalDate if column is DATE
+    LocalDate getEnd_date();
 }

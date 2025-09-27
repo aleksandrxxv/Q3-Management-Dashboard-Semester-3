@@ -1,7 +1,6 @@
 package nl.fsd.backend.repository;
 
 import nl.fsd.backend.dto.InstalledMoldsDTO;
-import nl.fsd.backend.entity.Machine;
 import nl.fsd.backend.entity.Mold;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface MoldRepository extends JpaRepository<Machine, Integer> {
+public interface MoldRepository extends JpaRepository<Mold, Integer> {
     @Query(value= """
         SELECT t.id, t.naam AS name, t.omschrijving AS description, 
         CASE t.parent
@@ -38,9 +37,9 @@ public interface MoldRepository extends JpaRepository<Machine, Integer> {
         JOIN treeview AS t1 ON (pd.treeview_id = t1.id) OR pd.treeview_id = 0
         JOIN treeview AS t2 ON (pd.treeview2_id = t2.id) OR pd.treeview2_id = 0
         WHERE (pd.start_date >= "2020-09-01" AND pd.start_date <= "2020-09-30" 
-               AND pd.end_date >= "2020-09-01" AND pd.end_date <= "2020-09-30")
-          AND mmp.visible = 1
-          AND mmp.name = :machineName
+        AND pd.end_date >= "2020-09-01" AND pd.end_date <= "2020-09-30")
+        AND mmp.visible = 1
+        AND mmp.name = :machineName
         ORDER BY pd.start_date DESC, pd.end_date DESC
         LIMIT 1
         """, nativeQuery=true)

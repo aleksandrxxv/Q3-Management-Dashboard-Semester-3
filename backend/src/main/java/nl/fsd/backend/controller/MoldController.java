@@ -20,8 +20,8 @@ public class MoldController {
         return moldService.getMolds();
     }
 
-    @GetMapping("/installed/{machineName}")
-    public InstalledMoldsDTO getInstalledMolds(@PathVariable String machineName) {
+    @GetMapping("/{machineName}")
+    public InstalledMoldsDTO getInstalledMoldsForMachine(@PathVariable String machineName) {
         return moldService.getInstalledMoldsForMachine(machineName);
     }
 }
