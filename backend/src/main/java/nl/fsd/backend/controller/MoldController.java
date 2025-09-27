@@ -1,12 +1,17 @@
 package nl.fsd.backend.controller;
 
 import lombok.AllArgsConstructor;
+import nl.fsd.backend.dto.MoldMachineHistoryDTO;
 import nl.fsd.backend.entity.Mold;
+import nl.fsd.backend.entity.ProductionData;
 import nl.fsd.backend.service.MoldService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.PathVariable;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -22,20 +27,19 @@ public class MoldController {
     }
 
 
-    @GetMapping("/operations/count") // change
-    public List<MoldOperationCountDTO> getOperationCounts(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return moldService.getMoldOperationCounts(startDate, endDate);
+    @GetMapping("/operations/count")
+    public List<ProductionData> getOperationCounts(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate getStartDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate getEndDate) {
+        return moldService.getMoldOperationCounts(getStartDate, getEndDate);
     }
 
-    @GetMapping("/{id}/history") // change
-    public List<MoldMachineHistoryDTO> getMachineHistory(
-            @PathVariable("id") Integer moldId,
+    @GetMapping("/{moldId}/history")
+    public List<MoldMachineHistoryDTO> getMachineHistoryForMold(
+            @PathVariable Integer moldId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return moldService.getMoldMachineHistory(moldId, startDate, endDate);
-    }
+        return moldService.getMachineHistoryForMold(moldId, startDate, endDate);
 }
 
 }

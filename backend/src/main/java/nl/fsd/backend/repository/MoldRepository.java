@@ -1,9 +1,13 @@
 package nl.fsd.backend.repository;
 
+import nl.fsd.backend.dto.MoldMachineHistoryDTO;
 import nl.fsd.backend.entity.Mold;
+import nl.fsd.backend.entity.ProductionData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MoldRepository extends JpaRepository<Mold, Integer> {
@@ -30,7 +34,7 @@ public interface MoldRepository extends JpaRepository<Mold, Integer> {
     WHERE (pd.start_date >= :startDate AND pd.start_date <= :endDate
     AND pd.end_date >= :startDate AND pd.end_date <= :endDate)
     GROUP BY t.id""", nativeQuery = true)
-    List<Object[]> countOperationsPerMold(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<ProductionData> countOperationsPerMold(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @Query(value = """
     SELECT mmp.name AS machine, t.id, t.naam, t.omschrijving, t.parent, pd.start_date, pd.start_time, pd.end_date, pd.end_time
@@ -41,7 +45,7 @@ public interface MoldRepository extends JpaRepository<Mold, Integer> {
     AND pd.end_date >= :startDate AND pd.end_date <= :endDate)
     AND t.id = :moldId
     ORDER BY pd.start_date DESC, pd.end_date DESC""", nativeQuery = true)
-    List<Object[]> findMachineHistoryForMold(@Param("moldId") Integer moldId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    List<MoldMachineHistoryDTO> findMachineHistoryForMold(@Param("moldId") Integer moldId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
 
 }

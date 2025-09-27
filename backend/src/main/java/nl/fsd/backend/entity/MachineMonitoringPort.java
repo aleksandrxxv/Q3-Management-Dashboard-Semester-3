@@ -1,10 +1,10 @@
-package com.example.backend.entity;
+package nl.fsd.backend.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
-
+// this DTO might be obsolete?
 @Entity
 @Table(name = "machine_monitoring_poorten")
 @Getter
@@ -13,13 +13,9 @@ public class MachineMonitoringPort {
 
     @Id
     private Integer id;
-
     private String name;
-
     private Integer board;
-
     private Integer port;
-
     public MachineMonitoringPort() {
     }
 
@@ -30,4 +26,5 @@ public class MachineMonitoringPort {
         this.board = board;
         this.port = port;
     }
+}
 

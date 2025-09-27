@@ -1,25 +1,15 @@
-package com.example.backend.dto;
-import lombok.*;
+package nl.fsd.backend.dto;
 
-@Getter
-@Setter
+import java.time.LocalDate;
+
 public interface MoldOperationCountDTO {
 
-    private Long operation;
-    private Integer id;
-    private String naam;
-    private String omschrijving;
-    private Integer parent;
+    Long getOperation();
+    Integer getId();
+    String getName();
+    String getDescription();
+    Integer getParent();
+    LocalDate getStartDate();
+    LocalDate getEndDate();
 
-
-    public MoldOperationCountDTO() {
-    }
-
-
-    public MoldOperationCountDTO(Long operation, Integer id, String name, String description, Integer parent) {
-        this.operation = operation;
-        this.id = id;
-        this.naam = name;
-        this.omschrijving = description;
-        this.parent = parent;
-    }
+}

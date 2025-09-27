@@ -15,5 +15,5 @@ public class Mold {
     private String name;
     private String description;
     private String type;
-    private int parent
+    private int parent;
 }
