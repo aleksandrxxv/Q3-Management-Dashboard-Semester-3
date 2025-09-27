@@ -12,8 +12,8 @@ public interface MoldMachineHistoryDTO {
 
     private String machine;
     private Integer id;
-    private String naam;
-    private String omschrijving;
+    private String name;
+    private String description;
     private Integer parent;
     private LocalDate startDate;
     private LocalTime startTime;
@@ -25,11 +25,11 @@ public interface MoldMachineHistoryDTO {
     }
 
 
-    public MoldMachineHistoryDTO(String machine, Integer id, String naam, String omschrijving, Integer parent, Date startDate, Time startTime, Date endDate, Time endTime) {
+    public MoldMachineHistoryDTO(String machine, Integer id, String name, String description, Integer parent, Date startDate, Time startTime, Date endDate, Time endTime) {
         this.machine = machine;
         this.id = id;
-        this.naam = naam;
-        this.omschrijving = omschrijving;
+        this.name = name;
+        this.description = description;
         this.parent = parent;
         this.startDate = new java.sql.Date(startDate.getTime()).toLocalDate();
         this.startTime = startTime.toLocalTime();
