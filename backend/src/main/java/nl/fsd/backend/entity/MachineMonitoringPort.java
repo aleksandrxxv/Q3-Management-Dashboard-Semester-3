@@ -3,9 +3,12 @@ package com.example.backend.entity;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.*;
 
 @Entity
 @Table(name = "machine_monitoring_poorten")
+@Getter
+@Setter
 public class MachineMonitoringPort {
 
     @Id
@@ -28,37 +31,3 @@ public class MachineMonitoringPort {
         this.port = port;
     }
 
-    // get set
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getBoard() {
-        return board;
-    }
-
-    public void setBoard(Integer board) {
-        this.board = board;
-    }
-
-    public Integer getPort() {
-        return port;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
-    }
-}
