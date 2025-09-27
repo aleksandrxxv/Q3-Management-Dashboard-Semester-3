@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
-// this DTO might be obsolete?
+// this entity might be obsolete?
 @Entity
 @Table(name = "machine_monitoring_poorten")
 @Getter

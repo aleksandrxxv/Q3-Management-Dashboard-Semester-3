@@ -2,13 +2,13 @@ package nl.fsd.backend.service;
 
 import lombok.AllArgsConstructor;
 import nl.fsd.backend.dto.MoldMachineHistoryDTO;
-import nl.fsd.backend.entity.MachineMonitoringPort;
+import nl.fsd.backend.dto.MoldOperationCountDTO;
 import nl.fsd.backend.entity.Mold;
-import nl.fsd.backend.entity.ProductionData;
 import nl.fsd.backend.repository.MoldRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -21,12 +21,12 @@ public class MoldService {
     }
 
 
-    public List<ProductionData> getMoldOperationCounts( LocalDate getStartDate,  LocalDate getEndDate) {
+    public List<MoldOperationCountDTO> getMoldOperationCounts(LocalDate getStartDate, LocalTime getStartTime, LocalDate getEndDate, LocalTime getEndTime) {
 
         return moldRepository.countOperationsPerMold(getStartDate, getEndDate);
     }
 
-    public List<MoldMachineHistoryDTO> getMachineHistoryForMold(Integer moldId, LocalDate startDate, LocalDate endDate) {
+    public List<MoldMachineHistoryDTO> getMachineHistoryForMold(Integer moldId, LocalDate startDate, LocalTime getStartTime, LocalDate endDate, LocalTime getEndTime) {
         return moldRepository.findMachineHistoryForMold(moldId, startDate, endDate);
     }
 

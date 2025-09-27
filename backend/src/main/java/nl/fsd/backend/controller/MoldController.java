@@ -2,6 +2,7 @@ package nl.fsd.backend.controller;
 
 import lombok.AllArgsConstructor;
 import nl.fsd.backend.dto.MoldMachineHistoryDTO;
+import nl.fsd.backend.dto.MoldOperationCountDTO;
 import nl.fsd.backend.entity.Mold;
 import nl.fsd.backend.entity.ProductionData;
 import nl.fsd.backend.service.MoldService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -28,18 +30,23 @@ public class MoldController {
 
 
     @GetMapping("/operations/count")
-    public List<ProductionData> getOperationCounts(
+    public List<MoldOperationCountDTO> getOperationCounts(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate getStartDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate getEndDate) {
-        return moldService.getMoldOperationCounts(getStartDate, getEndDate);
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalTime getStartTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate getEndDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalTime getEndTime
+    ) {
+        return moldService.getMoldOperationCounts(getStartDate, getStartTime, getEndDate, getEndTime);
     }
 
     @GetMapping("/{moldId}/history")
     public List<MoldMachineHistoryDTO> getMachineHistoryForMold(
             @PathVariable Integer moldId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return moldService.getMachineHistoryForMold(moldId, startDate, endDate);
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalTime getStartTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalTime getEndTime) {
+        return moldService.getMachineHistoryForMold(moldId, startDate, getStartTime, endDate, getEndTime);
 }
 
 }

@@ -1,6 +1,7 @@
 package nl.fsd.backend.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public interface MoldOperationCountDTO {
 
@@ -10,6 +11,7 @@ public interface MoldOperationCountDTO {
     String getDescription();
     Integer getParent();
     LocalDate getStartDate();
+    LocalTime getStartTime();
     LocalDate getEndDate();
-
+    LocalTime getEndTime();
 }

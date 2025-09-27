@@ -19,6 +19,8 @@ public class ProductionData {
     private Integer id;
     private LocalDate startDate;
     private LocalDate endDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private Integer treeviewId;
     private Integer treeview2Id;
     private Integer board;
