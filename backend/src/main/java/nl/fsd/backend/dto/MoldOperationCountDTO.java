@@ -3,7 +3,7 @@ import lombok.*;
 
 @Getter
 @Setter
-public class MoldOperationCountDTO {
+public interface MoldOperationCountDTO {
 
     private Long operation;
     private Integer id;

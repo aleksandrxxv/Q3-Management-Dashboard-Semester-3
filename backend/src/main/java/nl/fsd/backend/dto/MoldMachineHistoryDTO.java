@@ -8,7 +8,7 @@ import lombok.*;
 
 @Getter
 @Setter
-public class MoldMachineHistoryDTO {
+public interface MoldMachineHistoryDTO {
 
     private String machine;
     private Integer id;
