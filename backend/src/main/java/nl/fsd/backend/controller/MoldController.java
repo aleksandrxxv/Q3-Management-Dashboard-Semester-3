@@ -1,10 +1,13 @@
 package nl.fsd.backend.controller;
 
 import lombok.AllArgsConstructor;
+import nl.fsd.backend.dto.InstalledMoldsDTO;
 import nl.fsd.backend.dto.MoldMachineHistoryDTO;
 import nl.fsd.backend.dto.MoldOperationCountDTO;
 import nl.fsd.backend.entity.Mold;
 import nl.fsd.backend.service.MoldService;
+import org.springframework.web.bind.annotation.*;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +27,11 @@ public class MoldController {
     @GetMapping
     public List<Mold> getMolds() {
         return moldService.getMolds();
+    }
+
+    @GetMapping("/{machineName}")
+    public InstalledMoldsDTO getInstalledMoldsForMachine(@PathVariable String machineName) {
+        return moldService.getInstalledMoldsForMachine(machineName);
     }
 
 
