@@ -23,8 +23,6 @@ public class MachineController {
         return machineService.getMachines();
     }
 
-    //get installed molds per machine
-
     //get machine data
     @GetMapping("/{name}")
     public List<MachineDataDTO> getMachineData(@PathVariable String name,

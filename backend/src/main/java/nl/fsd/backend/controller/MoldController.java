@@ -38,8 +38,7 @@ public class MoldController {
     @GetMapping("/operations/count")
     public List<MoldOperationCountDTO> getOperationCounts(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate getStartDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate getEndDate
-    ) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate getEndDate) {
         return moldService.getMoldOperationCounts(getStartDate, getEndDate);
     }
 
