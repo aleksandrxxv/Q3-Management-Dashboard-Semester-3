@@ -14,13 +14,14 @@ public interface MachineRepository extends JpaRepository<Machine, Integer> {
 
     @Query(value = """
         SELECT DISTINCT t.id, mmp.NAME, mmp.board, mmp.port, mmp.visible,
-        (IF(pd.end_date = "2020-09-30", 'active', 'inactive')) AS status
+        (IF(MAX(pd.end_date) = "2020-09-30", 'active', 'inactive')) AS status
         FROM machine_monitoring_poorten AS mmp
         JOIN production_data AS pd ON (mmp.board = pd.board AND mmp.port = pd.port)
         JOIN treeview AS t ON (mmp.name = t.naam)
         WHERE (pd.start_date >= "2020-09-01" AND pd.start_date <= "2020-09-30"
         AND pd.end_date >= "2020-09-01" AND pd.end_date <= "2020-09-30")
-        AND mmp.visible = 1;""", nativeQuery = true)
+        GROUP BY t.id, mmp.board, mmp.port, mmp.visible
+        ORDER BY status;""", nativeQuery = true)
     List<Machine> getMachines();
 
     @Query(value = """
