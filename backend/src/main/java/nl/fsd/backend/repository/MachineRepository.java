@@ -20,7 +20,8 @@ public interface MachineRepository extends JpaRepository<Machine, Integer> {
         JOIN treeview AS t ON (mmp.name = t.naam)
         WHERE (pd.start_date >= "2020-09-01" AND pd.start_date <= "2020-09-30"
         AND pd.end_date >= "2020-09-01" AND pd.end_date <= "2020-09-30")
-        AND mmp.visible = 1;""", nativeQuery = true)
+        AND mmp.visible = 1
+        ORDER BY status;""", nativeQuery = true)
     List<Machine> getMachines();
 
     @Query(value = """
