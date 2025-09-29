@@ -7,6 +7,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Status Page */}
         <Route
           path="/"
           element={
@@ -15,6 +16,8 @@ function App() {
             </Layout>
           }
         />
+
+        {/* Mold Health - list view */}
         <Route
           path="/molds"
           element={
@@ -23,6 +26,8 @@ function App() {
             </Layout>
           }
         />
+
+        {/* Mold Health - with moldId param */}
         <Route
           path="/molds/:moldId"
           element={

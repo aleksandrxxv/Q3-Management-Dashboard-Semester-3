@@ -27,19 +27,6 @@ export default function Sidebar() {
           <FaCube className="text-[#FC7800]" />
           <span>Molds</span>
         </Link>
-
-        {/* Optional system section */}
-        <div className="px-4 py-2 text-xs uppercase text-[#FC7800] font-semibold tracking-wide">
-          System
-        </div>
-
-        <Link
-          to="/settings"
-          className="flex items-center gap-2 px-4 py-2 rounded-md mx-2 mb-1 hover:bg-[#1f2937] transition"
-        >
-          <FaCogs className="text-[#FC7800]" />
-          <span>Settings</span>
-        </Link>
       </nav>
     </aside>
   );

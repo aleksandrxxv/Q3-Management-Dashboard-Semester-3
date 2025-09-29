@@ -5,7 +5,7 @@ export default function StatusPage() {
     <div className="flex h-screen">
       <div className="flex-1 flex flex-col">
         <main className="p-2">
-          <h2 className="text-lg font-semibold">Machine Status Overview</h2>
+          <h2 className="text-2xl font-bold mb-4">Machine Status Overview</h2>
           <MachineTable />
         </main>
       </div>

@@ -1,21 +1,29 @@
+import { useEffect, useState } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Area,
+  LineChart, Line, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer, Area
 } from "recharts";
 
-// Helper to format weekly labels
-function formatWeekLabel(week) {
-  return week; // e.g. "2021-W12"
-}
+export default function MoldGraph({ moldId, moldName }) {
+  const [data, setData] = useState({});
 
-export default function MoldGraph({ moldName, data }) {
-  // Transform opsPerWeek { "2021-W12": 5, "2021-W13": 10 } → array
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
+    fetch(`${apiUrl}/api/molds/${moldId}/operations/weekly?startDate=2019-01-01&endDate=2024-12-31`)
+      .then((res) => res.json())
+      .then((rows) => {
+        const formatted = rows.reduce((acc, cur) => {
+          const year = String(cur.week).slice(0, 4);
+          const weekNum = String(cur.week).slice(4);
+          acc[`${year}-W${weekNum}`] = cur.operation;
+          return acc;
+        }, {});
+        setData(formatted);
+      })
+      .catch((err) => console.error("Error fetching weekly ops:", err));
+  }, [moldId]);
+
   const chartData = Object.entries(data).map(([week, ops]) => ({
     week,
     operations: ops,
@@ -29,54 +37,17 @@ export default function MoldGraph({ moldName, data }) {
       <ResponsiveContainer width="100%" height="85%">
         <LineChart data={chartData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-
-          <XAxis
-            dataKey="week"
-            tickFormatter={formatWeekLabel}
-            stroke="#9ca3af"
-            fontSize={12}
-            tickMargin={8}
-          />
-
-          <YAxis
-            stroke="#9ca3af"
-            fontSize={12}
-            tickMargin={8}
-            label={{
-              value: "Operations",
-              angle: -90,
-              position: "insideLeft",
-              style: { textAnchor: "middle", fill: "#374151", fontSize: 12 },
-            }}
-          />
-
-          <Tooltip
-            formatter={(v) => [`${v}`, "Operations"]}
-            contentStyle={{
-              backgroundColor: "white",
-              border: "1px solid #e5e7eb",
-              borderRadius: "0.5rem",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-              fontSize: "0.8rem",
-            }}
-          />
-
+          <XAxis dataKey="week" />
+          <YAxis label={{ value: "Ops", angle: -90, position: "insideLeft" }} />
+          <Tooltip />
           <defs>
             <linearGradient id="opsGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.4} />
               <stop offset="100%" stopColor="#3b82f6" stopOpacity={0} />
             </linearGradient>
           </defs>
-
           <Area type="monotone" dataKey="operations" fill="url(#opsGradient)" stroke="none" />
-          <Line
-            type="monotone"
-            dataKey="operations"
-            stroke="#2563eb"
-            strokeWidth={2}
-            dot={{ r: 3, fill: "#2563eb", strokeWidth: 0 }}
-            activeDot={{ r: 5, fill: "#1d4ed8", strokeWidth: 0 }}
-          />
+          <Line type="monotone" dataKey="operations" stroke="#2563eb" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
     </div>
