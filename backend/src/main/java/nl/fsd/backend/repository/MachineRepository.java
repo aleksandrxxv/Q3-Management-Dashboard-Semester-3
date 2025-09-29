@@ -13,7 +13,8 @@ import java.util.List;
 public interface MachineRepository extends JpaRepository<Machine, Integer> {
 
     @Query(value = """
-        SELECT DISTINCT t.id, mmp.NAME, mmp.board, mmp.port, mmp.visible
+        SELECT DISTINCT t.id, mmp.NAME, mmp.board, mmp.port, mmp.visible,
+        (IF(pd.end_date = "2020-09-30", 'active', 'inactive')) AS status
         FROM machine_monitoring_poorten AS mmp
         JOIN production_data AS pd ON (mmp.board = pd.board AND mmp.port = pd.port)
         JOIN treeview AS t ON (mmp.name = t.naam)
