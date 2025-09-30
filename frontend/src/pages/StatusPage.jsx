@@ -1,4 +1,4 @@
-import MachineTable from "../components/MachineTable";
+import MachinePage from "./MachinePage";
 
 export default function StatusPage() {
   return (
@@ -6,7 +6,7 @@ export default function StatusPage() {
       <div className="flex-1 flex flex-col">
         <main className="p-2">
           <h2 className="text-2xl font-bold mb-4">Machine Status Overview</h2>
-          <MachineTable />
+          <MachinePage />
         </main>
       </div>
     </div>

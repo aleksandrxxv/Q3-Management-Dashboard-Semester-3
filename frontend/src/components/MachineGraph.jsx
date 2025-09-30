@@ -8,8 +8,8 @@ import {
   ResponsiveContainer,
   Area,
 } from "recharts";
+import { useEffect } from "react";
 
-// format ticks depending on the selected view
 function formatLabel(value, view) {
   const date = new Date(value);
 
@@ -17,13 +17,13 @@ function formatLabel(value, view) {
     return new Intl.DateTimeFormat("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
-    }).format(date); // e.g. 09:00
+    }).format(date);
   }
 
   if (view === "1d") {
     return new Intl.DateTimeFormat("en-GB", {
       hour: "2-digit",
-    }).format(date); // e.g. 09
+    }).format(date);
   }
 
   if (view === "1w") {
@@ -31,20 +31,26 @@ function formatLabel(value, view) {
       weekday: "short",
       day: "2-digit",
       month: "short",
-    }).format(date); // e.g. Thu 25 Sep
+    }).format(date);
   }
 
   return value;
 }
 
 export default function MachineGraph({ machineName, data, view }) {
+  useEffect(() => {
+    console.log("✅ MachineGraph mounted!");
+    console.log("Props → machineName:", machineName, "view:", view);
+    console.log("📈 Data received in MachineGraph for", machineName, "→", data);
+  }, [machineName, data, view]);
+
   return (
     <div className="w-full h-72 bg-white border border-gray-200 rounded-xl shadow-md p-4">
       <h3 className="text-sm font-semibold text-gray-700 mb-4">
         Shot Time Trend – {machineName}
       </h3>
       <ResponsiveContainer width="100%" height="85%">
-        <LineChart data={data}>
+        <LineChart data={Array.isArray(data) ? data : []}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
           <XAxis
