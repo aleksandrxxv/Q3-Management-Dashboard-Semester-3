@@ -3,6 +3,7 @@ package nl.fsd.backend.repository;
 import nl.fsd.backend.dto.InstalledMoldsDTO;
 import nl.fsd.backend.dto.MoldMachineHistoryDTO;
 import nl.fsd.backend.dto.MoldOperationCountDTO;
+import nl.fsd.backend.dto.MoldWeeklyOperationDTO;
 import nl.fsd.backend.entity.Mold;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -69,4 +70,43 @@ public interface MoldRepository extends JpaRepository<Mold, Integer> {
         LIMIT 1
         """, nativeQuery=true)
     InstalledMoldsDTO getInstalledMolds(@Param("machineName") String machineName);
+
+    @Query(value = """
+        SELECT YEARWEEK(pd.start_date, 1) AS week,
+            COUNT(pd.board) AS operation
+        FROM production_data pd
+        WHERE ((pd.treeview_id = :moldId) OR (pd.treeview2_id = :moldId))
+        AND (pd.start_date >= :startDate AND pd.start_date <= :endDate)
+        AND (pd.end_date >= :startDate AND pd.end_date <= :endDate)
+        GROUP BY YEARWEEK(pd.start_date, 1)
+        ORDER BY week
+        """, nativeQuery = true)
+    List<MoldWeeklyOperationDTO> countOperationsPerWeekForMold(
+            @Param("moldId") Integer moldId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+    @Query(value = """
+        SELECT COUNT(pd.board) AS operation, 
+            t.id AS id, 
+            t.naam AS name, 
+            t.omschrijving AS description, 
+            t.parent AS parent
+        FROM treeview AS t
+        JOIN production_data AS pd 
+        ON (pd.treeview_id = t.id) OR (pd.treeview2_id = t.id)
+        WHERE (pd.start_date >= :startDate AND pd.start_date <= :endDate
+        AND pd.end_date >= :startDate AND pd.end_date <= :endDate)
+        GROUP BY t.id, t.naam, t.omschrijving, t.parent
+        """, nativeQuery = true)
+    List<MoldOperationCountDTO> countTotalOperationsPerMold(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+
+
+
+
 }
