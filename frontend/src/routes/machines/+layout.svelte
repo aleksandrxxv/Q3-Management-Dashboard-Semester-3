@@ -1,14 +1,9 @@
 <script>
-  // You can keep anything here — navbars, headers, etc.
+  import Navbar from '$lib/components/Navbar.svelte'
 </script>
 
-<div class="min-h-screen bg-gray-50 text-gray-900">
-  <header class="p-4 bg-blue-600 text-white text-xl font-semibold">
-    Machine Dashboard
-  </header>
-
-  <!-- 👇 This is where +page.svelte renders -->
-  <main class="p-6">
+<!-- 🌌 Global App Layout -->
+  <!-- Main content area -->
+  <main class="flex-1">
     <slot />
   </main>
-</div>
