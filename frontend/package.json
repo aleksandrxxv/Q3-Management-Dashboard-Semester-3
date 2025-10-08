@@ -24,6 +24,16 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^2.74.0"
+		"@supabase/supabase-js": "^2.74.0",
+		"apexcharts": "^5.3.5",
+		"chart.js": "^4.5.0",
+		"chartjs-adapter-date-fns": "^3.0.0",
+		"chartjs-plugin-annotation": "^3.1.0",
+		"chartjs-plugin-datalabels": "^2.2.0",
+		"chartjs-plugin-zoom": "^2.2.0",
+		"date-fns": "^4.1.0",
+		"lucide-svelte": "^0.545.0",
+		"recharts": "^3.2.1",
+		"svelte-apexcharts": "^1.0.2"
 	}
 }
