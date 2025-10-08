@@ -1,3 +1,6 @@
+<svelte:head>
+  <title>Machines | Machine Monitoring</title>
+</svelte:head>
 <script>
   import { onMount } from 'svelte';
   import { supabase } from '$lib/supabaseClient';

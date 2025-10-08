@@ -1,3 +1,6 @@
+<svelte:head>
+  <title>Mold History | Machine Monitoring</title>
+</svelte:head>
 <script>
 	import { onMount, tick } from 'svelte'
 	import { browser } from '$app/environment'
