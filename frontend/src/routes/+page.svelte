@@ -1,3 +1,12 @@
+<svelte:head>
+  <title>Q3 Maintenance</title>
+  <meta name="description" content="Real-time machine and mold monitoring dashboard" />
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="https://www.q3.nl/wp-content/themes/q3/favicon.ico"
+  />
+</svelte:head>
 <script>
   import logo from '$lib/assets/q3_logo_darkmode.png'; // optional: replace with your logo file
 </script>
