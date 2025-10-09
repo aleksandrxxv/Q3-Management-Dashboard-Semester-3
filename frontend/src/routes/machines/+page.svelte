@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
   import { supabase } from '$lib/supabaseClient';
   import { slide } from 'svelte/transition';
-  import MachineShotChart from '$lib/components/MachineShotChart.svelte'
+  import MachineShotChart from '$lib/components/MachineShotChart.svelte';
 
   let ports = [];
   let filtered = [];
@@ -15,12 +15,13 @@
   let filter = 'all';
   let search = '';
 
-  // Store all molds and per-machine caches
   let allMolds = [];
-  let machineMolds = {}; // { key: [ { id, name, desc } ] }
-  let loadingMolds = {}; // { key: boolean }
+  let machineMolds = {};
+  let loadingMolds = {};
 
-  // Load all machines and molds at startup
+  // 🆕 Active count
+  let activeCount = 0;
+
   onMount(async () => {
     try {
       const [{ data: machines, error: err1 }, { data: molds, error: err2 }] = await Promise.all([
@@ -34,6 +35,9 @@
       ports = machines ?? [];
       filtered = ports;
       allMolds = molds ?? [];
+
+      // 🆕 Count active machines
+      activeCount = ports.filter((p) => p.is_active === 'active').length;
     } catch (e) {
       console.error('Supabase error:', e);
       error = e.message ?? String(e);
@@ -42,7 +46,6 @@
     }
   });
 
-  // Expand row & load molds (filter client-side)
   async function toggleExpand(key, machineName) {
     if (expanded === key) {
       expanded = null;
@@ -51,28 +54,17 @@
 
     expanded = key;
 
-    // Filter molds only once per machine
     if (!machineMolds[key]) {
       loadingMolds[key] = true;
-
-      // Filter molds belonging to this machine
       const moldsForMachine = (allMolds ?? [])
         .filter((m) => m.machine === machineName)
         .flatMap((m) => {
           const arr = [];
           if (m.mold1_id && m.mold1_id !== 0) {
-            arr.push({
-              id: m.mold1_id,
-              name: m.mold1_name,
-              desc: m.mold1_desc
-            });
+            arr.push({ id: m.mold1_id, name: m.mold1_name, desc: m.mold1_desc });
           }
           if (m.mold2_id && m.mold2_id !== 0) {
-            arr.push({
-              id: m.mold2_id,
-              name: m.mold2_name,
-              desc: m.mold2_desc
-            });
+            arr.push({ id: m.mold2_id, name: m.mold2_name, desc: m.mold2_desc });
           }
           return arr;
         });
@@ -82,7 +74,6 @@
     }
   }
 
-  // Filters and search
   function setFilter(value) {
     filter = value;
     search = '';
@@ -119,12 +110,20 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
     <div>
       <h1 class="text-2xl font-semibold text-gray-900">Machine Status Overview</h1>
-      <p class="text-gray-500 text-sm">Monitor and analyze all machines in real time</p>
+      <p class="text-gray-500 text-sm mb-2">Monitor and analyze all machines in real time</p>
+
+      <!-- 🆕 Active Machines Pill -->
+      <div class="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        {activeCount} Active Machines
+      </div>
     </div>
 
     <!-- Search + Filters -->
     <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-      <!-- Search -->
       <div class="relative w-full sm:w-64">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke-width="2" stroke="currentColor"
@@ -142,7 +141,6 @@
         />
       </div>
 
-      <!-- Filter bar -->
       <div class="flex bg-white rounded-full overflow-hidden border border-gray-300 shadow-sm">
         <button
           class="px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none"
@@ -229,12 +227,10 @@
                       <div class="p-6 text-center text-gray-600">
                         <strong class="text-gray-800">{p.name}</strong>
 
-                        <!-- Added label for clarity -->
                         <p class="text-sm text-gray-500 mt-2 mb-3">
                           Currently installed molds in this machine:
                         </p>
 
-                        <!-- Mold Pills -->
                         <div class="flex flex-wrap justify-center gap-2 mb-5">
                           {#if loadingMolds[`${p.id}-${p.board}-${p.port}-${i}`]}
                             <div class="animate-spin rounded-full h-6 w-6 border-t-2 border-orange-500"></div>
@@ -252,7 +248,6 @@
                           {/if}
                         </div>
 
-                        <!-- Graph Placeholder -->
                         <MachineShotChart board={p.board} port={p.port} />
                       </div>
                     </div>
