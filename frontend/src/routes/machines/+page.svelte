@@ -5,6 +5,7 @@
   import { onMount } from 'svelte';
   import { supabase } from '$lib/supabaseClient';
   import { slide } from 'svelte/transition';
+  import MachineShotChart from '$lib/components/MachineShotChart.svelte'
 
   let ports = [];
   let filtered = [];
@@ -252,9 +253,7 @@
                         </div>
 
                         <!-- Graph Placeholder -->
-                        <div class="h-40 bg-gray-100 rounded-lg flex items-center justify-center shadow-inner">
-                          <p class="text-gray-500 italic">Graph placeholder</p>
-                        </div>
+                        <MachineShotChart board={p.board} port={p.port} />
                       </div>
                     </div>
                   </td>
