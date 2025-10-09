@@ -15,12 +15,10 @@
 </svelte:head>
 
 {#if $page.url.pathname !== '/'}
-  <!-- ✅ App Layout (Navbar + Sidebar) -->
+  <!-- App Layout (Navbar + Sidebar) -->
   <div class="flex min-h-screen bg-gray-50 text-gray-900">
     <!-- Sidebar -->
-    <aside
-      class="w-64 bg-slate-900 text-gray-300 flex flex-col border-r border-orange-500"
-    >
+    <aside class="w-64 bg-slate-900 text-gray-300 flex flex-col border-r border-orange-500">
       <div class="p-6 border-b border-slate-800 flex items-center gap-3">
         <a href="/" class="flex items-center gap-3">
           <img
@@ -55,6 +53,35 @@
             />
           </svg>
           <span>Machines</span>
+        </a>
+
+        <!-- Machine History -->
+        <a
+          href="/machine_history"
+          class="flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-slate-800 hover:text-white"
+          class:bg-slate-800={$page.url.pathname.startsWith('/machine_history')}
+          class:text-white={$page.url.pathname.startsWith('/machine_history')}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="w-5 h-5 text-orange-400 flex-shrink-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.27 6.96L12 12l8.73-5.04M12 22V12"
+            />
+          </svg>
+          <span>Machine History</span>
         </a>
 
         <!-- Molds -->
@@ -95,10 +122,10 @@
         class="flex items-center justify-between px-6 py-3 bg-slate-900 text-white border-b-4 border-orange-500"
       >
         <div class="flex items-center gap-3">
-          <!-- you can add a page title here -->
+          <!-- optional page title here -->
         </div>
 
-        <!-- Search + icons -->
+        <!-- Icons -->
         <div class="flex items-center gap-4">
           <!-- Bell icon -->
           <button class="hover:text-orange-400 text-gray-300">
@@ -138,13 +165,13 @@
         </div>
       </header>
 
-      <!-- Page content slot -->
+      <!-- Page Content -->
       <main class="flex-1 overflow-y-auto bg-gray-50">
         <slot />
       </main>
     </div>
   </div>
 {:else}
-  <!-- ✅ Home page without layout -->
+  <!-- Home page without layout -->
   <slot />
 {/if}

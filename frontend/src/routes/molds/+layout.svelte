@@ -1,6 +1,5 @@
-<!-- src/routes/molds/+layout.svelte -->
 <script>
-  // (optional: local styles/logic here)
+  import Navbar from '$lib/components/Navbar.svelte'
 </script>
 
-<slot />  <!-- REQUIRED so +page.svelte renders -->
+<slot />
