@@ -1,9 +1,38 @@
 <script>
   import { slide } from 'svelte/transition';
   import { goto } from '$app/navigation';
+  import { supabase } from '$lib/supabaseClient';
+  import MoldGraph from './MoldGraph.svelte';
+
   export let mold;
   export let expanded = false;
   export let toggle;
+
+  let loadingShots = false;
+  let totalShots = mold.totalOperations; // may be null initially
+
+  // Fetch total operations (shots) for this mold on expand
+  async function loadShots() {
+    if (totalShots != null) return; // already loaded
+
+    loadingShots = true;
+    const { data, error } = await supabase.rpc('get_mold_total_shots_v2', {
+      _mold_ids: [mold.id],
+    });
+    loadingShots = false;
+
+    if (error) {
+      console.error('Error loading shots for mold', mold.id, error.message);
+      totalShots = -1; // indicates error
+    } else if (data?.length) {
+      totalShots = data[0].total_shots;
+    } else {
+      totalShots = 0; // no records found
+    }
+  }
+
+  // Automatically trigger when expanded
+  $: if (expanded) loadShots();
 
   // Navigate to machine page when clicked
   function openMachine(machine) {
@@ -40,9 +69,6 @@
       <span class="text-gray-400">—</span>
     {/if}
   </td>
-
-  <!-- Total Operations -->
-  <td class="px-4 py-3">{mold.totalOperations}</td>
 
   <!-- Status -->
   <td class="px-4 py-3">
@@ -113,39 +139,46 @@
                 </div>
 
               <!-- Box 2: Operation Info -->
-              <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
-                <h3 class="text-sm font-semibold text-gray-800 mb-3">
-                  Operation Info
-                </h3>
-                <div class="space-y-2 text-sm">
-                  <p>
-                    <span class="font-medium text-gray-700">Total operations:</span>
-                    <span class="ml-1">{mold.totalOperations}</span>
-                  </p>
-                  <p>
-                    <span class="font-medium text-gray-700">Current Machine:</span>
-                    <span class="ml-1">{mold.currentMachine || '—'}</span>
-                  </p>
-                  <p>
-                    <span class="font-medium text-gray-700">Status:</span>
-                    {#if mold.currentMachine}
-                      <span class="ml-1 text-green-600 font-medium">In Use</span>
-                    {:else}
-                      <span class="ml-1 text-gray-500">Idle</span>
-                    {/if}
-                  </p>
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+                  <h3 class="text-sm font-semibold text-gray-800 mb-3">
+                    Operation Info
+                  </h3>
+                  <div class="space-y-2 text-sm">
+                    <p>
+                      <span class="font-medium text-gray-700">Total operations:</span>
+                      {#if loadingShots}
+                        <span class="ml-1 text-gray-400 italic">Loading...</span>
+                      {:else if totalShots === -1}
+                        <span class="ml-1 text-red-500 italic">Error</span>
+                      {:else if totalShots != null}
+                        <span class="ml-1">{totalShots}</span>
+                      {:else}
+                        <span class="ml-1 text-gray-400">—</span>
+                      {/if}
+                    </p>
+
+                    <p>
+                      <span class="font-medium text-gray-700">Current Machine:</span>
+                      <span class="ml-1">{mold.currentMachine || '—'}</span>
+                    </p>
+
+                    <p>
+                      <span class="font-medium text-gray-700">Status:</span>
+                      {#if mold.currentMachine}
+                        <span class="ml-1 text-green-600 font-medium">In Use</span>
+                      {:else}
+                        <span class="ml-1 text-gray-500">Idle</span>
+                      {/if}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-
             <!-- RIGHT COLUMN -->
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 md:col-span-2 flex flex-col justify-center">
               <h3 class="text-sm font-semibold text-gray-800 mb-3">
-                Operations per Week
+                Operations Over Time
               </h3>
-              <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center shadow-inner">
-                <p class="text-gray-500 italic">Graph placeholder (chart area)</p>
-              </div>
+              <MoldGraph moldId={mold.id} />
             </div>
           </div>
         </div>

@@ -11,8 +11,6 @@
   let filter = 'all';
   let search = '';
   let expandedId = null;
-
-  let sortField = 'operations';
   let sortOrder = 'desc';
 
   // Add derived status based on machine link
@@ -21,40 +19,39 @@
     status: m.currentMachine ? 'In Use' : 'Idle'
   }));
 
-  $: filtered = moldsWithStatus
-    .filter((m) =>
-      filter === 'inuse'
-        ? m.status === 'In Use'
-        : filter === 'idle'
-        ? m.status === 'Idle'
-        : true
-    )
-    .filter((m) => m.name.toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) => {
-      if (sortField === 'operations') {
-        return sortOrder === 'asc'
-          ? a.totalOperations - b.totalOperations
-          : b.totalOperations - a.totalOperations;
-      }
-      if (sortField === 'name') {
-        return sortOrder === 'asc'
-          ? a.name.localeCompare(b.name)
-          : b.name.localeCompare(a.name);
-      }
-      return 0;
-    });
+  $: filtered = data.molds
+  .map((m) => {
+    // Find the earliest linked machine start date
+    const earliest = m.linkedMachines?.length
+      ? Math.min(
+          ...m.linkedMachines
+            .filter((lm) => lm.start) // only if a start date exists
+            .map((lm) => new Date(lm.start).getTime())
+        )
+      : Infinity; // no history → put at the end
+
+    return {
+      ...m,
+      status: m.currentMachine ? 'In Use' : 'Idle',
+      earliestConnection: earliest,
+    };
+  })
+  // Filter by status
+  .filter((m) =>
+    filter === 'inuse'
+      ? m.status === 'In Use'
+      : filter === 'idle'
+      ? m.status === 'Idle'
+      : true
+  )
+  // Filter by search text
+  .filter((m) => m.name.toLowerCase().includes(search.toLowerCase()))
+  // Sort by earliest connection (oldest first)
+  .sort((a, b) => a.earliestConnection - b.earliestConnection);
+
 
   function toggleExpand(id) {
     expandedId = expandedId === id ? null : id;
-  }
-
-  function toggleSort(field) {
-    if (sortField === field) {
-      sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      sortField = field;
-      sortOrder = 'desc';
-    }
   }
 </script>
 
@@ -83,20 +80,8 @@
           <tr>
             <th class="px-4 py-3 font-semibold cursor-pointer select-none" on:click={() => toggleSort('name')}>
               Mold
-              {#if sortField === 'name'}
-                <span class="ml-1 text-orange-500">{sortOrder === 'asc' ? '▲' : '▼'}</span>
-              {/if}
             </th>
             <th class="px-4 py-3 font-semibold">Current Machine</th>
-            <th
-            class="px-4 py-3 font-semibold cursor-pointer select-none"
-            on:click={() => toggleSort('operations')}
-            >
-            Total Operations
-            {#if sortField === 'operations'}
-                <span class="ml-1 text-orange-500">{sortOrder === 'asc' ? '▲' : '▼'}</span>
-            {/if}
-            </th>
 
             <th class="px-4 py-3 font-semibold">Status</th>
             <th class="px-4 py-3 text-right font-semibold w-10"></th>
