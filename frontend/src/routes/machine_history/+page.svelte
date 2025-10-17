@@ -200,7 +200,7 @@
 
 <div class="p-10 bg-gray-50 text-gray-900 min-h-screen">
 	<header class="mb-8 text-center">
-		<h1 class="text-2xl font-semibold mb-1">Machine Machine History</h1>
+		<h1 class="text-2xl font-semibold mb-1">Machine Mold History</h1>
 		<p class="text-gray-500 text-sm"> 
 			<span class="text-gray-400">(Simulated current date: <strong>11 Sep 2021</strong>)</span>
 		</p>
