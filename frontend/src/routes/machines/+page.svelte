@@ -19,7 +19,7 @@
   let machineMolds = {};
   let loadingMolds = {};
 
-  // 🆕 Active count
+  // Active count
   let activeCount = 0;
 
   onMount(async () => {
@@ -36,7 +36,7 @@
       filtered = ports;
       allMolds = molds ?? [];
 
-      // 🆕 Count active machines
+      // Count active machines
       activeCount = ports.filter((p) => p.is_active === 'active').length;
     } catch (e) {
       console.error('Supabase error:', e);
@@ -112,7 +112,7 @@
       <h1 class="text-2xl font-semibold text-gray-900">Machine Status Overview</h1>
       <p class="text-gray-500 text-sm mb-2">Monitor and analyze all machines in real time</p>
 
-      <!-- 🆕 Active Machines Pill -->
+      <!-- Active Machines Pill -->
       <div class="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1.5">
@@ -248,6 +248,15 @@
                           {/if}
                         </div>
 
+
+                        <!-- Legend for red sections -->
+                        <div class="flex items-center justify-center gap-2 mb-4">
+                          <div class="w-4 h-4 bg-red-200 border border-red-400 rounded-sm"></div>
+                          <p class="text-xs text-gray-600">
+                            If a section of the chart is <span class="text-red-600 font-medium">red</span>,
+                            it means no shot time data is available for that period.
+                          </p>
+                        </div>
                         <MachineShotChart board={p.board} port={p.port} />
                       </div>
                     </div>
