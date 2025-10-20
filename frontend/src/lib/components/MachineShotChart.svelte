@@ -74,7 +74,7 @@
 
 		// Before first shot
 		const first = new Date(sorted[0].time_ts || sorted[0].timestamp_used);
-		if (first - startOfMonth > thresholdMinutes * 60 * 1000) {
+		if (first - startOfMonth > thresholdMinutes * 60 * 1000 * 1.5) {
 			ranges.push({ start: startOfMonth, end: first });
 		}
 
@@ -90,12 +90,27 @@
 
 		// After last shot
 		const last = new Date(sorted[sorted.length - 1].time_ts || sorted[sorted.length - 1].timestamp_used);
-		if (endOfMonth - last > thresholdMinutes * 60 * 1000) {
+		if (endOfMonth - last > thresholdMinutes * 60 * 1000 * 1.5) {
 			ranges.push({ start: last, end: endOfMonth });
 		}
 
-		return ranges;
+		// ✅ Merge overlapping or touching ranges
+		const merged = [];
+		for (const range of ranges.sort((a, b) => a.start - b.start)) {
+			if (!merged.length) {
+				merged.push(range);
+				continue;
+			}
+			const last = merged[merged.length - 1];
+			if (range.start <= last.end) {
+				last.end = new Date(Math.max(last.end, range.end));
+			} else {
+				merged.push(range);
+			}
+		}
+		return merged;
 	}
+
 
 	// Chart.js plugin to highlight inactive ranges
 	const gapHighlightPlugin = {
@@ -117,8 +132,8 @@
 					gap.start.getTime() === startOfMonth.getTime() ||
 					gap.end.getTime() === endOfMonth.getTime();
 
-				ctx.fillStyle = isOuter
-					? "rgba(255, 0, 0, 0.03)" // very light red for start/end
+				ctx.fillStyle = isOuter // very light red for start/end
+					? "rgba(255, 0, 0, 0.07)"
 					: "rgba(255, 0, 0, 0.07)"; // slightly darker for internal gaps
 
 				ctx.fillRect(x1, chartArea.top, width, chartArea.bottom - chartArea.top);

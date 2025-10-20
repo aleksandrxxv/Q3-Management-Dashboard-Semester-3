@@ -15,6 +15,7 @@
   export let data;
   import logo from '$lib/assets/q3_logo_darkmode.png';
 
+  
   // fallback
   $: stats = data.stats ?? {
     totalMachines: 0,
@@ -23,6 +24,7 @@
     totalMolds: 0,
     activeMolds: 0,
     inactiveMolds: 0,
+    totalShotRows: 0,
     bestMachine: { name: 'Loading...', uptime: 0, cycles: 0 },
     topMold: { name: 'Loading...', uses: 0 },
   };
@@ -39,18 +41,22 @@
 
   <!-- Summary Cards -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-6xl w-full">
-    <!-- Machines -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+    <!-- Machine summary -->
+    <div on:click={() => window.location.href = '/machines'} class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
       <h3 class="text-gray-600 text-sm font-medium mb-2">Machines</h3>
       <p class="text-3xl font-semibold text-gray-900">{stats.totalMachines} Total</p>
-      <div class="flex justify-between mt-1 text-sm">
+
+      <div class="flex flex-wrap justify-between mt-2 text-sm">
         <p class="text-green-600 font-medium">{stats.activeMachines} Active</p>
         <p class="text-gray-500 font-medium">{stats.inactiveMachines} Inactive</p>
+        <p class="text-blue-600 font-medium">{stats.operational} In Operation</p>
+        <p class="text-yellow-500 font-medium">{stats.standstill} Standstill</p>
       </div>
     </div>
 
+
     <!-- Molds -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+    <div on:click={() => window.location.href = '/molds'} class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
       <h3 class="text-gray-600 text-sm font-medium mb-2">Molds</h3>
       <p class="text-3xl font-semibold text-gray-900">{stats.totalMolds} Total</p>
       <div class="flex justify-between mt-1 text-sm">
@@ -62,8 +68,9 @@
 
   <!-- Best performing -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-14 max-w-6xl w-full">
+
     <!-- Best Machine -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+    <div on:click={() => window.location.href = '/machines'} class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
       <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
         <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke-width="2" stroke="currentColor" class="w-5 h-5 text-orange-500">
@@ -73,12 +80,12 @@
       </h3>
       <p class="text-xl font-medium text-gray-800">{stats.bestMachine.name}</p>
       <p class="text-sm text-gray-500 mt-1">
-        Total Runs: <span class="font-semibold">{stats.bestMachine.cycles}</span>
+        Recorded <span class="font-semibold">{stats.totalShotRows}</span> shot time entries.
       </p>
     </div>
 
     <!-- Top Mold -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+    <div on:click={() => window.location.href = '/molds'} class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
       <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
         <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
              stroke-width="2" stroke="currentColor" class="w-5 h-5 text-orange-500">
