@@ -1,0 +1,13 @@
+{
+	"/": [
+		"src/routes/+page.server.js"
+	],
+	"/machine_history": [],
+	"/machines": [],
+	"/molds": [
+		"src/routes/molds/+page.server.js"
+	],
+	"/molds/[id]/graph": [
+		"src/routes/molds/[id]/graph/+server.js"
+	]
+}

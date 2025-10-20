@@ -1,0 +1,92 @@
+import { useState, useRef, useEffect, Fragment } from "react";
+import { FaChevronRight } from "react-icons/fa";
+import MoldGraph from "./MoldGraph";
+
+export default function MoldTable({ molds, moldRefs, highlightedMold = null }) {
+  const [expandedRow, setExpandedRow] = useState(null);
+  const localRefs = useRef({});
+  const rowRefs = moldRefs ?? localRefs;
+
+  const toggleRow = (id) => {
+    setExpandedRow(expandedRow === id ? null : id);
+  };
+
+  useEffect(() => {
+    if (highlightedMold) {
+      setExpandedRow(Number(highlightedMold));
+    }
+  }, [highlightedMold]);
+
+  return (
+    <div className="mt-6 overflow-hidden rounded-lg border border-gray-200 shadow-sm">
+      <table className="w-full border-collapse text-sm">
+        <thead className="bg-gray-100 text-left text-gray-600 uppercase text-xs tracking-wider">
+          <tr>
+            <th className="px-4 py-3">Mold #</th>
+            <th className="px-4 py-3">Description</th>
+            <th className="px-4 py-3">Machine</th>
+            <th className="px-4 py-3">Total Ops</th>
+            <th className="px-4 py-3 text-right">Expand</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200 bg-white">
+          {molds.map((mold) => (
+            <Fragment key={mold.mold1_id}>
+              <tr
+                ref={(el) => (rowRefs.current[mold.mold1_id] = el)}
+                className={`cursor-pointer transition-colors ${
+                  String(highlightedMold) === String(mold.mold1_id)
+                    ? "bg-yellow-100"
+                    : "hover:bg-gray-50"
+                }`}
+              >
+                <td className="px-4 py-3 font-medium text-gray-800">
+                  {mold.mold1_name}
+                </td>
+                <td className="px-4 py-3 text-gray-700">{mold.mold1_desc}</td>
+                <td className="px-4 py-3 font-medium text-gray-800">
+                  {mold.name}
+                </td>
+                <td className="px-4 py-3 text-gray-700">
+                  {mold.totalOperations ?? "—"}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <button
+                    onClick={() => toggleRow(mold.mold1_id)}
+                    className={`text-gray-600 hover:text-gray-800 transition-transform duration-300 ${
+                      expandedRow === mold.mold1_id ? "rotate-90" : ""
+                    }`}
+                    aria-label={`Expand ${mold.mold1_name}`}
+                  >
+                    <FaChevronRight />
+                  </button>
+                </td>
+              </tr>
+
+              <tr>
+                <td colSpan="6" className="p-0">
+                  <div
+                    className={`grid transition-all duration-500 ease-in-out ${
+                      expandedRow === mold.mold1_id
+                        ? "grid-rows-[1fr] p-6 bg-gray-50"
+                        : "grid-rows-[0fr] p-0 bg-transparent"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      {expandedRow === mold.mold1_id && (
+                        <MoldGraph
+                          moldId={mold.mold1_id}
+                          moldName={mold.mold1_name}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
