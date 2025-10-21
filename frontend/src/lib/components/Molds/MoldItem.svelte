@@ -14,8 +14,8 @@
   async function loadShots() {
     if (totalShots != null) return;
     loadingShots = true;
-    const { data, error } = await supabase.rpc('get_mold_total_shots_v2', {
-      _mold_ids: [mold.id],
+    const { data, error } = await supabase.rpc('get_mold_total_shots_cached', {
+      p_mold_id: mold.id,
     });
     loadingShots = false;
 
@@ -30,11 +30,24 @@
   }
 
   $: if (expanded) loadShots();
+  import { page } from '$app/stores';
+  import { get } from 'svelte/store';
 
-  function openMachine(machine) {
-    if (!machine) return;
-    goto(`/machines/${encodeURIComponent(machine)}`);
+  //  Read machine name from URL query
+  let selectedMachine = null;
+
+if (selectedMachine) {
+  const match = ports.find(p => p.name === selectedMachine);
+  if (match) {
+    // Automatically expand this machine
+    toggleExpand(`${match.id}-${match.board}-${match.port}-0`, match.name);
+    // Scroll to it smoothly
+    setTimeout(() => {
+      document.getElementById(`machine-${match.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 400);
   }
+}
+
 </script>
 
 <!-- Collapsed row -->

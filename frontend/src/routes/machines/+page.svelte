@@ -390,18 +390,23 @@
             {#if expanded === `${p.id}-${p.board}-${p.port}-${i}`}
               <tr>
                 <td colspan="6" class="p-0">
-                  <div
-                    transition:slide
-                    class="bg-gray-50 border-t border-gray-200"
-                  >
-                    <div class="p-6 text-center text-gray-600">
-                      <strong class="text-gray-800">{p.name}</strong>
+                  <div transition:slide class="bg-gray-50 border-t border-gray-200">
+                    <div class="p-6 text-gray-700">
+                    <!-- Machine Header -->
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                      <div>
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                              stroke-width="2" stroke="currentColor" class="w-5 h-5 text-orange-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M3 7h18M3 12h18M3 17h18" />
+                          </svg>
+                          {p.name}
+                        </h3>
+                        <p class="text-sm text-gray-500">Attached molds currently in this machine:</p>
+                      </div>
 
-                      <p class="text-sm text-gray-500 mt-2 mb-3">
-                        Currently installed molds in this machine:
-                      </p>
-
-                      <div class="flex flex-wrap justify-center gap-2 mb-5">
+                      <div class="flex flex-wrap justify-end gap-2">
                         {#if loadingMolds[`${p.id}-${p.board}-${p.port}-${i}`]}
                           <div
                             class="animate-spin rounded-full h-6 w-6 border-t-2 border-orange-500"
@@ -410,37 +415,40 @@
                           {#each machineMolds[`${p.id}-${p.board}-${p.port}-${i}`] as mold}
                             <button
                               title={mold.desc}
-                              class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium hover:bg-orange-200 transition"
+                              class="px-3 py-1 bg-orange-50 border border-orange-200 text-orange-700 rounded-lg text-sm font-medium
+                                    hover:bg-orange-100 hover:border-orange-300 transition shadow-sm"
                               on:click={() => goToMold(mold.id)}
                             >
-                              {mold.name}
+                              <span class="font-semibold">{mold.name}</span>
                             </button>
                           {/each}
                         {:else}
-                          <p class="text-gray-400 italic">
-                            No molds found for this machine.
-                          </p>
+                          <p class="text-gray-400 italic text-sm">No molds found for this machine.</p>
                         {/if}
                       </div>
+                    </div>
 
-                      <!-- Legend for red sections -->
-                      <div class="flex items-center justify-center gap-2 mb-4">
-                        <div
-                          class="w-4 h-4 bg-red-200 border border-red-400 rounded-sm"
-                        ></div>
-                        <p class="text-xs text-gray-600">
-                          If a section of the chart is <span
-                            class="text-red-600 font-medium">red</span
-                          >, it means no shot time data is available for that
-                          period.
-                        </p>
-                      </div>
+                    <!-- Subtle divider -->
+                    <div class="border-t border-gray-200 my-4"></div>
+
+                    <!-- Legend -->
+                    <div class="flex items-center gap-2 mb-4 text-sm text-gray-500">
+                      <div class="w-4 h-4 bg-red-200 border border-red-400 rounded-sm"></div>
+                      <span>
+                        <span class="text-red-600 font-medium">Red</span> sections mean no shot time data available.
+                      </span>
+                    </div>
+
+                    <!-- Chart -->
+                    <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
                       <MachineShotChart board={p.board} port={p.port} />
                     </div>
                   </div>
-                </td>
-              </tr>
-            {/if}
+
+
+                  </td>
+                </tr>
+              {/if}
           {/each}
         </tbody>
       </table>
