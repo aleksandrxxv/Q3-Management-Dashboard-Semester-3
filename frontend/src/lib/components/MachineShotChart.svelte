@@ -60,9 +60,9 @@
 		if (!data?.length) return [];
 
 		let thresholdMinutes;
-		if (interval === "5min") thresholdMinutes = 15;
-		else if (interval === "15min") thresholdMinutes = 45;
-		else if (interval === "hour") thresholdMinutes = 120;
+		if (interval === "5min") thresholdMinutes = 6;
+		else if (interval === "15min") thresholdMinutes = 16;
+		else if (interval === "hour") thresholdMinutes = 61;
 		else thresholdMinutes = 24 * 60 * 2;
 
 		const sorted = [...data].sort(
