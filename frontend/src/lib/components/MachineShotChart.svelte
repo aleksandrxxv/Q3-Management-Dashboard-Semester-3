@@ -20,47 +20,95 @@
 	const startOfMonth = new Date("2020-09-01T00:00:00Z");
 	const endOfMonth = new Date("2020-09-30T23:59:59Z");
 
-	// Fetch RPC with timeout + auto retry
-	async function fetchAggregatedData() {
-		const controller = new AbortController();
-		const timeout = setTimeout(() => controller.abort(), 10000);
-
-		try {
-			const params = {
-				p_start: startOfMonth.toISOString(),
-				p_end: simulatedNow.toISOString(),
-				p_interval: interval,
-				p_board: Number(board),
-				p_port: Number(port)
-			};
-
-			const { data, error } = await supabase.rpc("get_shot_time_avg", params, {
-				signal: controller.signal
-			});
-			if (error) throw error;
-			return data ?? [];
-		} catch (err) {
-			if (err.name === "AbortError") {
-				throw new Error("Query timed out");
-			}
-			throw err;
-		} finally {
-			clearTimeout(timeout);
-		}
+	// -----------------------------
+	// HYBRID FETCH: chunked for fine intervals, single query for coarse
+	// -----------------------------
+	function getChunkHours() {
+		if (interval === "5min") return 32; // small chunks
+		if (interval === "15min") return 48;
+		return null; // no chunking for hour/day
 	}
 
+	async function fetchHybridData() {
+		const chunkHours = getChunkHours();
+		if (!chunkHours) {
+			// Fast single RPC for hour/day
+			const controller = new AbortController();
+			const timeout = setTimeout(() => controller.abort(), 10000);
+			try {
+				const params = {
+					p_start: startOfMonth.toISOString(),
+					p_end: simulatedNow.toISOString(),
+					p_interval: interval,
+					p_board: Number(board),
+					p_port: Number(port)
+				};
+				const { data, error } = await supabase.rpc("get_shot_time_avg", params, {
+					signal: controller.signal
+				});
+				if (error) throw error;
+				return data ?? [];
+			} finally {
+				clearTimeout(timeout);
+			}
+		}
+
+		// Chunked for fine intervals
+		let allData = [];
+		let cursor = new Date(startOfMonth);
+		let chunkIndex = 0;
+
+		while (cursor < endOfMonth) {
+			const next = new Date(cursor.getTime() + chunkHours * 3600 * 1000);
+			const rangeEnd = next > endOfMonth ? endOfMonth : next;
+
+			const controller = new AbortController();
+			const timeout = setTimeout(() => controller.abort(), 8000);
+
+			try {
+				const params = {
+					p_start: cursor.toISOString(),
+					p_end: rangeEnd.toISOString(),
+					p_interval: interval,
+					p_board: Number(board),
+					p_port: Number(port)
+				};
+
+				console.log(`⏳ Chunk ${++chunkIndex}: ${params.p_start} → ${params.p_end}`);
+
+				const { data, error } = await supabase.rpc("get_shot_time_avg", params, {
+					signal: controller.signal
+				});
+
+				if (error) throw error;
+				if (data?.length) allData.push(...data);
+			} catch (err) {
+				console.warn("Chunk failed:", err.message);
+			} finally {
+				clearTimeout(timeout);
+			}
+
+			cursor = rangeEnd;
+			await tick();
+		}
+
+		console.log(`Loaded ${allData.length} rows in ${chunkIndex} chunks`);
+		return allData;
+	}
+
+	// -----------------------------
+	// Utility functions
+	// -----------------------------
 	function downsample(arr, maxPoints = 1500) {
 		if (arr.length <= maxPoints) return arr;
 		const step = Math.ceil(arr.length / maxPoints);
 		return arr.filter((_, i) => i % step === 0);
 	}
 
-	// Detect missing time ranges (includes start/end of month)
 	function detectGaps(data) {
 		if (!data?.length) return [];
-
 		let thresholdMinutes;
-		if (interval === "5min") thresholdMinutes = 6;
+		if (interval === "5min") thresholdMinutes = 10;
 		else if (interval === "15min") thresholdMinutes = 16;
 		else if (interval === "hour") thresholdMinutes = 61;
 		else thresholdMinutes = 24 * 60 * 2;
@@ -71,48 +119,34 @@
 		);
 
 		const ranges = [];
-
-		// Before first shot
 		const first = new Date(sorted[0].time_ts || sorted[0].timestamp_used);
-		if (first - startOfMonth > thresholdMinutes * 60 * 1000 * 1.5) {
+		if (first - startOfMonth > thresholdMinutes * 60 * 1000 * 1.5)
 			ranges.push({ start: startOfMonth, end: first });
-		}
 
-		// Gaps within data
 		for (let i = 1; i < sorted.length; i++) {
 			const prev = new Date(sorted[i - 1].time_ts || sorted[i - 1].timestamp_used);
 			const curr = new Date(sorted[i].time_ts || sorted[i].timestamp_used);
 			const diffMinutes = (curr - prev) / (1000 * 60);
-			if (diffMinutes > thresholdMinutes) {
-				ranges.push({ start: prev, end: curr });
-			}
+			if (diffMinutes > thresholdMinutes) ranges.push({ start: prev, end: curr });
 		}
 
-		// After last shot
 		const last = new Date(sorted[sorted.length - 1].time_ts || sorted[sorted.length - 1].timestamp_used);
-		if (endOfMonth - last > thresholdMinutes * 60 * 1000 * 1.5) {
+		if (endOfMonth - last > thresholdMinutes * 60 * 1000 * 1.5)
 			ranges.push({ start: last, end: endOfMonth });
-		}
 
-		// ✅ Merge overlapping or touching ranges
+		// Merge overlapping
 		const merged = [];
 		for (const range of ranges.sort((a, b) => a.start - b.start)) {
-			if (!merged.length) {
-				merged.push(range);
-				continue;
-			}
-			const last = merged[merged.length - 1];
-			if (range.start <= last.end) {
-				last.end = new Date(Math.max(last.end, range.end));
-			} else {
-				merged.push(range);
+			if (!merged.length) merged.push(range);
+			else {
+				const last = merged[merged.length - 1];
+				if (range.start <= last.end) last.end = new Date(Math.max(last.end, range.end));
+				else merged.push(range);
 			}
 		}
 		return merged;
 	}
 
-
-	// Chart.js plugin to highlight inactive ranges
 	const gapHighlightPlugin = {
 		id: "gapHighlight",
 		beforeDraw(chart) {
@@ -120,35 +154,21 @@
 			if (!chart.data.gaps?.length) return;
 
 			ctx.save();
-			ctx.font = "12px sans-serif";
-			ctx.textAlign = "center";
-
 			for (const gap of chart.data.gaps) {
 				const x1 = scales.x.getPixelForValue(gap.start);
 				const x2 = scales.x.getPixelForValue(gap.end);
 				const width = x2 - x1;
-
-				const isOuter =
-					gap.start.getTime() === startOfMonth.getTime() ||
-					gap.end.getTime() === endOfMonth.getTime();
-
-				ctx.fillStyle = isOuter // very light red for start/end
-					? "rgba(255, 0, 0, 0.07)"
-					: "rgba(255, 0, 0, 0.07)"; // slightly darker for internal gaps
-
+				ctx.fillStyle = "rgba(255, 0, 0, 0.07)";
 				ctx.fillRect(x1, chartArea.top, width, chartArea.bottom - chartArea.top);
-
-				if (!isOuter && width > 50) {
-					ctx.fillStyle = "red";
-					ctx.fillText("", x1 + width / 2, chartArea.top + 14);
-				}
 			}
 			ctx.restore();
 		}
 	};
 
+	// -----------------------------
+	// Chart builder
+	// -----------------------------
 	function buildChart() {
-		// If no data at all, create flat 0 line for full month
 		let simulated = false;
 		if (!shots.length) {
 			const zeroLine = [];
@@ -172,18 +192,6 @@
 
 		let gaps = simulated ? [{ start: startOfMonth, end: endOfMonth }] : detectGaps(shots);
 
-		console.groupCollapsed(`Inactive ranges (${gaps.length})`);
-		gaps.forEach((g, i) =>
-			console.log(
-				`#${i + 1}`,
-				"Start:", g.start.toISOString(),
-				"| End:", g.end.toISOString(),
-				"| Duration:", ((g.end - g.start) / (1000 * 60)).toFixed(1), "minutes"
-			)
-		);
-		console.groupEnd();
-
-		// Group by machine
 		const grouped = {};
 		for (const s of shots) {
 			const machine = s[machineKey] ?? "Simulated";
@@ -193,12 +201,10 @@
 			grouped[machine].push({ x: t, y: val });
 		}
 
-		// Extend each machine’s line to start/end of month
 		const datasets = Object.entries(grouped).map(([machine, arr]) => {
 			const sorted = arr.sort((a, b) => a.x - b.x);
 			const firstTime = sorted[0].x;
 			const lastTime = sorted[sorted.length - 1].x;
-
 			if (firstTime > startOfMonth) sorted.unshift({ x: startOfMonth, y: 0 });
 			if (lastTime < endOfMonth) sorted.push({ x: endOfMonth, y: 0 });
 
@@ -264,15 +270,16 @@
 		});
 	}
 
+	// -----------------------------
+	// 🚀 Lifecycle
+	// -----------------------------
 	async function rebuildChart(retryCount = 0) {
 		loading = true;
 		error = null;
 		try {
-			const raw = await fetchAggregatedData();
-			let data = Array.isArray(raw) ? raw : raw.data ?? [];
-			shots = data;
+			const data = await fetchHybridData();
+			shots = Array.isArray(data) ? data : [];
 			if (shots.length > 3000) {
-				console.warn("Too many rows, downsampling client-side");
 				const step = Math.ceil(shots.length / 1500);
 				shots = shots.filter((_, i) => i % step === 0);
 			}
@@ -281,8 +288,8 @@
 		} catch (e) {
 			error = e.message ?? String(e);
 			console.error("rebuildChart error:", e);
-			if (e.message.includes("timed out") && retryCount < 3) {
-				const delay = 4000 * (retryCount + 1);
+			if (e.message.includes("timed out") && retryCount < 2) {
+				const delay = 3000 * (retryCount + 1);
 				console.warn(`Timeout. Retrying in ${delay / 1000}s...`);
 				setTimeout(() => rebuildChart(retryCount + 1), delay);
 			}
@@ -300,9 +307,6 @@
 		await rebuildChart();
 	});
 </script>
-
-
-
 
 <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-4 mt-2 relative">
 	<div class="h-[320px] w-full relative overflow-hidden">
