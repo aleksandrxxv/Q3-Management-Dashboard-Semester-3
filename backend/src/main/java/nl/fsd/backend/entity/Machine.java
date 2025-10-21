@@ -16,5 +16,4 @@ public class Machine {
     private int board;
     private int port;
     private int visible;
-    private String status;
 }
