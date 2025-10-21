@@ -15,8 +15,7 @@
   export let data;
   import logo from '$lib/assets/q3_logo_darkmode.png';
 
-  
-  // fallback
+  // Fallback while loading
   $: stats = data.stats ?? {
     totalMachines: 0,
     activeMachines: 0,
@@ -25,7 +24,7 @@
     activeMolds: 0,
     inactiveMolds: 0,
     totalShotRows: 0,
-    bestMachine: { name: 'Loading...', uptime: 0, cycles: 0 },
+    bestMachine: { name: 'Loading...', shots: 0 },
     topMold: { name: 'Loading...', uses: 0 },
   };
 </script>
@@ -41,8 +40,11 @@
 
   <!-- Summary Cards -->
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-6xl w-full">
-    <!-- Machine summary -->
-    <div on:click={() => window.location.href = '/machines'} class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+    <!-- Machines -->
+    <div
+      on:click={() => window.location.href = '/machines'}
+      class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition cursor-pointer"
+    >
       <h3 class="text-gray-600 text-sm font-medium mb-2">Machines</h3>
       <p class="text-3xl font-semibold text-gray-900">{stats.totalMachines} Total</p>
 
@@ -54,9 +56,11 @@
       </div>
     </div>
 
-
     <!-- Molds -->
-    <div on:click={() => window.location.href = '/molds'} class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+    <div
+      on:click={() => window.location.href = '/molds'}
+      class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition cursor-pointer"
+    >
       <h3 class="text-gray-600 text-sm font-medium mb-2">Molds</h3>
       <p class="text-3xl font-semibold text-gray-900">{stats.totalMolds} Total</p>
       <div class="flex justify-between mt-1 text-sm">
@@ -66,34 +70,34 @@
     </div>
   </div>
 
-  <!-- Best performing -->
+  <!-- Best Performing -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-14 max-w-6xl w-full">
 
-    <!-- Best Machine -->
-    <div on:click={() => window.location.href = '/machines'} class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+    <!-- ✅ Best Performing Machine -->
+    <div
+      on:click={() => window.location.href = '/machines'}
+      class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition cursor-pointer"
+    >
       <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
-        <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-             stroke-width="2" stroke="currentColor" class="w-5 h-5 text-orange-500">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13h2l2-3 4 6 3-4 5 7h3" />
-        </svg> -->
         Best Performing Machine
       </h3>
-      <p class="text-xl font-medium text-gray-800">{stats.bestMachine.name}</p>
+
+      <p class="text-xl font-medium text-gray-800">
+        {stats.bestMachine.name}
+      </p>
+
       <p class="text-sm text-gray-500 mt-1">
-        Recorded <span class="font-semibold">{stats.totalShotRows}</span> shot time entries.
+        Has completed <span class="font-semibold">{stats.bestMachine.shots}</span> shots.
+
       </p>
     </div>
 
     <!-- Top Mold -->
-    <div on:click={() => window.location.href = '/molds'} class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition">
+    <div
+      on:click={() => window.location.href = '/molds'}
+      class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 hover:shadow-md transition cursor-pointer"
+    >
       <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2 mb-4">
-        <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-             stroke-width="2" stroke="currentColor" class="w-5 h-5 text-orange-500">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73z" />
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3.27 6.96L12 12l8.73-5.04M12 22V12" />
-        </svg> -->
         Most Used Mold
       </h3>
       <p class="text-xl font-medium text-gray-800">{stats.topMold.name}</p>
