@@ -19,6 +19,7 @@ interface Props {
     mechanic: number | null
 }
 
+
 export default function PlanningCalendar(props: Props) {
     function addWeek() {
         setCurrentDate(addDays(currentDate, 7));
