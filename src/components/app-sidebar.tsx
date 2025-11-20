@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react'
-import {  Bell, Cog, Cpu, Home, Power, Shield, Wrench } from 'lucide-react'
+import { Bell, Cog, Cpu, Home, Power, Shield, Wrench } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
@@ -29,32 +29,35 @@ const menuItems = [
     label: 'Machines', 
     href: '/dashboard/machines',
     subItems: [
-      { label: 'Alle machines', href: '/dashboard/machines' },
-      { label: 'Historische data', href: '/dashboard/machines/timeline' },
+      { label: 'All Machines', href: '/dashboard/machines' },
+      { label: 'Historical Data', href: '/dashboard/machines/timeline' },
     ]
   },
+
   // Molds
   { 
     icon: Shield, 
-    label: 'Matrijzen', 
+    label: 'Molds', 
     href: '/dashboard/molds',
     subItems: [
-      { label: 'Levensduur', href: '/dashboard/molds' },
+      { label: 'Lifetime', href: '/dashboard/molds' },
     ]
   },
+
   {
     icon: Wrench,
-    label: 'Onderhoud',
+    label: 'Maintenance',
     href: '/dashboard/maintenance',
     subItems: [
-      { label: 'Kalender', href: '/dashboard/maintenance' },
-      { label: 'Monteurs', href: '/dashboard/maintenance/mechanics' },
-      { label: 'Preventieve planning', href: '/dashboard/maintenance/milestones' },
+      { label: 'Calendar', href: '/dashboard/maintenance' },
+      { label: 'Mechanics', href: '/dashboard/maintenance/mechanics' },
+      { label: 'Preventive Planning', href: '/dashboard/maintenance/milestones' },
     ]
   },
+
   { 
     icon: Bell, 
-    label: 'Meldingen', 
+    label: 'Notifications', 
     href: '/dashboard/notifications',
     badge: 3
   },
@@ -74,6 +77,7 @@ export function AppSidebar() {
           />
         </div>
       </SidebarHeader>
+      
       <SidebarContent>
         <ScrollArea className="h-[calc(100vh-5rem)]">
           <SidebarMenu>
@@ -91,6 +95,7 @@ export function AppSidebar() {
                       <item.icon className="h-5 w-5" />
                       <span>{item.label}</span>
                     </div>
+
                     {item.badge && (
                       <Badge variant="destructive" className="ml-auto">
                         {item.badge}
@@ -98,6 +103,7 @@ export function AppSidebar() {
                     )}
                   </Link>
                 </SidebarMenuButton>
+
                 {item.subItems && (
                   <SidebarMenuSub>
                     {item.subItems.map((subItem) => (
@@ -117,6 +123,7 @@ export function AppSidebar() {
           </SidebarMenu>
         </ScrollArea>
       </SidebarContent>
+
       <SidebarFooter className="border-t border-zinc-200 dark:border-zinc-800">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -134,17 +141,18 @@ export function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+
         <div className="p-4">
           <Link href="/factory">
-          <Button className="w-full" variant="outline">
-            <Wrench className="mr-2 h-4 w-4" />
-            Factory View Mode
-          </Button>
+            <Button className="w-full" variant="outline">
+              <Wrench className="mr-2 h-4 w-4" />
+              Factory View Mode
+            </Button>
           </Link>
         </div>
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   )
 }
-
