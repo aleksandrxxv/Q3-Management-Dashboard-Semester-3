@@ -1,5 +1,7 @@
+// src/components/timeline/TimelineRow.tsx
+
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import StatusIndicator from './StatusIndicator';
 import TimelineChart from './TimelineChart';
 import { Machine, MachineTimeline } from '@/types/supabase';
@@ -31,7 +33,7 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
 
     let cancelled = false;
 
-    // Small debounce so we don't spam Supabase when the user changes filters
+    // Small debounce so we don't spam Supabase when filters change
     const timeout = setTimeout(() => {
       const fetchData = async () => {
         try {
@@ -65,7 +67,7 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
       };
 
       fetchData();
-    }, 300); // 300ms debounce
+    }, 300);
 
     return () => {
       cancelled = true;
@@ -73,9 +75,42 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
     };
   }, [machine.board, machine.port, date?.from, date?.to, interval]);
 
+  // 🔍 Only clamp by date on coarser intervals (day/hour/week)
+  const filteredData = useMemo(() => {
+    if (!date?.from || !date?.to) return liveData;
+
+    // For very fine intervals (Minute, 5 Minutes), trust the backend range
+    if (
+      interval === IntervalType.Minute ||
+      interval === IntervalType.FiveMinutes // adjust name if different
+    ) {
+      return liveData;
+    }
+
+    const fromMs = new Date(
+      date.from.getFullYear(),
+      date.from.getMonth(),
+      date.from.getDate(),
+      0, 0, 0, 0
+    ).getTime();
+
+    const toMs = new Date(
+      date.to.getFullYear(),
+      date.to.getMonth(),
+      date.to.getDate(),
+      23, 59, 59, 999
+    ).getTime();
+
+    return liveData.filter((point) => {
+      if (!point.truncated_timestamp) return false;
+      const ts = new Date(point.truncated_timestamp).getTime();
+      return ts >= fromMs && ts <= toMs;
+    });
+  }, [liveData, date?.from, date?.to, interval]);
+
   return (
     <Card style={style} className="mb-2">
-      <div className="flex items-center h-12">
+      <div className="flex items-center h-16">
         <div className="w-32 flex items-center text-left px-4">
           <div className="flex items-center space-x-3">
             <StatusIndicator status={machine.status} />
@@ -100,7 +135,7 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
 
           <TimelineChart
             interval={interval}
-            data={liveData}
+            data={filteredData}
           />
         </div>
       </div>
