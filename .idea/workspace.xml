@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7f7c214e-553f-43ef-88f2-aff031c5adac" name="Changes" comment="worked on getting currently installed molds per machine" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/backend">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="backend" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="backend" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Development" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitLabMergeRequestFiltersHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPENED&quot;,
+    &quot;assignee&quot;: {
+      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
+      &quot;username&quot;: &quot;I549575&quot;,
+      &quot;fullname&quot;: &quot;Khoarlall,Aaron A.A.&quot;
+    }
+  }
+}</component>
+  <component name="GitLabMergeRequestsSettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;first&quot;: &quot;https://git.fhict.nl/I555495/s3-group-project.git&quot;,
+    &quot;second&quot;: &quot;4d47597e-ce4b-4a2e-b3a9-13a252e4e8ab&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-autoconfigure/3.2.5/c1d688a3c1c5c11b696790a6aafcc98aa68e53d7/spring-boot-autoconfigure-3.2.5-sources.jar!/org/springframework/boot/autoconfigure/sql/init/DataSourceInitializationConfiguration.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot/3.2.5/b3dbf02fd1e0cf8b1b7c6f6d489adaea7612a891/spring-boot-3.2.5-sources.jar!/org/springframework/boot/SpringApplication.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot/3.2.5/b3dbf02fd1e0cf8b1b7c6f6d489adaea7612a891/spring-boot-3.2.5-sources.jar!/org/springframework/boot/diagnostics/LoggingFailureAnalysisReporter.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../.ideaLibSources/lombok-1.18.38-sources.jar!/lombok/RequiredArgsConstructor.java" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="32rbomslvf5ASpAOHEHeT1cnrxW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Gradle.Build backend.executor": "Run",
+    "Gradle.C:/Users/PC/s3-group-project/backend.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHELLCHECK.PATH": "C:\\Users\\PC\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe",
+    "Spring Boot.BackendApplication.executor": "Run",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultAutoModeForALLUsers.v1": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "migration/q3s3-code",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/PC/s3-group-project",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "C:/Users/PC/AppData/Roaming/JetBrains/IntelliJIdea2025.2/node/versions/22.19.0/node",
+    "nodejs_package_manager_path": "npm",
+    "npm.Next.js: server-side.executor": "Run",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\Users\\PC\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="Push.Settings">
+    <option name="SHOW_DETAILS_PANEL" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="nl.fsd.backend.service" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.Next.js: server-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="backend.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="nl.fsd.backend.BackendApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7f7c214e-553f-43ef-88f2-aff031c5adac" name="Changes" comment="" />
+      <created>1758181815660</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1758181815660</updated>
+      <workItem from="1758181817423" duration="10511000" />
+      <workItem from="1758202313324" duration="1431000" />
+      <workItem from="1758614417793" duration="10621000" />
+      <workItem from="1758633081829" duration="20234000" />
+      <workItem from="1759012916195" duration="19000" />
+      <workItem from="1759137349728" duration="50000" />
+      <workItem from="1759137431137" duration="16000" />
+      <workItem from="1759137474627" duration="438000" />
+      <workItem from="1759138667431" duration="255000" />
+      <workItem from="1759138953567" duration="15000" />
+      <workItem from="1759150380720" duration="4521000" />
+      <workItem from="1759316289880" duration="2826000" />
+      <workItem from="1759406291783" duration="25000" />
+      <workItem from="1759475458116" duration="723000" />
+      <workItem from="1759735367446" duration="5621000" />
+      <workItem from="1760896876971" duration="333000" />
+      <workItem from="1760942117168" duration="10000" />
+      <workItem from="1760943793504" duration="28000" />
+      <workItem from="1760944311051" duration="2783000" />
+      <workItem from="1760982505551" duration="3996000" />
+      <workItem from="1761167010937" duration="606000" />
+      <workItem from="1761508138034" duration="1390000" />
+      <workItem from="1761637196194" duration="622000" />
+      <workItem from="1761814473976" duration="10444000" />
+      <workItem from="1762782598161" duration="598000" />
+      <workItem from="1763626180235" duration="119000" />
+      <workItem from="1763640794318" duration="360000" />
+      <workItem from="1763668286862" duration="1640000" />
+      <workItem from="1763855986939" duration="1307000" />
+    </task>
+    <task id="LOCAL-00001" summary="basic setup of backend and frontend">
+      <option name="closed" value="true" />
+      <created>1758199505507</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1758199505507</updated>
+    </task>
+    <task id="LOCAL-00002" summary="tried to fixed build">
+      <option name="closed" value="true" />
+      <created>1758202223109</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1758202223109</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fixed dependency issues">
+      <option name="closed" value="true" />
+      <created>1758203857708</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1758203857708</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fixed dependency issues">
+      <option name="closed" value="true" />
+      <created>1758621392248</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1758621392248</updated>
+    </task>
+    <task id="LOCAL-00005" summary="worked on getting currently installed molds per machine">
+      <option name="closed" value="true" />
+      <created>1758975092605</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1758975092605</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="basic setup of backend and frontend" />
+    <MESSAGE value="tried to fixed build" />
+    <MESSAGE value="fixed dependency issues" />
+    <MESSAGE value="worked on getting currently installed molds per machine" />
+    <option name="LAST_COMMIT_MESSAGE" value="worked on getting currently installed molds per machine" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

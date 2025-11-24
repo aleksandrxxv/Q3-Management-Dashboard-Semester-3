@@ -1,0 +1,142 @@
+Index: backend/src/main/java/nl/fsd/backend/repository/MoldRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package nl.fsd.backend.repository;\r\n\r\nimport nl.fsd.backend.dto.MoldDTO;\r\n\r\nimport java.util.List;\r\n\r\npublic interface MoldRepository {\r\n    List<MoldDTO> getMolds();\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/nl/fsd/backend/repository/MoldRepository.java b/backend/src/main/java/nl/fsd/backend/repository/MoldRepository.java
+--- a/backend/src/main/java/nl/fsd/backend/repository/MoldRepository.java	(revision 7618a1fa65ce3113df49a063b9886b3f1690aa77)
++++ b/backend/src/main/java/nl/fsd/backend/repository/MoldRepository.java	(date 1758806578472)
+@@ -1,9 +1,32 @@
+ package nl.fsd.backend.repository;
+ 
+ import nl.fsd.backend.dto.MoldDTO;
++import nl.fsd.backend.entity.Mold;
++import org.springframework.data.jpa.repository.Query;
++import org.springframework.data.repository.Repository;
++import org.springframework.data.repository.query.Param;
+ 
+ import java.util.List;
+ 
+-public interface MoldRepository {
+-    List<MoldDTO> getMolds();
++public interface MoldRepository extends Repository<Mold, Integer> {
++    @Query(value = """
++
++            SELECT mmp.name, 
++                           pd.treeview_id AS mold1_id, 
++                            IF(pd.treeview_id = 0, 0, t1.naam) AS mold1_name, 
++                            IF(pd.treeview_id = 0, 0, t1.omschrijving) AS mold1_desc,
++                            pd.treeview2_id AS mold2_id, 
++                            IF(pd.treeview2_id = 0, 0, t2.naam) AS mold2_name, IF(pd.treeview2_id = 0, 0, t2.omschrijving) AS mold2_desc, pd.end_date
++        FROM machine_monitoring_poorten AS mmp
++        JOIN production_data AS pd ON (mmp.board = pd.board AND mmp.port = pd.port)
++        JOIN treeview AS t1 ON (pd.treeview_id = t1.id) OR pd.treeview_id = 0
++        JOIN treeview AS t2 ON (pd.treeview2_id = t2.id) OR pd.treeview2_id = 0
++        WHERE (pd.start_date >= "2020-09-01" AND pd.start_date <= "2020-09-30"\s
++        AND pd.end_date >= "2020-09-01" AND pd.end_date <= "2020-09-30")
++        AND mmp.visible = 1
++        AND mmp.name = :machineName
++        ORDER BY pd.start_date DESC, pd.end_date DESC
++        LIMIT 1;
++        """, nativeQuery = true)
++    List<Mold> findMoldsForMachine(@Param("machineName")  String machineName);
+ }
+Index: backend/src/main/java/nl/fsd/backend/entity/Mold.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package nl.fsd.backend.entity;\r\n\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Builder;\r\nimport lombok.Data;\r\n\r\n@Data\r\n@Builder\r\n@AllArgsConstructor\r\npublic class Mold {\r\n    private int id;\r\n    private String name;\r\n    private String description;\r\n    private String type;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/nl/fsd/backend/entity/Mold.java b/backend/src/main/java/nl/fsd/backend/entity/Mold.java
+--- a/backend/src/main/java/nl/fsd/backend/entity/Mold.java	(revision 7618a1fa65ce3113df49a063b9886b3f1690aa77)
++++ b/backend/src/main/java/nl/fsd/backend/entity/Mold.java	(date 1758803941330)
+@@ -1,13 +1,16 @@
+ package nl.fsd.backend.entity;
+ 
+-import lombok.AllArgsConstructor;
+-import lombok.Builder;
+-import lombok.Data;
++import jakarta.persistence.Entity;
++import jakarta.persistence.Id;
++import jakarta.persistence.Table;
++import lombok.*;
+ 
+-@Data
+-@Builder
+-@AllArgsConstructor
++@Entity
++@Table(name="treeview")
++@Getter
++@Setter
+ public class Mold {
++    @Id
+     private int id;
+     private String name;
+     private String description;
+Index: backend/src/main/java/nl/fsd/backend/controller/MoldController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package nl.fsd.backend.controller;\r\n\r\nimport lombok.AllArgsConstructor;\r\nimport org.springframework.web.bind.annotation.RequestMapping;\r\nimport org.springframework.web.bind.annotation.RestController;\r\n\r\n@RestController\r\n@RequestMapping(\"/api/molds\")\r\n@AllArgsConstructor\r\npublic class MoldController {\r\n\r\n    //get all molds\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/nl/fsd/backend/controller/MoldController.java b/backend/src/main/java/nl/fsd/backend/controller/MoldController.java
+--- a/backend/src/main/java/nl/fsd/backend/controller/MoldController.java	(revision 7618a1fa65ce3113df49a063b9886b3f1690aa77)
++++ b/backend/src/main/java/nl/fsd/backend/controller/MoldController.java	(date 1758806099337)
+@@ -1,13 +1,23 @@
+ package nl.fsd.backend.controller;
+ 
+ import lombok.AllArgsConstructor;
++import nl.fsd.backend.entity.Mold;
++import nl.fsd.backend.service.MoldService;
++import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.PathVariable;
+ import org.springframework.web.bind.annotation.RequestMapping;
+ import org.springframework.web.bind.annotation.RestController;
+ 
++import java.util.List;
++
+ @RestController
+ @RequestMapping("/api/molds")
+ @AllArgsConstructor
+ public class MoldController {
++    private MoldService moldService;
+ 
+-    //get all molds
++    @GetMapping("/{machineName}")
++    public List<Mold> getMoldsForMachine(@PathVariable String machineName) {
++        return moldService.getMoldsForMachine(machineName);
++    }
+ }
+Index: backend/src/main/java/nl/fsd/backend/service/MoldService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/src/main/java/nl/fsd/backend/service/MoldService.java b/backend/src/main/java/nl/fsd/backend/service/MoldService.java
+new file mode 100644
+--- /dev/null	(date 1758806099306)
++++ b/backend/src/main/java/nl/fsd/backend/service/MoldService.java	(date 1758806099306)
+@@ -0,0 +1,19 @@
++package nl.fsd.backend.service;
++
++import lombok.AllArgsConstructor;
++import nl.fsd.backend.dto.MoldDTO;
++import nl.fsd.backend.entity.Mold;
++import nl.fsd.backend.repository.MoldRepository;
++import org.springframework.stereotype.Service;
++
++import java.util.List;
++
++@Service
++@AllArgsConstructor
++public class MoldService {
++    private final MoldRepository moldRepository;
++
++    public List<Mold> getMoldsForMachine(String machineName) {
++        return moldRepository.findMoldsForMachine(machineName);
++    }
++}

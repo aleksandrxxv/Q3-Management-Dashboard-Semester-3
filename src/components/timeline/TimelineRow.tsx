@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import React, { useEffect, useState } from 'react';
 import StatusIndicator from './StatusIndicator';
 import TimelineChart from './TimelineChart';
@@ -10,7 +10,7 @@ import { IntervalType } from '@/types/enum';
 
 interface TimelineRowProps {
   machine: Machine;
-  targetEfficiency: number;
+  targetEfficiency?: number;
   style?: React.CSSProperties;
   date: DateRange | undefined;
   interval: IntervalType;
@@ -23,43 +23,87 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
   interval,
 }) => {
   const [liveData, setLiveData] = useState<MachineTimeline[]>([]);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorText, setErrorText] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (date?.from && date?.to) {
-        const data = await fetchChartData(
-          machine.board,
-          machine.port,
-          date.from,
-          date.to,
-          interval
-        );
-        setLiveData(data);
-      }
+    if (!date?.from || !date?.to) return;
+
+    let cancelled = false;
+
+    // Small debounce so we don't spam Supabase when the user changes filters
+    const timeout = setTimeout(() => {
+      const fetchData = async () => {
+        try {
+          setIsLoading(true);
+          setErrorText(null);
+
+          const data = await fetchChartData(
+            machine.board,
+            machine.port,
+            date.from!,
+            date.to!,
+            interval
+          );
+
+          if (!cancelled) {
+            setLiveData(data);
+          }
+        } catch (err: any) {
+          console.error('TimelineRow fetch error', err);
+          if (!cancelled) {
+            setErrorText(
+              err?.message ?? 'Failed to load timeline data.'
+            );
+            setLiveData([]);
+          }
+        } finally {
+          if (!cancelled) {
+            setIsLoading(false);
+          }
+        }
+      };
+
+      fetchData();
+    }, 300); // 300ms debounce
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
     };
-    fetchData();
-  }, [machine.board, machine.port, date, interval]);
+  }, [machine.board, machine.port, date?.from, date?.to, interval]);
 
   return (
     <Card style={style} className="mb-2">
-        <div className="flex items-center h-12">
-          <div className="w-32 flex items-center text-left px-4">
-            <div className="flex items-center space-x-3">
-              <StatusIndicator
-                status={machine.status}
-              />
-              <span className="text-sm font-medium text-gray-900 truncate">
-                {machine.machine_name || `Machine ${machine.machine_id}`}
-              </span>
-            </div>
-          </div>
-          <div className="flex-1 h-full">
-            <TimelineChart
-              interval={interval}
-            data={liveData}/>
+      <div className="flex items-center h-12">
+        <div className="w-32 flex items-center text-left px-4">
+          <div className="flex items-center space-x-3">
+            <StatusIndicator status={machine.status} />
+            <span className="text-sm font-medium text-gray-900 truncate">
+              {machine.machine_name || `Machine ${machine.machine_id}`}
+            </span>
           </div>
         </div>
+
+        <div className="flex-1 h-full">
+          {errorText && (
+            <div className="text-xs text-red-500 px-2 pb-1">
+              {errorText}
+            </div>
+          )}
+
+          {isLoading && !errorText && (
+            <div className="text-xs text-gray-400 px-2 pb-1">
+              Loading timeline…
+            </div>
+          )}
+
+          <TimelineChart
+            interval={interval}
+            data={liveData}
+          />
+        </div>
+      </div>
     </Card>
   );
 };
