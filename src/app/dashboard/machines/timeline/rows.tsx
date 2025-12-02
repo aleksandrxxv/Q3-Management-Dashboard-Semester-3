@@ -13,8 +13,6 @@ interface RowsProps {
   machines: Machine[];
 }
 
-const PAGE_SIZE = 5;
-
 export default function Rows({ machines }: RowsProps) {
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2020, 8, 1),
@@ -22,15 +20,6 @@ export default function Rows({ machines }: RowsProps) {
   });
 
   const [interval, setInterval] = useState<IntervalType>(IntervalType.Day);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  
-  const totalPages = Math.ceil(machines.length / PAGE_SIZE);
-
-  const paginatedMachines = machines.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
-  );
 
   return (
     <div className="flex flex-col gap-1 ">
@@ -58,8 +47,8 @@ export default function Rows({ machines }: RowsProps) {
       </div>
 
       <div className="flex-1 overflow-auto px-4">
-        {/* Machines for this page */}
-        {paginatedMachines.map((machine) => (
+        {/* All machines displayed at once */}
+        {machines.map((machine) => (
           <TimelineRow
             key={machine.machine_id}
             machine={machine}
@@ -68,29 +57,6 @@ export default function Rows({ machines }: RowsProps) {
             interval={interval}
           />
         ))}
-
-        {/* Pagination Controls */}
-        <div className="flex justify-between items-center mt-4 py-4">
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-          >
-            Previous
-          </button>
-
-          <span className="text-sm text-gray-600">
-            Page {currentPage} of {totalPages}
-          </span>
-
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
       </div>
     </div>
   );
