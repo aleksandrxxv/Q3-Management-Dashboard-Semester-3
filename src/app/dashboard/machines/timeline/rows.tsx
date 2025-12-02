@@ -6,68 +6,58 @@ import Header from "../../header";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import { addDays } from "date-fns";
-import {  SelectInterval } from "@/components/SelectInterval";
+import { SelectInterval } from "@/components/SelectInterval";
 import { IntervalType } from "@/types/enum";
 
 interface RowsProps {
-    machines: Machine[];
-    }
-
+  machines: Machine[];
+}
 
 export default function Rows({ machines }: RowsProps) {
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2020, 8, 1),
+    to: new Date(2020, 8, 30),
+  });
 
-    const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(),
-        to: addDays(new Date(), 1),
-      })
-
-    const [interval, setInterval] = useState<IntervalType>(
-      IntervalType.Hour
-    );
+  const [interval, setInterval] = useState<IntervalType>(IntervalType.Day);
 
   return (
-    
     <div className="flex flex-col gap-1 ">
-        <div className="sticky top-0 z-10 bg-white shadow-sm">
+      <div className="sticky top-0 z-10 bg-white shadow-sm">
         <Header
-        title={"Historische data"}
-        description="Hier kun je de historische data van de machines shots bekijken"
+          title={"Historical Data"}
+          description="Here you can view the historical machine shot data"
         >
+          <div className="flex gap-2">
+            <SelectInterval
+              interval={interval}
+              setInterval={setInterval}
+              date={date}
+              setDate={setDate}
+            />
 
-<div className="flex gap-2">
-<SelectInterval
-            interval={interval}
-            setInterval={setInterval}
-            date={date}
-            setDate={setDate}
-
-          />
-          
-        <SelectStartEndDate
-            date={date}
-            setDate={setDate}
-            className="w-min"
-        />
-</div>
-        
-
+            <SelectStartEndDate
+              date={date}
+              setDate={setDate}
+              className="w-min"
+            />
+          </div>
         </Header>
-      <TimelineLegend />
+        <TimelineLegend />
       </div>
+
       <div className="flex-1 overflow-auto px-4">
-      {machines.map((machine) => (
-        <TimelineRow 
-          key={machine.machine_id} 
-          machine={machine} 
-          targetEfficiency={0} 
+        {/* All machines displayed at once */}
+        {machines.map((machine) => (
+          <TimelineRow
+            key={machine.machine_id}
+            machine={machine}
+            targetEfficiency={0}
             date={date}
             interval={interval}
-            
-        />
-      ))}
+          />
+        ))}
       </div>
-         
     </div>
-  )
+  );
 }
