@@ -2,13 +2,10 @@ import { Inter } from 'next/font/google'
 import { AppSidebar } from '@/components/app-sidebar'
 import {
   SidebarProvider,
-  SidebarTrigger,
   SidebarInset,
 } from '@/components/ui/sidebar'
 
 import '@/app/globals.css'
-import Header from './header'
-import { SelectStartEndDate } from '@/components/SelectStartEndDate'
 
 const inter = Inter({ subsets: ['latin'] })
 

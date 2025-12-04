@@ -8,7 +8,6 @@ import {useDrop} from "react-dnd";
 import {useEffect, useState} from "react";
 import {removeMaintenanceGroup} from "@/lib/supabase/createMaintenanceGroup";
 import {Group} from "lucide-react";
-import {fetchGroup} from "@/lib/supabase/fetchGroup";
 
 interface WeekDay {
     dayDate: Date,

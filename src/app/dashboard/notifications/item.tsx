@@ -1,5 +1,5 @@
 "use client";
-import { MachineTimeline, Notification, NotificationStatus } from "@/types/supabase";
+import { MachineTimeline, Notification } from "@/types/supabase";
 import { getNotificationColor, getNotificationHex } from "./util";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 import { useEffect, useState } from "react";

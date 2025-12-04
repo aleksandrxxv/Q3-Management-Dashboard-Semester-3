@@ -3,8 +3,7 @@ import {
     SheetContent,
     SheetDescription,
     SheetHeader,
-    SheetTitle,
-    SheetTrigger,
+    SheetTitle
   } from "@/components/ui/sheet"
 import { MoldMaintenance } from "@/types/supabase";
 

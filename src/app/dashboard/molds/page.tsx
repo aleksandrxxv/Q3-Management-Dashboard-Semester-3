@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import {
     Table,
     TableBody,
@@ -12,12 +10,17 @@ import {
 import { fetchMolds } from "@/lib/supabase/fetchMolds";
 import Link from "next/link";
 import Header from "../header";
-import { Mold, MoldMaintenance } from "@/types/supabase";
+import { MoldMaintenance } from "@/types/supabase";
 import { Progress } from "@/components/ui/progress";
+import { unstable_cache } from "next/cache";
 
 export default async function Page() {
-    
-    const molds = await fetchMolds();
+    const getMoldsCached = unstable_cache(
+    async () => fetchMolds(),
+    ["molds"],
+    { revalidate: 10 }
+  );
+    const molds = await getMoldsCached();
 
     const maintenance_interval = 100000;
     // calculate levels duur

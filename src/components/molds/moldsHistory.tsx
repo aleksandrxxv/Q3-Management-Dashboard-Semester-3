@@ -11,7 +11,6 @@ import {
 
 import { MoldHistory } from "@/types/supabase";
 import Link from "next/link";
-import { useEffect } from "react";
 import { DateRange } from "react-day-picker";
 
 // Props
