@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import MachineCard from './MachineCard';
-import { Machine, MachineTimeline, Mold, MoldHistory } from '@/types/supabase';
+import { Machine, MachineTimeline, MoldHistory } from '@/types/supabase';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
-import { supabase } from '@/lib/supabase/client';
 import { addDays } from 'date-fns';
 import { fetchMoldsByDateRange } from '@/lib/supabase/fetchMachineMolds';
 import { IntervalType } from '@/types/enum';

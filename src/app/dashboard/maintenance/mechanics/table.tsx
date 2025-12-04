@@ -3,7 +3,6 @@ import { Mechanic } from "@/types/supabase";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -12,7 +11,7 @@ import {
   } from "@/components/ui/table";
   import UpdateMechanic from "@/components/planning/UpdateMechanic";
 import CreateMechanic from "@/components/planning/CreateMechanic";
-import {Calendar1, Pencil} from "lucide-react";
+import {Calendar1} from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchMechanics } from "@/lib/supabase/fetchMechanics";
 

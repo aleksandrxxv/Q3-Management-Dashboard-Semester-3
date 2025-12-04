@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, Legend, ComposedChart, Line } from "recharts";
+import { CartesianGrid, XAxis, YAxis, Bar, Legend, ComposedChart, Line } from "recharts";
 import {
   Card,
   CardContent,
@@ -11,26 +11,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
   ChartContainer,
-  ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { fetchMachine } from "@/lib/supabase/fetchMachines";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { Machine, MachineTimeline, Mold, MoldHistory, Notification } from "@/types/supabase";
+import { Machine, MachineTimeline, MoldHistory, Notification } from "@/types/supabase";
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import Header from "../../header";
 import { SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByBoardPort } from "@/lib/supabase/fetchMoldHistory";
@@ -51,10 +42,7 @@ const MachinePage = () => {
   const { id } = useParams();
   const [machine, setMachine] = useState<Machine | null>(null);
   const [chartData, setChartData] = useState<MachineTimeline[]>([]);
-
-
-
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   
   // molds
   const [moldsHistory, setMoldsHistory] = useState<MoldHistory[]>([]);

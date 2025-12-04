@@ -1,10 +1,6 @@
-export const dynamic = 'force-dynamic';
-
-import TimelineLegend from "@/components/timeline/TimelineLegend";
-import TimelineRow from "@/components/timeline/TimelineRow";
 import { fetchMachines } from "@/lib/supabase/fetchMachines";
 import { Machine, MachineTimeline } from "@/types/supabase";
-import Header from "../../header";
+import { unstable_cache } from "next/cache";
 import Rows from "./rows";
 
 // extend machine type with timeline
@@ -14,16 +10,19 @@ export interface MachineWithData extends Machine {
 
 
 export default async function Page() {
-  const machines = await fetchMachines();
+  const getMachinesCached = unstable_cache(
+    async () => fetchMachines(),
+    ["machines"],
+    { revalidate: 10 }
+  );
+
+  const machines = await getMachinesCached();
 
  
 
   return (
-    <div className="">
-
-     <div>
-     <Rows machines={machines} />
-     </div>
+    <div>
+    <Rows machines={machines} />
     </div>
   )
 }

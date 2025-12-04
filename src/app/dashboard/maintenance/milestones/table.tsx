@@ -1,19 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
     Table,
     TableBody,
     TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
 
-import { Milestone, MoldHistory, MoldMaintenance } from "@/types/supabase";
+import { Milestone, MoldMaintenance } from "@/types/supabase";
 import Link from "next/link";
-import { DateRange } from "react-day-picker";
 import { MilestoneStatus } from "./status";
 import { CheckIcon, XIcon } from "lucide-react";
 

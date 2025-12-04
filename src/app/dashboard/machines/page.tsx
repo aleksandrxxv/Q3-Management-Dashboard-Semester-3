@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { fetchMachines } from "@/lib/supabase/fetchMachines";
 import {
   Table,
@@ -14,15 +12,29 @@ import {
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import Link from "next/link";
 import Header from "../header";
+import { Machine } from "@/types/supabase";
+import { unstable_cache } from "next/cache";
 
 export default async function Page() {
-  const machines = await fetchMachines();
+  const getMachinesCached = unstable_cache(
+  async () => fetchMachines(),
+  ["machines"],
+  { revalidate: 10 }
+  );
+  
+  const machines = await getMachinesCached();
+
+  const machineStatus = (machine: Machine) => {
+    if (machine.status === 'Actief') return 'Active';
+    if (machine.status === 'Stilstand') return 'Standstill';
+    if (machine.status === 'Inactief') return 'Inactive';
+  }
 
   return (
     <>
       <Header
         title={"Machines"}
-        description="These are all machines"
+        description="List of all machines"
       />
 
       <div>
@@ -58,7 +70,7 @@ export default async function Page() {
               <TableRow key={machine.machine_id}>
                 <TableCell className="flex items-center justify-center gap-1">
                   <StatusIndicator status={machine.status} />
-                  {machine.status}
+                  {machineStatus(machine)}
                 </TableCell>
 
                 <TableCell className="font-medium">

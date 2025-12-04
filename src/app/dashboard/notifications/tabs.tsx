@@ -4,7 +4,6 @@ import { Notification } from "@/types/supabase";
 import NotificationItem from "./item";
 import { useEffect, useState } from "react";
 import { markAsRead } from "@/lib/supabase/notification";
-import { Tabs } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 
 

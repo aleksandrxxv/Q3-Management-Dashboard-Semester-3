@@ -1,10 +1,9 @@
 "use client"
 
 import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
-import {Pencil, PlusCircle} from "lucide-react";
+import {PlusCircle} from "lucide-react";
 import {Mechanic} from "@/types/supabase";
 import {FormEvent, useState} from "react";
-import {updateMechanic} from "@/lib/supabase/updateMechanic";
 import {toast} from "react-toastify";
 import {insertMechanic} from "@/lib/supabase/insertMechanic";
 

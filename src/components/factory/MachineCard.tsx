@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-import { Machine, MachineTimeline, Mold, MoldHistory } from "@/types/supabase";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine } from "recharts";
+import { Machine, MachineTimeline, MoldHistory } from "@/types/supabase";
 
 interface MachineCardProps {
   machine: Machine;

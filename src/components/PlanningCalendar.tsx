@@ -7,7 +7,6 @@ import CreatePlanDialog from "./planning/CreatePlanDialog";
 import {fetchAllMaintenance} from "@/lib/supabase/fetchAllMaintenance";
 import {MaintenanceFull, Mechanic} from "@/types/supabase";
 import WeekDayList from "@/components/planning/WeekDayList";
-import {fetchMechanics} from "@/lib/supabase/fetchMechanics";
 import {fetchMechanic} from "@/lib/supabase/fetchMechanic";
 
 interface WeekDay {

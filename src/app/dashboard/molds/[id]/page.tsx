@@ -2,13 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Bar, BarChart, CartesianGrid, Line, XAxis, YAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
  
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
@@ -33,7 +31,6 @@ import { fetchMoldHistoryByMoldId } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "@/components/molds/moldsHistory";
 import NotificationTabs from "../../notifications/tabs";
 import { fetchNotificationsByMoldId } from "@/lib/supabase/notification";
-import { LineChart } from "lucide-react";
 
 export interface BoardPort {
   board: number;
