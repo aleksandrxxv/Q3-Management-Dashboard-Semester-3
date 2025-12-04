@@ -116,12 +116,6 @@ const MachinePage = () => {
     return <div>Loading...</div>;
   }
 
-  const machineStatus = () => {
-    if (machine.status === 'Actief') return 'Active';
-    if (machine.status === 'Stilstand') return 'Standstill';
-    if (machine.status === 'Inactief') return 'Inactive';
-  }
-
   return (
     <>
       <Header
@@ -132,7 +126,7 @@ const MachinePage = () => {
           <div className="grid flex-1 gap-1 text-center sm:text-left">
             <CardDescription className="flex items-center justify-start gap-1">
               <StatusIndicator status={machine.status} />
-              Status: {machineStatus()}
+              Status: {machine.status}
             </CardDescription>
           </div>
           <div className="flex items-center gap-2">
