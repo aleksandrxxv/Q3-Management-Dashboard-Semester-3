@@ -31,27 +31,26 @@ export default function CreatePlanDialog(props: Props) {
     }
 
     function handleSubmit(e: FormEvent) {
-        e.preventDefault()
+        e.preventDefault();
 
-        if (isManual){
+        if (isManual) {
             insertNewMaintenance(maintenanceForm as Required<Omit<Maintenance, "id" | "status">>).then(() => {
-                toast("Onderhoud is ingepland.", {type: "success"});
-                setIsOpened(false)
-                props.onCreatedNewPlanning()
+                toast("Maintenance has been scheduled.", { type: "success" });
+                setIsOpened(false);
+                props.onCreatedNewPlanning();
 
             }).catch((reason: Error) => {
-                toast("Kon onderhoud niet inplannen.", {type: "error"});
-                console.log(reason)
+                toast("Could not schedule maintenance.", { type: "error" });
+                console.log(reason);
             })
-        }
-        else {
+        } else {
             insertNewMoldMaintenanceMilestone(maintenanceForm.mold_id!, maintenanceForm.lifespan!).then(() => {
-                toast("Milestone is ingesteld.", {type: "success"});
-                setIsOpened(false)
+                toast("Milestone has been set.", { type: "success" });
+                setIsOpened(false);
             }).catch((reason: Error) => {
-                toast("Kon milestone niet instellen.", {type: "error"});
-                console.log(reason)
-            })
+                toast("Could not set milestone.", { type: "error" });
+                console.log(reason);
+            });
         }
     }
 
@@ -63,8 +62,8 @@ export default function CreatePlanDialog(props: Props) {
     }
 
     useEffect(() => {
-        fetchAllMolds().then((fetchedMolds) => setMolds(fetchedMolds));
-        fetchMechanics().then((mechanics) => setMechanics(mechanics));
+        fetchAllMolds().then(setMolds);
+        fetchMechanics().then(setMechanics);
     }, []);
 
     return (
@@ -81,114 +80,139 @@ export default function CreatePlanDialog(props: Props) {
                 pauseOnHover
                 theme="light"
             />
-            <DialogTrigger className="button"><Plus size={20}/> Onderhoud plannen</DialogTrigger>
+            <DialogTrigger className="button"><Plus size={20}/> Schedule Maintenance</DialogTrigger>
             <DialogContent className={"rounded-xl"}>
-                <DialogTitle>Onderhoud plannen</DialogTitle>
-                <form className="" onSubmit={handleSubmit}>
+                <DialogTitle>Schedule Maintenance</DialogTitle>
+                <form onSubmit={handleSubmit}>
                     <div className={"flex flex-col z-form items-center gap-3 w-full"}>
+
                         <div className={"grid grid-cols-2 gap-2 w-full h-max"}>
-                            <button type={"button"} onClick={() => setIsManual(true)}
-                                    className={isManual ? "method-btn method-btn-select" : 'method-btn'}>Handmatig
+                            <button
+                                type={"button"}
+                                onClick={() => setIsManual(true)}
+                                className={isManual ? "method-btn method-btn-select" : "method-btn"}
+                            >
+                                Manual
                             </button>
-                            <button type={"button"} onClick={() => setIsManual(false)}
-                                    className={!isManual ? "method-btn method-btn-select" : 'method-btn'}>Voorspellend
+
+                            <button
+                                type={"button"}
+                                onClick={() => setIsManual(false)}
+                                className={!isManual ? "method-btn method-btn-select" : "method-btn"}
+                            >
+                                Predictive
                             </button>
                         </div>
 
-
-                        <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Datum</span>
-                            <Input disabled={!isManual} required type={"datetime-local"}
-                                   min={formatDateToISO(new Date(Date.now()))}
-                                   name="planned_date" onChange={updateFormValue}/>
+                        {/* Planned Date */}
+                        <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? "" : "hidden"}`}>
+                            <span className={"text-sm font-semibold"}>Date</span>
+                            <Input
+                                disabled={!isManual}
+                                required
+                                type={"datetime-local"}
+                                min={formatDateToISO(new Date())}
+                                name="planned_date"
+                                onChange={updateFormValue}
+                            />
                         </div>
 
+                        {/* Mold */}
                         <div className={"grid grid-cols-2 items-center gap-3 w-full"}>
-                            <span className={"text-sm font-semibold"}>Matrijs</span>
+                            <span className={"text-sm font-semibold"}>Mold</span>
                             <select required defaultValue={""} name="mold_id" onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
-                                {molds.map((m, index) => <option value={m.mold_id}
-                                                                 key={index}>{m.mold_name
-                                    || m.mold_id
-                                }
-
-                                {/* Shots */}
-                                {` (${m.total_shots} shots)`}
-                                </option>)}
-                            </select>
-                        </div>
-
-                        <div className={`grid grid-cols-2 items-center gap-3 w-full ${!isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Levensduur</span>
-                            <Input disabled={isManual} required type={"number"}
-                                   min={0}
-                                   name="lifespan" onChange={updateFormValue}/>
-                        </div>
-
-                        <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Onderhoudstype</span>
-                            <select disabled={!isManual} defaultValue={""} required name="maintenance_type"
-                                    onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
-                                <option value={"Preventative"}>Preventief</option>
-                                <option value={"Corrective"}>Correctief</option>
-                            </select>
-                        </div>
-
-                        <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Onderhoudsactie</span>
-                            <select disabled={!isManual} defaultValue={""} required name="maintenance_action"
-                                    onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
-                                <option>Kalibreren</option>
-                                <option>Poetsen</option>
-                                <option>Inspecteren</option>
-                                <option>Smeren</option>
-                                <option>Koelingskanalen controleren</option>
-                                <option>Spuitneus reinigen</option>
-                                <option>Bevestigingen aanspannen</option>
-                                <option>Hot-runner controleren</option>
-                                <option>Polijsten</option>
-                                <option>Afdichtingen vervangen</option>
-                                <option>Sluitkracht testen</option>
-                                <option>Geleiders reviseren</option>
-                                <option>Elektrische aansluitingen inspecteren</option>
-                                <option>Ontgassen</option>
-                                <option>Uitlijning controleren</option>
-                                <option>Slijtstrippen vervangen</option>
-                                <option>Temperatuurzones controleren</option>
-                            </select>
-                        </div>
-
-                        <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Beschrijving</span>
-                            <input disabled={!isManual} type='text' required name="description"
-                                   onChange={updateFormValue}/>
-
-                        </div>
-
-                        <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Monteur</span>
-                            <select disabled={!isManual} defaultValue={""} required name="assigned_to" onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
-                                {mechanics.map((mechanic) => (
-                                    <option value={mechanic.id}
-                                            key={mechanic.id}>{mechanic.name} ({mechanic.specialization})</option>
+                                <option value="" disabled>Select an option</option>
+                                {molds.map((m, index) => (
+                                    <option value={m.mold_id} key={index}>
+                                        {m.mold_name || m.mold_id} ({m.total_shots} shots)
+                                    </option>
                                 ))}
                             </select>
                         </div>
 
+                        {/* Lifespan */}
+                        <div className={`grid grid-cols-2 items-center gap-3 w-full ${!isManual ? "" : "hidden"}`}>
+                            <span className={"text-sm font-semibold"}>Lifespan</span>
+                            <Input
+                                disabled={isManual}
+                                required
+                                type={"number"}
+                                min={0}
+                                name="lifespan"
+                                onChange={updateFormValue}
+                            />
+                        </div>
 
+                        {/* Maintenance Type */}
+                        <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? "" : "hidden"}`}>
+                            <span className={"text-sm font-semibold"}>Maintenance Type</span>
+                            <select disabled={!isManual} defaultValue={""} required name="maintenance_type" onChange={updateFormValue}>
+                                <option value="" disabled>Select an option</option>
+                                <option value={"Preventative"}>Preventive</option>
+                                <option value={"Corrective"}>Corrective</option>
+                            </select>
+                        </div>
+
+                        {/* Maintenance Action */}
+                        <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? "" : "hidden"}`}>
+                            <span className={"text-sm font-semibold"}>Maintenance Action</span>
+                            <select disabled={!isManual} defaultValue={""} required name="maintenance_action" onChange={updateFormValue}>
+                                <option value="" disabled>Select an option</option>
+
+                                {/* Translated maintenance actions */}
+                                <option>Calibrate</option>
+                                <option>Clean</option>
+                                <option>Inspect</option>
+                                <option>Lubricate</option>
+                                <option>Check cooling channels</option>
+                                <option>Clean nozzle</option>
+                                <option>Tighten fasteners</option>
+                                <option>Check hot runner</option>
+                                <option>Polish</option>
+                                <option>Replace seals</option>
+                                <option>Test clamping force</option>
+                                <option>Rebuild guides</option>
+                                <option>Inspect electrical connections</option>
+                                <option>Degas</option>
+                                <option>Check alignment</option>
+                                <option>Replace wear strips</option>
+                                <option>Check temperature zones</option>
+                            </select>
+                        </div>
+
+                        {/* Description */}
+                        <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? "" : "hidden"}`}>
+                            <span className={"text-sm font-semibold"}>Description</span>
+                            <input
+                                disabled={!isManual}
+                                type="text"
+                                required
+                                name="description"
+                                onChange={updateFormValue}
+                            />
+                        </div>
+
+                        {/* Mechanic */}
+                        <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? "" : "hidden"}`}>
+                            <span className={"text-sm font-semibold"}>Mechanic</span>
+                            <select disabled={!isManual} defaultValue={""} required name="assigned_to" onChange={updateFormValue}>
+                                <option value="" disabled>Select an option</option>
+                                {mechanics.map((mechanic) => (
+                                    <option value={mechanic.id} key={mechanic.id}>
+                                        {mechanic.name} ({mechanic.specialization})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     <div className={"w-full flex mt-4"}>
-                        <button type={"submit"} className="ml-auto button"><Plus size={20}/> Plannen</button>
+                        <button type={"submit"} className="ml-auto button">
+                            <Plus size={20}/> Schedule
+                        </button>
                     </div>
                 </form>
-
             </DialogContent>
         </Dialog>
-
-
-    )
+    );
 }

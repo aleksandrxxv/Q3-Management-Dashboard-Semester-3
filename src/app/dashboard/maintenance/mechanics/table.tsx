@@ -36,8 +36,8 @@ return (
 <Table>
           <TableHeader className="sticky top-0 z-10">
             <TableRow>
-              <TableHead>Naam</TableHead>
-              <TableHead>Specialisatie</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Specialization</TableHead>
               <TableHead/>
               <TableHead className={"flex items-center justify-center"} rowSpan={2}><CreateMechanic refresh={refreshMechanics}/></TableHead>
             </TableRow>
@@ -52,7 +52,7 @@ return (
                       href={`/dashboard/maintenance/mechanic/${mechanic.id}`}
                       className="flex items-center justify-center gap-1 px-2 rounded-full hover:bg-neutral-200 transition-all py-1"
                   >
-                    <Calendar1 size={17}/> planning
+                    <Calendar1 size={17}/> schedule
                   </a>
                 </TableCell>
                 <TableCell className={"w-14"}>
@@ -64,7 +64,7 @@ return (
           <TableFooter>
             <TableRow>
               <TableCell colSpan={4}>
-                Totaal: {mechanics.length} monteurs
+                Total: {mechanics.length} mechanics
               </TableCell>
             </TableRow>
           </TableFooter>
