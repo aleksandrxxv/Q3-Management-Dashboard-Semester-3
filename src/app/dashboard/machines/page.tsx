@@ -28,6 +28,7 @@ export default async function Page() {
     if (machine.status === 'Actief') return 'Active';
     if (machine.status === 'Stilstand') return 'Standstill';
     if (machine.status === 'Inactief') return 'Inactive';
+
   }
 
   return (

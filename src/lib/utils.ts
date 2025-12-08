@@ -43,15 +43,15 @@ export function formatTimestampToInterval(timestamp: string, interval: IntervalT
     }
 }
 
-export function getDayName(date: Date, locale: string = "nl") {
-    return date.toLocaleDateString(locale, {weekday: 'long'});
+
+export function getDayName(date: Date, locale: string = "en") {
+    return date.toLocaleDateString(locale, { weekday: "long" });
 }
 
 export function sameDay(d1: Date, d2: Date) {
     return d1.getUTCFullYear() === d2.getUTCFullYear() &&
         d1.getMonth() === d2.getMonth() &&
         d1.getDate() === d2.getDate();
-
 }
 
 export function filterObject<T extends object, U extends keyof T>(obj: T, keys: U[]): Pick<T, U> {

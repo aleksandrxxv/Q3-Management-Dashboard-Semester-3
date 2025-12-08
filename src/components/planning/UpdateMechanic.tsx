@@ -19,11 +19,11 @@ export default function UpdateMechanic(props: Props){
     function formSubmit(e: FormEvent<HTMLFormElement>){
         e.preventDefault();
         updateMechanic(updatedMechanic).then(() => {
-            toast("Monteur is aangepast.", {type: "success"})
+            toast("Mechanic has been updated.", {type: "success"})
             setOpened(false)
             props.refresh()
         }).catch(error => {
-            toast("Kon monteur niet aanpassen.", {type: "error"});
+            toast("Could not update mechanic.", {type: "error"});
             console.error(error)
         })
     }
@@ -31,22 +31,40 @@ export default function UpdateMechanic(props: Props){
     return (
         <Dialog open={opened} onOpenChange={(v) => setOpened(v)}>
             <DialogTrigger className="flex items-center justify-center gap-1 px-2 rounded-full hover:bg-neutral-200 transition-all py-1">
-                <Pencil size={17}/> bewerken
+                <Pencil size={17}/> Edit
             </DialogTrigger>
             <DialogContent>
-                <DialogTitle className="font-semibold">Monteurinformatie</DialogTitle>
+                <DialogTitle className="font-semibold">Mechanic Information</DialogTitle>
                 <form className="z-form grid grid-cols-1 gap-3" onSubmit={formSubmit}>
                     <div className="grid grid-cols-2 items-center gap-3">
-                        <span>Naam</span>
-                        <input required type="text" value={updatedMechanic.name} onChange={(e) => setUpdatedMechanic({...updatedMechanic, name:e.target.value})}/>
+                        <span>Name</span>
+                        <input
+                            required
+                            type="text"
+                            value={updatedMechanic.name}
+                            onChange={(e) =>
+                                setUpdatedMechanic({ ...updatedMechanic, name: e.target.value })
+                            }
+                        />
                     </div>
                     <div className="grid grid-cols-2 items-center gap-3">
-                        <span>Specialisatie</span>
-                        <input required type="text" value={updatedMechanic.specialization} onChange={(e) => setUpdatedMechanic({...updatedMechanic, specialization:e.target.value})}/>
+                        <span>Specialization</span>
+                        <input
+                            required
+                            type="text"
+                            value={updatedMechanic.specialization}
+                            onChange={(e) =>
+                                setUpdatedMechanic({ ...updatedMechanic, specialization: e.target.value })
+                            }
+                        />
                     </div>
                     <div className="grid grid-cols-2 items-center gap-3">
-                        <button type={"button"} className="button !bg-neutral-300 !text-neutral-700">Annuleren</button>
-                        <button type={"submit"} className={"button"}>Opslaan</button>
+                        <button type="button" className="button !bg-neutral-300 !text-neutral-700">
+                            Cancel
+                        </button>
+                        <button type="submit" className="button">
+                            Save
+                        </button>
                     </div>
                 </form>
             </DialogContent>

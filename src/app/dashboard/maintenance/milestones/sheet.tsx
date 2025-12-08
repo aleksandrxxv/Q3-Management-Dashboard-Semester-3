@@ -16,7 +16,7 @@ import { MoldMaintenance } from "@/types/supabase";
         <Sheet>
   <SheetContent>
     <SheetHeader>
-      <SheetTitle>Kies matrijs</SheetTitle>
+      <SheetTitle>Choose mold</SheetTitle>
       <SheetDescription>
         <select>
           {molds.map((mold) => (
