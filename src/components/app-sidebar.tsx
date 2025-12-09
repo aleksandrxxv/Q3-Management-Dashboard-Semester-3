@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react'
-import { Bell, Cog, Cpu, Shield, Wrench } from 'lucide-react'
+import {Bell, Cog, Cpu, Shield, UserIcon, Wrench} from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 import { cn } from '@/lib/utils'
@@ -61,6 +61,11 @@ const menuItems = [
     href: '/dashboard/notifications',
     badge: 3
   },
+    {
+        icon: UserIcon,
+        label: 'Admin panel',
+        href: '/admin',
+    },
 ]
 
 export function AppSidebar() {
