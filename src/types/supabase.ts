@@ -102,9 +102,11 @@ export interface MaintenanceFull {
 
 
 export interface Mechanic {
-    id: string;
+    id: number;
     name: string;
     specialization: string;
+    phone: string | null;
+    email: string | null;
 }
 
 export interface Maintenance {

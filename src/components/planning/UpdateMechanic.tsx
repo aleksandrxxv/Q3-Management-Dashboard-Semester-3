@@ -1,73 +1,131 @@
-"use client"
+"use client";
 
-import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
-import {Pencil} from "lucide-react";
-import {Mechanic} from "@/types/supabase";
-import {FormEvent, useState} from "react";
-import {updateMechanic} from "@/lib/supabase/updateMechanic";
-import {toast} from "react-toastify";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Pencil } from "lucide-react";
+import { Mechanic } from "@/types/supabase";
+import { FormEvent, useState } from "react";
+import { updateMechanic } from "@/lib/supabase/updateMechanic";
+import { toast } from "react-toastify";
 
 interface Props {
-    mechanic: Mechanic,
-    refresh: () => void
+  mechanic: Mechanic;
+  refresh: () => void;
 }
 
-export default function UpdateMechanic(props: Props){
-    const [updatedMechanic, setUpdatedMechanic] = useState<Mechanic>(props.mechanic);
-    const [opened, setOpened] = useState<boolean>(false)
+export default function UpdateMechanic(props: Props) {
+  const [updatedMechanic, setUpdatedMechanic] = useState<Mechanic>(
+    props.mechanic
+  );
+  const [opened, setOpened] = useState<boolean>(false);
 
-    function formSubmit(e: FormEvent<HTMLFormElement>){
-        e.preventDefault();
-        updateMechanic(updatedMechanic).then(() => {
-            toast("Mechanic has been updated.", {type: "success"})
-            setOpened(false)
-            props.refresh()
-        }).catch(error => {
-            toast("Could not update mechanic.", {type: "error"});
-            console.error(error)
-        })
-    }
+  function formSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    updateMechanic(updatedMechanic)
+      .then(() => {
+        toast("Mechanic has been updated.", { type: "success" });
+        setOpened(false);
+        props.refresh();
+      })
+      .catch((error) => {
+        toast("Could not update mechanic.", { type: "error" });
+        console.error(error);
+      });
+  }
 
-    return (
-        <Dialog open={opened} onOpenChange={(v) => setOpened(v)}>
-            <DialogTrigger className="flex items-center justify-center gap-1 px-2 rounded-full hover:bg-neutral-200 transition-all py-1">
-                <Pencil size={17}/> Edit
-            </DialogTrigger>
-            <DialogContent>
-                <DialogTitle className="font-semibold">Mechanic Information</DialogTitle>
-                <form className="z-form grid grid-cols-1 gap-3" onSubmit={formSubmit}>
-                    <div className="grid grid-cols-2 items-center gap-3">
-                        <span>Name</span>
-                        <input
-                            required
-                            type="text"
-                            value={updatedMechanic.name}
-                            onChange={(e) =>
-                                setUpdatedMechanic({ ...updatedMechanic, name: e.target.value })
-                            }
-                        />
-                    </div>
-                    <div className="grid grid-cols-2 items-center gap-3">
-                        <span>Specialization</span>
-                        <input
-                            required
-                            type="text"
-                            value={updatedMechanic.specialization}
-                            onChange={(e) =>
-                                setUpdatedMechanic({ ...updatedMechanic, specialization: e.target.value })
-                            }
-                        />
-                    </div>
-                    <div className="grid grid-cols-2 items-center gap-3">
-                        <button type="button" className="button !bg-neutral-300 !text-neutral-700">
-                            Cancel
-                        </button>
-                        <button type="submit" className="button">
-                            Save
-                        </button>
-                    </div>
-                </form>
-            </DialogContent>
-        </Dialog>
-    )
+  return (
+    <Dialog open={opened} onOpenChange={(v) => setOpened(v)}>
+      <DialogTrigger className="flex items-center justify-center gap-1 px-2 rounded-full hover:bg-neutral-200 transition-all py-1">
+        <Pencil size={17} /> Edit
+      </DialogTrigger>
+
+      <DialogContent>
+        <DialogTitle className="font-semibold">Mechanic Information</DialogTitle>
+
+        <form className="z-form grid grid-cols-1 gap-3" onSubmit={formSubmit}>
+          {/* Name */}
+          <div className="grid grid-cols-2 items-center gap-3">
+            <span>Name</span>
+            <input
+              required
+              type="text"
+              value={updatedMechanic.name}
+              onChange={(e) =>
+                setUpdatedMechanic({
+                  ...updatedMechanic,
+                  name: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          {/* Specialization */}
+          <div className="grid grid-cols-2 items-center gap-3">
+            <span>Specialization</span>
+            <input
+              required
+              type="text"
+              value={updatedMechanic.specialization}
+              onChange={(e) =>
+                setUpdatedMechanic({
+                  ...updatedMechanic,
+                  specialization: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          {/* Phone */}
+          <div className="grid grid-cols-2 items-center gap-3">
+            <span>Phone</span>
+            <input
+              type="text"
+              placeholder="+31 6 ..."
+              value={updatedMechanic.phone ?? ""}
+              onChange={(e) =>
+                setUpdatedMechanic({
+                  ...updatedMechanic,
+                  phone: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          {/* Email */}
+          <div className="grid grid-cols-2 items-center gap-3">
+            <span>Email</span>
+            <input
+              type="email"
+              placeholder="name@example.com"
+              value={updatedMechanic.email ?? ""}
+              onChange={(e) =>
+                setUpdatedMechanic({
+                  ...updatedMechanic,
+                  email: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className="grid grid-cols-2 items-center gap-3">
+            <button
+              type="button"
+              className="button !bg-neutral-300 !text-neutral-700"
+              onClick={() => setOpened(false)}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="button">
+              Save
+            </button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
 }
