@@ -27,10 +27,10 @@ export default function PlanningCalendarTile(props: Props) {
         accept: "PlanningCalendarTile",
         drop: (item: { id: number, planned_date: Date }) => {
             addMaintenanceToGroup(item.id, props.maintenancePlan.id).then(() => {
-                toast("Groep aangemaakt.", {type: "success"})
+                toast("Group added.", {type: "success"})
                 props.refreshCalendar()
             }).catch((e) => {
-                toast("Kon groep niet aanmaken.", {type: "error"})
+                toast("Cannot add group.", {type: "error"})
                 console.error(e)
             })
         },

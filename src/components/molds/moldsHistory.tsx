@@ -44,18 +44,18 @@ export const MoldHistoryTable = ({ moldsHistory
 
     return (
       <Table>
-        <TableCaption>Matrijs Historie</TableCaption>
+        <TableCaption>Mold History</TableCaption>
         <TableHeader>
           <TableRow>
-            {showMold && <TableHead>Matrijs</TableHead>}
+            {showMold && <TableHead>Mold</TableHead>}
             {showMachine && <TableHead>Machine</TableHead>}
             <TableHead>Start</TableHead>
-            <TableHead>Eind</TableHead>
+            <TableHead>End</TableHead>
 
             <TableHead>Shots</TableHead>
 
             {/* Bekijk data */}
-            {setRange && <TableHead>Bekijk data</TableHead>}
+            {setRange && <TableHead>View data</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -106,7 +106,7 @@ export const MoldHistoryTable = ({ moldsHistory
                         });
                     }}
                   >
-                    Bekijk
+                    View
                   </Button>
                 </TableCell>
               )}

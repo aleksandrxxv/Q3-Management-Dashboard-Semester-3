@@ -9,8 +9,8 @@ export default function Page() {
     return (
         <DndProvider backend={HTML5Backend}>
             <Header
-                title={"Onderhoud"}
-                description={"Plan hier het onderhoud van de machines."}
+                title={"Maintenance"}
+                description={"Plan the maintenance of the machines here."}
             />
             <PlanningCalendar mechanic={null}/>
         </DndProvider>

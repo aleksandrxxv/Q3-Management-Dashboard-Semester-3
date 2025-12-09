@@ -2,11 +2,11 @@ import React from 'react';
 
 export default function TimelineLegend() {
   const items = [
-    { color: 'bg-green-500', label: 'Actief - Boven target' },
-    { color: 'bg-yellow-500', label: 'Actief - Onder target' },
-    { color: 'bg-blue-500', label: 'In Onderhoud' },
-    { color: 'bg-red-500', label: 'Storing' },
-    { color: 'bg-gray-500', label: 'Inactief' }
+    { color: 'bg-green-500', label: 'Active - Above target' },
+    { color: 'bg-yellow-500', label: 'Active - Under target' },
+    { color: 'bg-blue-500', label: 'In Maintenance' },
+    { color: 'bg-red-500', label: 'Failure' },
+    { color: 'bg-gray-500', label: 'Inactive' }
   ];
 
   return (

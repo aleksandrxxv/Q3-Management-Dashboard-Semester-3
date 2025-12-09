@@ -34,11 +34,11 @@ export default function WeekDayList(props: Props) {
 
         updateMaintenanceDate(item.id, newDate).then(() => {
             removeMaintenanceGroup(item.id).then()
-            toast("Datum van onderhoudsbeurt is aangepast.", {type: 'success'})
+            toast("Date of maintenance service has been changed.", {type: 'success'})
             props.weekDay.dayDate = newDate
             props.onMaintenanceEdited()
         }).catch((e) => {
-            toast("Kon datum van onderhoudsbeurt niet aanpassen.", {type: "error"})
+            toast("Could not change maintenance date.", {type: "error"})
             console.error(e)
         });
     }
@@ -73,7 +73,7 @@ export default function WeekDayList(props: Props) {
             <div
                 className={"w-full h-full flex items-center align-center justify-center " + (props.weekDay.maintenancePlans.length == 0 ? "" : "hidden")}>
                                     <span
-                                        className={"block text-sm text-neutral-400"}>Er is vandaag niks gepland.</span>
+                                        className={"block text-sm text-neutral-400"}>There is nothing planned today.</span>
             </div>
             {sortedGroups.entries().map(m => (
                 <div key={m[0]} className="flex flex-col gap-2 w-full p-2 bg-blue-50 rounded">
@@ -90,7 +90,7 @@ export default function WeekDayList(props: Props) {
                                                           maintenancePlan={mm}/>
                                 </DialogTrigger>
                                 <DialogContent className={"rounded-xl"}>
-                                    <DialogTitle>Onderhoudsbeurt</DialogTitle>
+                                    <DialogTitle>Maintenance Service</DialogTitle>
                                     <FullMaintenanceDetails onEdited={props.onMaintenanceEdited}
                                                             maintenance={mm}/>
                                 </DialogContent>
@@ -106,7 +106,7 @@ export default function WeekDayList(props: Props) {
                                               maintenancePlan={maintenancePlan}/>
                     </DialogTrigger>
                     <DialogContent className={"rounded-xl"}>
-                        <DialogTitle>Onderhoudsbeurt</DialogTitle>
+                        <DialogTitle>Maintenance Service</DialogTitle>
                         <FullMaintenanceDetails onEdited={props.onMaintenanceEdited}
                                                 maintenance={maintenancePlan}/>
                     </DialogContent>

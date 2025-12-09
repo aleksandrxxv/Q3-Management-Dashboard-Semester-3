@@ -81,32 +81,32 @@ export default function CreatePlanDialog(props: Props) {
                 pauseOnHover
                 theme="light"
             />
-            <DialogTrigger className="button"><Plus size={20}/> Onderhoud plannen</DialogTrigger>
+            <DialogTrigger className="button"><Plus size={20}/> Plan Maintenance</DialogTrigger>
             <DialogContent className={"rounded-xl"}>
-                <DialogTitle>Onderhoud plannen</DialogTitle>
+                <DialogTitle>Plan Maintenance</DialogTitle>
                 <form className="" onSubmit={handleSubmit}>
                     <div className={"flex flex-col z-form items-center gap-3 w-full"}>
                         <div className={"grid grid-cols-2 gap-2 w-full h-max"}>
                             <button type={"button"} onClick={() => setIsManual(true)}
-                                    className={isManual ? "method-btn method-btn-select" : 'method-btn'}>Handmatig
+                                    className={isManual ? "method-btn method-btn-select" : 'method-btn'}>Manually
                             </button>
                             <button type={"button"} onClick={() => setIsManual(false)}
-                                    className={!isManual ? "method-btn method-btn-select" : 'method-btn'}>Voorspellend
+                                    className={!isManual ? "method-btn method-btn-select" : 'method-btn'}>Predictive
                             </button>
                         </div>
 
 
                         <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Datum</span>
+                            <span className={"text-sm font-semibold"}>Date</span>
                             <Input disabled={!isManual} required type={"datetime-local"}
                                    min={formatDateToISO(new Date(Date.now()))}
                                    name="planned_date" onChange={updateFormValue}/>
                         </div>
 
                         <div className={"grid grid-cols-2 items-center gap-3 w-full"}>
-                            <span className={"text-sm font-semibold"}>Matrijs</span>
+                            <span className={"text-sm font-semibold"}>Mold</span>
                             <select required defaultValue={""} name="mold_id" onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
+                                <option value="" disabled>Select an option</option>
                                 {molds.map((m, index) => <option value={m.mold_id}
                                                                  key={index}>{m.mold_name
                                     || m.mold_id
@@ -119,58 +119,56 @@ export default function CreatePlanDialog(props: Props) {
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 w-full ${!isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Levensduur</span>
+                            <span className={"text-sm font-semibold"}>Lifespan</span>
                             <Input disabled={isManual} required type={"number"}
                                    min={0}
                                    name="lifespan" onChange={updateFormValue}/>
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Onderhoudstype</span>
+                            <span className={"text-sm font-semibold"}>Maintenance type</span>
                             <select disabled={!isManual} defaultValue={""} required name="maintenance_type"
                                     onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
-                                <option value={"Preventative"}>Preventief</option>
-                                <option value={"Corrective"}>Correctief</option>
+                                <option value="" disabled>Select an option</option>
+                                <option value={"Preventative"}>Preventive</option>
+                                <option value={"Corrective"}>Corrective</option>
                             </select>
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Onderhoudsactie</span>
+                            <span className={"text-sm font-semibold"}>Maintenance Action</span>
                             <select disabled={!isManual} defaultValue={""} required name="maintenance_action"
                                     onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
-                                <option>Kalibreren</option>
-                                <option>Poetsen</option>
-                                <option>Inspecteren</option>
-                                <option>Smeren</option>
-                                <option>Koelingskanalen controleren</option>
-                                <option>Spuitneus reinigen</option>
-                                <option>Bevestigingen aanspannen</option>
-                                <option>Hot-runner controleren</option>
-                                <option>Polijsten</option>
-                                <option>Afdichtingen vervangen</option>
-                                <option>Sluitkracht testen</option>
-                                <option>Geleiders reviseren</option>
-                                <option>Elektrische aansluitingen inspecteren</option>
-                                <option>Ontgassen</option>
-                                <option>Uitlijning controleren</option>
-                                <option>Slijtstrippen vervangen</option>
-                                <option>Temperatuurzones controleren</option>
+                                <option value="" disabled>Select an option</option>
+                                <option>Calibration</option>
+                                <option>Cleaning</option>
+                                <option>Inspection</option>
+                                <option>Lubrication</option>
+                                <option>Cooling channel checking</option>
+                                <option>Nozzle cleaning</option>
+                                <option>Fasteners tightening</option>
+                                <option>Hot-runner checking</option>
+                                <option>Polishing</option>
+                                <option>Replacing seals</option>
+                                <option>Closing force testing</option>
+                                <option>Electrical connections inspection</option>
+                                <option>Degassing</option>
+                                <option>Alignment checking</option>
+                                <option>Temperature zone control</option>
                             </select>
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Beschrijving</span>
+                            <span className={"text-sm font-semibold"}>Description</span>
                             <input disabled={!isManual} type='text' required name="description"
                                    onChange={updateFormValue}/>
 
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Monteur</span>
+                            <span className={"text-sm font-semibold"}>Mechanic</span>
                             <select disabled={!isManual} defaultValue={""} required name="assigned_to" onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
+                                <option value="" disabled>Select an option</option>
                                 {mechanics.map((mechanic) => (
                                     <option value={mechanic.id}
                                             key={mechanic.id}>{mechanic.name} ({mechanic.specialization})</option>
@@ -182,7 +180,7 @@ export default function CreatePlanDialog(props: Props) {
                     </div>
 
                     <div className={"w-full flex mt-4"}>
-                        <button type={"submit"} className="ml-auto button"><Plus size={20}/> Plannen</button>
+                        <button type={"submit"} className="ml-auto button"><Plus size={20}/> Plan</button>
                     </div>
                 </form>
 

@@ -14,9 +14,16 @@ import {
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import Link from "next/link";
 import Header from "../header";
+import {Machine} from "@/types/supabase";
 
 export default async function Page() {
   const machines = await fetchMachines();
+
+  const machineStatus = (machine:Machine) => {
+    if (machine.status === "Actief") return "Active";
+    if (machine.status === "Stilstand") return "Standstill";
+    if (machine.status === "Inactief") return "Inactive";
+  }
 
   return (
     <>
@@ -58,7 +65,7 @@ export default async function Page() {
               <TableRow key={machine.machine_id}>
                 <TableCell className="flex items-center justify-center gap-1">
                   <StatusIndicator status={machine.status} />
-                  {machine.status}
+                  {machineStatus(machine)}
                 </TableCell>
 
                 <TableCell className="font-medium">

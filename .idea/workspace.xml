@@ -4,11 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/timeline/rows.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/timeline/rows.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/supabase/fetchMachineTimelines.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/fetchMachineTimelines.ts" afterDir="false" />
+    <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="translated application to english">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/maintenance/mechanic/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/maintenance/mechanic/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/maintenance/mechanics/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/maintenance/mechanics/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/maintenance/mechanics/table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/maintenance/mechanics/table.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/maintenance/milestones/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/maintenance/milestones/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/maintenance/milestones/sheet.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/maintenance/milestones/sheet.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/maintenance/milestones/table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/maintenance/milestones/table.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/maintenance/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/maintenance/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/molds/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/molds/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/molds/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/molds/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/notifications/item.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/notifications/item.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/PlanningCalendar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/PlanningCalendar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/molds/moldsHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/molds/moldsHistory.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/planning/CalendarHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/CalendarHeader.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/planning/CreateMechanic.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/CreateMechanic.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/planning/CreatePlanDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/CreatePlanDialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/planning/FullMaintenanceDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/FullMaintenanceDetails.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/planning/PlanningCalendarTile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/PlanningCalendarTile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/planning/UpdateMechanic.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/UpdateMechanic.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/planning/WeekDayList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/WeekDayList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/timeline/TimelineLegend.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/timeline/TimelineLegend.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,7 +36,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/machine-history" />
+        <entry key="$PROJECT_DIR$" value="Development" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,22 +65,48 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/machine-history&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "fix/translate",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.Next.js: server-side.executor": "Run",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "D:\\kuliah\\semester 3\\s3-group-project\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RunManager" selected="npm.Next.js: server-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
         <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
@@ -73,7 +117,22 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1764247682865</updated>
+      <workItem from="1764838790038" duration="2641000" />
+      <workItem from="1765271168087" duration="2566000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/node_modules/tailwindcss/stubs/tailwind.config.js" />
+        <option value="$PROJECT_DIR$/node_modules/tailwindcss/stubs/tailwind.config.cjs" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="translated application to english" />
+    <option name="LAST_COMMIT_MESSAGE" value="translated application to english" />
   </component>
 </project>

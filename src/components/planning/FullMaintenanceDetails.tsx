@@ -54,38 +54,38 @@ export default function FullMaintenanceDetails(props: Props) {
         return (
             <form onSubmit={handleFormSubmit} className="block w-full h-full z-form">
                 <div className="grid grid-cols-2 gap-4">
-                    <span className="block font-semibold">Matrijs</span>
+                    <span className="block font-semibold">Mold</span>
                     <span>{props.maintenance.mold_name || props.maintenance.mold_id  }</span>
 
-                    <span className="block font-semibold">Gepland voor</span>
+                    <span className="block font-semibold">Planned for</span>
                     <Input onChange={updateFormValue} name="planned_date" type='datetime-local'
                            value={(formatDateToISO(new Date(editedForm.planned_date)))}/>
 
-                    <span className="block font-semibold">Onderhoudstype</span>
+                    <span className="block font-semibold">Maintenance type</span>
                     <select onChange={updateFormValue} value={editedForm.maintenance_type}
                             name="maintenance_type">
-                        <option value="Preventative">Preventief</option>
-                        <option value="Corrective">Correctief</option>
+                        <option value="Preventative">Preventive</option>
+                        <option value="Corrective">Corrective</option>
                     </select>
 
-                    <span className="block font-semibold">Onderhoudsactie</span>
+                    <span className="block font-semibold">Maintenance action</span>
                     <select onChange={updateFormValue} value={editedForm.maintenance_action}
                             name="maintenance_action">
-                        <option value="" disabled>Selecteer een optie</option>
-                        <option value={"Poetsen"}>Poetsen</option>
-                        <option value={"Kalibreren"}>Kalibreren</option>
+                        <option value="" disabled>Select an option</option>
+                        <option value={"Poetsen"}>Cleaning</option>
+                        <option value={"Kalibreren"}>Calibration</option>
                     </select>
 
-                    <span className="block font-semibold">Toegewezen monteur</span>
+                    <span className="block font-semibold">Assigned mechanic</span>
                     <select onChange={updateFormValue} value={editedForm.assigned_to} name="assigned_to">
-                        <option value="" disabled>Selecteer een optie</option>
+                        <option value="" disabled>Select an option</option>
                         {mechanics.map(m => (<option key={m.id} value={m.id}>{m.name} ({m.specialization})</option>))}
                     </select>
 
                     <button onClick={() => setEditing(false)}
-                            className="button !bg-neutral-300 !text-neutral-800">Annuleren
+                            className="button !bg-neutral-300 !text-neutral-800">Cancel
                     </button>
-                    <button type={"submit"} className="button !bg-green-500">Opslaan</button>
+                    <button type={"submit"} className="button !bg-green-500">Save</button>
                 </div>
             </form>
         )
@@ -93,27 +93,27 @@ export default function FullMaintenanceDetails(props: Props) {
         return (
             <div className="block w-full h-full">
                 <div className="grid grid-cols-2 gap-4">
-                    <span className="block font-semibold">Matrijs</span>
+                    <span className="block font-semibold">Mold</span>
                     <span>{props.maintenance.mold_name || props.maintenance.mold_id}</span>
 
-                    <span className="block font-semibold">Gepland voor</span>
+                    <span className="block font-semibold">Planned for</span>
                     <span>{new Intl.DateTimeFormat("nl", {
                         dateStyle: "medium",
                         timeStyle: "medium"
                     }).format(props.maintenance.planned_date)}</span>
 
-                    <span className="block font-semibold">Onderhoudstype</span>
+                    <span className="block font-semibold">Maintenance type</span>
                     <span>{props.maintenance.maintenance_type}</span>
 
-                    <span className="block font-semibold">Onderhoudsactie</span>
+                    <span className="block font-semibold">Maintenance action</span>
                     <span>{props.maintenance.maintenance_action}</span>
 
 
-                    <span className="block font-semibold">Toegewezen monteur</span>
+                    <span className="block font-semibold">Assigned mechanic</span>
                     <span>{props.maintenance.mechanic_name} ({props.maintenance.mechanic_specialization})</span>
 
                     <span></span>
-                    <button onClick={() => setEditing(true)} className="button">Bewerken</button>
+                    <button onClick={() => setEditing(true)} className="button">Edit</button>
                 </div>
             </div>
         )

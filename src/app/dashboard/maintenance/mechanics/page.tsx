@@ -12,8 +12,8 @@ export default async function Page() {
   return (
     <>
       <Header
-        title={"Monteurs"}
-        description={"Hier kun je monteurs toevoegen, verwijderen en aanpassen."}
+        title={"Mechanics"}
+        description={"You can add, delete and adjust mechanics here."}
       />
       <div>
         <MechanicTable mechanics={mechanics} />

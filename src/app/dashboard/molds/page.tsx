@@ -49,15 +49,15 @@ export default async function Page() {
     return (
       <>
       <Header
-      title={"Levensduur matrijzen"}
-      description="Overzicht van alle matrijzen en hun levensduur"
+      title={"Mold life"}
+      description="Overview of all molds and their lifespan"
       />
        <div >
          <Table>
       <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">
-            Matrijs
+            Mold
           </TableHead>
 
           {/* total shots */}
@@ -66,16 +66,16 @@ export default async function Page() {
             </TableHead>
 
             <TableHead>
-            Eerste gebruik
+            First usage
             </TableHead>
             
             <TableHead>
-            Laatst gebruikt
+            Latest usage
             </TableHead>
 
           {/* Levensduur */}
           <TableHead>
-            Levensduur
+            Lifespan
             </TableHead>
 
             

@@ -37,8 +37,8 @@ return (
 <Table>
           <TableHeader className="sticky top-0 z-10">
             <TableRow>
-              <TableHead>Naam</TableHead>
-              <TableHead>Specialisatie</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Specialty</TableHead>
               <TableHead/>
               <TableHead className={"flex items-center justify-center"} rowSpan={2}><CreateMechanic refresh={refreshMechanics}/></TableHead>
             </TableRow>
@@ -65,7 +65,7 @@ return (
           <TableFooter>
             <TableRow>
               <TableCell colSpan={4}>
-                Totaal: {mechanics.length} monteurs
+                Total: {mechanics.length} mechanics
               </TableCell>
             </TableRow>
           </TableFooter>

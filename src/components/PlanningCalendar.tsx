@@ -75,14 +75,14 @@ export default function PlanningCalendar(props: Props) {
             {
                 props.mechanic !== null && mechanic !== null && (
                     <div className="flex w-full p-3 bg-orange-100">
-                        <span className="block mr-auto">Je bekijkt nu de planning voor {mechanic.name}</span>
-                        <a href="/dashboard/maintenance/mechanics" className="">Terug</a>
+                        <span className="block mr-auto">You are now viewing the schedule for {mechanic.name}</span>
+                        <a href="/dashboard/maintenance/mechanics" className="">Back</a>
                     </div>
                 )
             }
 
             <div className="flex gap-2 w-full bg-white px-6 py-4 rounded text-md font-medium border-b items-center">
-                <span className="hidden lg:block mr-3 ">Onderhoudsplanning</span>
+                <span className="hidden lg:block mr-3 ">Maintenance planning</span>
                 <div className="flex gap-2 text-sm items-center mr-auto">
                     <button
                         className="flex items-center justify-center aspect-square w-8 rounded hover:bg-neutral-100 transition-colors"

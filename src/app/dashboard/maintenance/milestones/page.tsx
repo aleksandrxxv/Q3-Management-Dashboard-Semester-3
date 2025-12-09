@@ -19,8 +19,8 @@ export default async function Page() {
     return (
         <div>
            <Header
-              title={"Preventieve onderhoudsplanning"} 
-                description={"Alle preventieve onderhoudsplanningen voor matrijzen"}
+              title={"Preventive maintenance planning"} 
+                description={"All preventive maintenance planning for molds"}
             />
 
             {/* All molds and its milestones, and a way to add a new one */}
