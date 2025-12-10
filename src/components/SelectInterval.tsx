@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { DateRange } from "react-day-picker"
-import { IntervalType } from "@/types/enum";
+import { IntervalType } from "@/types/interval";
 
 
 interface SelectIntervalProps {

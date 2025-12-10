@@ -1,16 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import {
-  TableRow,
-  TableCell,
-} from "@/components/ui/table";
+import { TableRow, TableCell } from "@/components/ui/table";
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import MachineChart from "./MachineChart";
+import { Machine } from "@/types/supabase";
 
-export default function MachineRowWithChart({ machine }) {
+interface MachineRowWithChartProps {
+  machine: Machine;
+}
+
+interface ChartPoint {
+  timestamp: string;
+  shots: number;
+}
+
+export default function MachineRowWithChart({
+  machine,
+}: MachineRowWithChartProps) {
   const [open, setOpen] = useState(false);
-  const [chartData, setChartData] = useState<any[] | null>(null);
+  const [chartData, setChartData] = useState<ChartPoint[] | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function loadChart() {
@@ -18,10 +27,12 @@ export default function MachineRowWithChart({ machine }) {
 
     setLoading(true);
 
-    const res = await fetch(`/api/machine/${machine.machine_id}/timeline`);
+    const res = await fetch(
+      `/api/machine/${machine.machine_id}/timeline`
+    );
     const json = await res.json();
 
-    setChartData(json.data || []);
+    setChartData(json.data ?? []);
     setLoading(false);
   }
 
@@ -45,7 +56,7 @@ export default function MachineRowWithChart({ machine }) {
         </TableCell>
 
         <TableCell className="font-medium">
-          {machine.machine_name || `Machine ${machine.machine_id}`}
+          {machine.machine_name ?? `Machine ${machine.machine_id}`}
         </TableCell>
 
         <TableCell className="text-right">
@@ -66,7 +77,6 @@ export default function MachineRowWithChart({ machine }) {
         <TableRow>
           <TableCell colSpan={5} className="bg-gray-50">
             <div className="p-4">
-
               {loading && (
                 <div className="text-center py-6 text-gray-500">
                   Loading chart…
@@ -76,7 +86,6 @@ export default function MachineRowWithChart({ machine }) {
               {!loading && chartData && (
                 <MachineChart data={chartData} />
               )}
-
             </div>
           </TableCell>
         </TableRow>

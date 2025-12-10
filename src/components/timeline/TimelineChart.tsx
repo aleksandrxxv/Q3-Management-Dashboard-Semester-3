@@ -11,7 +11,7 @@ import {
   ReferenceArea,
   ResponsiveContainer,
 } from 'recharts';
-import { IntervalType } from '@/types/enum';
+import { IntervalType } from '@/types/interval';
 
 interface TimelineChartProps {
   data: MachineTimeline[];

@@ -9,7 +9,7 @@ import { supabase } from './client';
  */
 export enum IntervalType {
   Minute = 'minute',
-  FiveMinute = '5 minute',
+  FiveMinutes = '5 minute',
   Hour = 'hour',
   Day = 'day',
   Week = 'week',
@@ -45,7 +45,7 @@ const RPC_FUNCTION_NAME = 'get_monitoring_intervals';
 // Cache TTL based on interval type (milliseconds)
 const CACHE_TTL: Record<IntervalType, number> = {
   [IntervalType.Minute]: 30 * 1000,       // 30 sec - minute data changes fast
-  [IntervalType.FiveMinute]: 60 * 1000,   // 1 min
+  [IntervalType.FiveMinutes]: 60 * 1000,   // 1 min
   [IntervalType.Hour]: 5 * 60 * 1000,     // 5 min
   [IntervalType.Day]: 15 * 60 * 1000,     // 15 min
   [IntervalType.Week]: 30 * 60 * 1000,    // 30 min - weekly data is stable
@@ -83,7 +83,7 @@ const roundTimestamp = (isoString: string, interval: IntervalType): string => {
     case IntervalType.Minute:
       date.setSeconds(0, 0);
       break;
-    case IntervalType.FiveMinute:
+    case IntervalType.FiveMinutes:
       date.setMinutes(Math.floor(date.getMinutes() / 5) * 5, 0, 0);
       break;
     case IntervalType.Hour:

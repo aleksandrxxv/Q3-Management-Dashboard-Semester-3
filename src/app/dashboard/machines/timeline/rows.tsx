@@ -1,14 +1,17 @@
 "use client";
 
-import TimelineLegend from "@/components/timeline/TimelineLegend";
-import TimelineRow from "@/components/timeline/TimelineRow";
-import { Machine, MachineTimeline } from "@/types/supabase";
-import Header from "../../header";
-import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { useEffect, useRef, useState } from "react";
 import { DateRange } from "react-day-picker";
+
+import TimelineLegend from "@/components/timeline/TimelineLegend";
+import TimelineRow from "@/components/timeline/TimelineRow";
+import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { SelectInterval } from "@/components/SelectInterval";
-import { IntervalType } from "@/types/enum";
+
+import Header from "../../header";
+
+import { Machine, MachineTimeline } from "@/types/supabase";
+import { IntervalType } from "@/types/interval";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 
 interface RowsProps {
@@ -21,7 +24,7 @@ export default function Rows({ machines }: RowsProps) {
   // ----------------------------------
   // DATE / INTERVAL
   // ----------------------------------
-  const [date, setDate] = useState<DateRange>({
+  const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2020, 8, 1),
     to: new Date(2020, 8, 30),
   });
@@ -41,18 +44,18 @@ export default function Rows({ machines }: RowsProps) {
   // ----------------------------------
   // TIMELINE CACHE
   // ----------------------------------
-  const timelineCache = useRef<
-    Map<string, Promise<MachineTimeline[]>>
-  >(new Map());
+  const timelineCache = useRef<Map<string, Promise<MachineTimeline[]>>>(
+    new Map()
+  );
 
-  const prevVisible = useRef<Set<string>>(new Set());
+  const prevVisible = useRef<Set<number>>(new Set());
 
   const cacheKey = (
     machine: Machine,
     from: Date,
     to: Date,
     interval: IntervalType
-  ) =>
+  ): string =>
     `${machine.machine_id}_${from.toISOString()}_${to.toISOString()}_${interval}`;
 
   // ----------------------------------
@@ -107,20 +110,20 @@ export default function Rows({ machines }: RowsProps) {
       visibleMachines.map((m) => m.machine_name)
     );
     console.groupEnd();
-  }, [startIndex, endIndex, visibleRows]);
+  }, [startIndex, endIndex, visibleRows, visibleMachines]);
 
   // ----------------------------------
   // LOG MACHINES LEAVING VIEW
   // ----------------------------------
   useEffect(() => {
-    const now = new Set(visibleMachines.map((m) => m.machine_id));
+    const now = new Set<number>(visibleMachines.map((m) => m.machine_id));
 
-    prevVisible.current.forEach((id) => {
+    for (const id of prevVisible.current) {
       if (!now.has(id)) {
         const m = machines.find((x) => x.machine_id === id);
         console.log("👋 [ROW LEFT VIEW]", m?.machine_name);
       }
-    });
+    }
 
     prevVisible.current = now;
   }, [visibleMachines, machines]);
@@ -128,14 +131,13 @@ export default function Rows({ machines }: RowsProps) {
   // ----------------------------------
   // DATA FETCH (PROMISE CACHED ✅)
   // ----------------------------------
-  const getData = (machine: Machine) => {
+  const getData = (machine: Machine): Promise<MachineTimeline[]> => {
     if (!date?.from || !date?.to) {
       return Promise.resolve([]);
     }
 
     const key = cacheKey(machine, date.from, date.to, interval);
     const cached = timelineCache.current.get(key);
-
     if (cached) return cached;
 
     const promise = fetchChartData(
@@ -167,7 +169,12 @@ export default function Rows({ machines }: RowsProps) {
               date={date}
               setDate={setDate}
             />
-            <SelectStartEndDate date={date} setDate={setDate} />
+            <SelectStartEndDate
+              date={date}
+              setDate={setDate}
+              className="w-min"
+            />
+
           </div>
         </Header>
         <TimelineLegend />

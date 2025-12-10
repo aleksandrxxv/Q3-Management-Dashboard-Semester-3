@@ -1,4 +1,4 @@
-import { IntervalType } from '@/types/enum';
+import { IntervalType } from '@/types/interval';
 
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"

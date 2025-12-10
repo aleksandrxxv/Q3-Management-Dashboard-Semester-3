@@ -5,7 +5,7 @@ import { Machine, MachineTimeline, MoldHistory } from '@/types/supabase';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
 import { addDays } from 'date-fns';
 import { fetchMoldsByDateRange } from '@/lib/supabase/fetchMachineMolds';
-import { IntervalType } from '@/types/enum';
+import { IntervalType } from '@/types/interval';
 
 interface FactoryGridProps {
   machines: Machine[];

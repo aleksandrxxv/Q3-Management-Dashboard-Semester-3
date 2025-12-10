@@ -28,7 +28,7 @@ import { fetchMoldHistoryByBoardPort } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "../../../../components/molds/moldsHistory";
 import { fetchNotificationsByMachineId } from "@/lib/supabase/notification";
 import NotificationTabs from "../../notifications/tabs";
-import { IntervalType } from "@/types/enum";
+import { IntervalType } from "@/types/interval";
 
 
 const chartConfig = {

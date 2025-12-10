@@ -5,6 +5,7 @@ import { Machine, MachineTimeline } from "@/types/supabase";
 import StatusIndicator from "./StatusIndicator";
 import TimelineChart from "./TimelineChart";
 import { Card } from "../ui/card";
+import { IntervalType } from "@/types/interval";
 
 interface Props {
   machine: Machine;
@@ -34,7 +35,7 @@ const TimelineRow: React.FC<Props> = ({ machine, data, dataPromise }) => {
         </div>
 
         <div className="flex-1 h-full">
-          <TimelineChart interval="day" data={resolvedData} />
+          <TimelineChart interval={IntervalType.Day} data={resolvedData} />
         </div>
       </div>
     </Card>
