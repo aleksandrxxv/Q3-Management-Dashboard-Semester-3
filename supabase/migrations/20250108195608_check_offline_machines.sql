@@ -68,7 +68,7 @@ DECLARE
   response TEXT;
 BEGIN
   -- Construct the query string with URL-encoded parameters
-  query_url := 'https://pmxcsnscsngbfrqkxufg.supabase.co/functions/v1/new_notification?' ||
+  query_url := 'https://wjiqoydynpmhleyaiptk.supabase.co/functions/v1/new_notification?' ||
                'id=' || url_encode(NEW.id::text) || '&' ||
                'message=' || url_encode(NEW.message) || '&' ||
                'detected_at=' || url_encode(NEW.detected_at::text) || '&' ||

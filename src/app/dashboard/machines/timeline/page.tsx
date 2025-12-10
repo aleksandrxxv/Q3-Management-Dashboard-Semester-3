@@ -8,7 +8,6 @@ export interface MachineWithData extends Machine {
   data?: MachineTimeline[];
 }
 
-
 export default async function Page() {
   const getMachinesCached = unstable_cache(
     async () => fetchMachines(),
@@ -18,11 +17,21 @@ export default async function Page() {
 
   const machines = await getMachinesCached();
 
- 
+  // TEST MACHINE
+  const testMachine: Machine = {
+    machine_id: 999999,        
+    machine_name: "TEST MACHINE",
+    board: "SIM",
+    port: 1,
+    status: "active",
+  };
+
+  // Append test machine to the list
+  const machinesWithTest = [...machines, testMachine];
 
   return (
     <div>
-    <Rows machines={machines} />
+      <Rows machines={machinesWithTest} />
     </div>
-  )
+  );
 }

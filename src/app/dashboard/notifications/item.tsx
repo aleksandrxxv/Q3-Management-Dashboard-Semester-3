@@ -65,7 +65,7 @@ export default function NotificationItem({ notification, onClick }: Notification
 
                         {
                             notification.mold_id && <Link href={`/dashboard/molds/${notification.mold_id}`}>
-                            Matrijs {notification.mold_id}
+                            Mold {notification.mold_id}
                      </Link>
                         }
                         

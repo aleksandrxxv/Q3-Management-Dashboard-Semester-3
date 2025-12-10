@@ -20,26 +20,26 @@ export async function insertMechanic(mechanic: NewMechanic) {
     throw new Error(`Error creating mechanic: ${error.message}`);
   }
 
-  // Auto-create contact also
-  if (mechanic.phone) {
-    try {
-      const res = await fetch("/api/admin/contacts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: mechanic.name,
-          phone: mechanic.phone,
-        }),
-      });
+//   // Auto-create contact also
+//   if (mechanic.phone) {
+//     try {
+//       const res = await fetch("/api/admin/contacts", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           name: mechanic.name,
+//           phone: mechanic.phone,
+//         }),
+//       });
 
-      const contactResult = await res.json();
-      if (!res.ok) {
-        console.error("Failed to auto-create contact:", contactResult.error);
-      }
-    } catch (err) {
-      console.error("Auto-contact creation failed:", err);
-    }
-  }
+//       const contactResult = await res.json();
+//       if (!res.ok) {
+//         console.error("Failed to auto-create contact:", contactResult.error);
+//       }
+//     } catch (err) {
+//       console.error("Auto-contact creation failed:", err);
+//     }
+//   }
 
   return data;
 }
