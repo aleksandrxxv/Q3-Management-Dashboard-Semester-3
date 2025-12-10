@@ -1,67 +1,40 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
+import { Machine, MachineTimeline } from "@/types/supabase";
 import StatusIndicator from "./StatusIndicator";
 import TimelineChart from "./TimelineChart";
-import { Machine, MachineTimeline } from "@/types/supabase";
-import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 import { Card } from "../ui/card";
-import { DateRange } from "react-day-picker";
-import { IntervalType } from "@/types/enum";
 
-interface TimelineRowProps {
+interface Props {
   machine: Machine;
-  targetEfficiency: number;
-  style?: React.CSSProperties;
-  date: DateRange | undefined;
-  interval: IntervalType;
+  data?: MachineTimeline[];
+  dataPromise?: Promise<MachineTimeline[]>;
 }
 
-const TimelineRow: React.FC<TimelineRowProps> = ({
-  machine,
-  style,
-  date,
-  interval,
-}) => {
-  const [liveData, setLiveData] = useState<MachineTimeline[]>([]);
+const TimelineRow: React.FC<Props> = ({ machine, data, dataPromise }) => {
+  const [resolvedData, setResolvedData] = useState<MachineTimeline[]>(
+    data ?? []
+  );
 
+  // Resolve promise if provided
   useEffect(() => {
-    const fetchData = async () => {
-      if (date?.from && date?.to) {
-        const data = await fetchChartData(
-          machine.board,
-          machine.port,
-          date.from,
-          date.to,
-          interval
-        );
-        setLiveData(data);
-      }
-    };
-    fetchData();
-  }, [machine.board, machine.port, date, interval]);
-
-  // Detect shot === 0 segments
-  const zeroAreas = liveData
-    .filter((item) => item.shot === 0)
-    .map((item) => ({
-      start: new Date(item.start_time),
-      end: new Date(item.end_time),
-    }));
+    if (!dataPromise) return;
+    dataPromise.then(setResolvedData);
+  }, [dataPromise]);
 
   return (
-    <Card style={style} className="mb-2">
+    <Card className="mb-2">
       <div className="flex items-center h-12">
-        <div className="w-32 flex items-center text-left px-4">
-          <div className="flex items-center space-x-3">
-            <StatusIndicator status={machine.status} />
-            <span className="text-sm font-medium text-gray-900 truncate">
-              {machine.machine_name || `Machine ${machine.machine_id}`}
-            </span>
-          </div>
+        <div className="w-32 px-4 flex items-center gap-2">
+          <StatusIndicator status={machine.status} />
+          <span className="text-sm font-medium truncate">
+            {machine.machine_name}
+          </span>
         </div>
 
         <div className="flex-1 h-full">
-          <TimelineChart interval={interval} data={liveData} zeroAreas={zeroAreas} />
+          <TimelineChart interval="day" data={resolvedData} />
         </div>
       </div>
     </Card>
