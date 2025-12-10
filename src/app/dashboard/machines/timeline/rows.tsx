@@ -12,18 +12,18 @@ import Header from "../../header";
 
 import { Machine, MachineTimeline } from "@/types/supabase";
 import { IntervalType } from "@/types/interval";
-import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
+
+import { getMachineTimelines } from "@/lib/data/getMachineTimelines";
+import { DATA_MODE } from "@/lib/data/dataMode";
 
 interface RowsProps {
   machines: Machine[];
 }
 
-const BUFFER_ROWS = 3;
+const BUFFER_ROWS = 1;
 
 export default function Rows({ machines }: RowsProps) {
-  // ----------------------------------
   // DATE / INTERVAL
-  // ----------------------------------
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2020, 8, 1),
     to: new Date(2020, 8, 30),
@@ -31,9 +31,7 @@ export default function Rows({ machines }: RowsProps) {
 
   const [interval, setInterval] = useState<IntervalType>(IntervalType.Day);
 
-  // ----------------------------------
   // SCROLL / MEASURE
-  // ----------------------------------
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const rowMeasureRef = useRef<HTMLDivElement | null>(null);
 
@@ -41,26 +39,23 @@ export default function Rows({ machines }: RowsProps) {
   const [scrollTop, setScrollTop] = useState(0);
   const [rowHeight, setRowHeight] = useState(80);
 
-  // ----------------------------------
   // TIMELINE CACHE
-  // ----------------------------------
   const timelineCache = useRef<Map<string, Promise<MachineTimeline[]>>>(
     new Map()
   );
 
   const prevVisible = useRef<Set<number>>(new Set());
 
+  // ✅ CACHE KEY INCLUDES DATA MODE
   const cacheKey = (
     machine: Machine,
     from: Date,
     to: Date,
     interval: IntervalType
   ): string =>
-    `${machine.machine_id}_${from.toISOString()}_${to.toISOString()}_${interval}`;
+    `${DATA_MODE}_${machine.machine_id}_${from.toISOString()}_${to.toISOString()}_${interval}`;
 
-  // ----------------------------------
   // MEASURE VIEWPORT
-  // ----------------------------------
   useEffect(() => {
     const measure = () => {
       if (!scrollRef.current) return;
@@ -72,9 +67,7 @@ export default function Rows({ machines }: RowsProps) {
     return () => window.removeEventListener("resize", measure);
   }, []);
 
-  // ----------------------------------
-  // MEASURE ROW HEIGHT (ONCE)
-  // ----------------------------------
+  // MEASURE ROW HEIGHT
   useEffect(() => {
     if (!rowMeasureRef.current) return;
     setRowHeight(rowMeasureRef.current.getBoundingClientRect().height);
@@ -84,9 +77,7 @@ export default function Rows({ machines }: RowsProps) {
     setScrollTop(e.currentTarget.scrollTop);
   };
 
-  // ----------------------------------
   // VIRTUALIZATION
-  // ----------------------------------
   const visibleRows = Math.ceil(viewportHeight / rowHeight) || 10;
   const totalRows = visibleRows + BUFFER_ROWS * 2;
 
@@ -98,39 +89,14 @@ export default function Rows({ machines }: RowsProps) {
   const endIndex = Math.min(machines.length, startIndex + totalRows);
   const visibleMachines = machines.slice(startIndex, endIndex);
 
-  // ----------------------------------
-  // FRONTEND WINDOW LOGS
-  // ----------------------------------
-  useEffect(() => {
-    console.groupCollapsed("🧠 [FRONTEND ROW WINDOW]");
-    console.log("Visible rows:", visibleRows);
-    console.log("Mounted rows:", totalRows);
-    console.log(
-      "Machines IN VIEW:",
-      visibleMachines.map((m) => m.machine_name)
-    );
-    console.groupEnd();
-  }, [startIndex, endIndex, visibleRows, visibleMachines]);
-
-  // ----------------------------------
-  // LOG MACHINES LEAVING VIEW
-  // ----------------------------------
+  // LOG MACHINES LEAVING VIEW (optional debug)
   useEffect(() => {
     const now = new Set<number>(visibleMachines.map((m) => m.machine_id));
 
-    for (const id of prevVisible.current) {
-      if (!now.has(id)) {
-        const m = machines.find((x) => x.machine_id === id);
-        console.log("👋 [ROW LEFT VIEW]", m?.machine_name);
-      }
-    }
-
     prevVisible.current = now;
-  }, [visibleMachines, machines]);
+  }, [visibleMachines]);
 
-  // ----------------------------------
-  // DATA FETCH (PROMISE CACHED ✅)
-  // ----------------------------------
+  // ✅ DATA FETCH (GLOBAL SWITCHED)
   const getData = (machine: Machine): Promise<MachineTimeline[]> => {
     if (!date?.from || !date?.to) {
       return Promise.resolve([]);
@@ -140,7 +106,7 @@ export default function Rows({ machines }: RowsProps) {
     const cached = timelineCache.current.get(key);
     if (cached) return cached;
 
-    const promise = fetchChartData(
+    const promise = getMachineTimelines(
       machine.board,
       machine.port,
       date.from,
@@ -152,9 +118,7 @@ export default function Rows({ machines }: RowsProps) {
     return promise;
   };
 
-  // ----------------------------------
   // RENDER
-  // ----------------------------------
   return (
     <div className="flex flex-col gap-1">
       <div className="sticky top-0 z-10 bg-white shadow-sm">
@@ -174,7 +138,6 @@ export default function Rows({ machines }: RowsProps) {
               setDate={setDate}
               className="w-min"
             />
-
           </div>
         </Header>
         <TimelineLegend />

@@ -1,4 +1,8 @@
-import { fetchMachines } from "@/lib/supabase/fetchMachines";
+// src/app/dashboard/machines/page.tsx
+
+import { getMachines } from "@/lib/data/getMachines";
+import { DATA_MODE } from "@/lib/data/dataMode";
+
 import {
   Table,
   TableBody,
@@ -9,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import Link from "next/link";
 import Header from "../header";
@@ -17,52 +22,37 @@ import { unstable_cache } from "next/cache";
 
 export default async function Page() {
   const getMachinesCached = unstable_cache(
-  async () => fetchMachines(),
-  ["machines"],
-  { revalidate: 10 }
+    () => getMachines(),
+    ["machines", DATA_MODE],
+    { revalidate: 10 }
   );
-  
+
   const machines = await getMachinesCached();
 
   const machineStatus = (machine: Machine) => {
-    if (machine.status === 'Actief') return 'Active';
-    if (machine.status === 'Stilstand') return 'Standstill';
-    if (machine.status === 'Inactief') return 'Inactive';
-
-  }
+    if (machine.status === "Actief") return "Active";
+    if (machine.status === "Stilstand") return "Standstill";
+    if (machine.status === "Inactief") return "Inactive";
+  };
 
   return (
     <>
       <Header
-        title={"Machines"}
+        title="Machines"
         description="List of all machines"
       />
 
       <div>
         <Table>
-          <TableCaption>
-            Machines
-          </TableCaption>
+          <TableCaption>Machines</TableCaption>
 
           <TableHeader className="sticky top-0 z-10">
             <TableRow>
               <TableHead>Status</TableHead>
-
-              <TableHead className="w-[100px]">
-                Machine
-              </TableHead>
-
-              <TableHead className="text-right w-44">
-                Avg. Shot Time
-              </TableHead>
-
-              <TableHead>
-                Total Shots
-              </TableHead>
-
-              <TableHead>
-                Last Update
-              </TableHead>
+              <TableHead className="w-[100px]">Machine</TableHead>
+              <TableHead className="text-right w-44">Avg. Shot Time</TableHead>
+              <TableHead>Total Shots</TableHead>
+              <TableHead>Last Update</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -76,7 +66,6 @@ export default async function Page() {
 
                 <TableCell className="font-medium">
                   <Link
-                    key={machine.machine_id}
                     href={`/dashboard/machines/${machine.machine_id}`}
                     className="text-blue-500 underline"
                   >
