@@ -515,16 +515,23 @@ const MachinePage = () => {
                 </Card>
 
                 {/* Lower grid */}
-                <div className="grid gap-3 lg:grid-cols-2">
+                <div className="grid gap-3 lg:grid-cols-[1.35fr_1fr]">
                     <Card className="shadow-sm">
                         <CardHeader className="border-b">
-                            <CardTitle className="text-base">Notifications</CardTitle>
-                            <CardDescription>Recent alerts & events</CardDescription>
+                            <div className="space-y-1">
+                                <CardTitle className="text-base">Machine notifications</CardTitle>
+                                <CardDescription>
+                                    Active alerts, warnings and system events related to this machine
+                                </CardDescription>
+                            </div>
                         </CardHeader>
+
                         <CardContent className="pt-4">
+                            {/* This component now handles its own tabs, counts & filtering */}
                             <NotificationTabs notifications={notifications} />
                         </CardContent>
                     </Card>
+
 
                     <Card className="shadow-sm">
                         <CardHeader className="border-b">

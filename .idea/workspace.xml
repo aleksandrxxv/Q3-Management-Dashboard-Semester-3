@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Added an energy consumption dashboard inside of the machine view page.">
+    <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Added kwh per kg of product consumption.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/notifications/tabs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/notifications/tabs.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +107,7 @@
       <workItem from="1765217334805" duration="3520000" />
       <workItem from="1765268197948" duration="439000" />
       <workItem from="1765873283408" duration="3859000" />
-      <workItem from="1766046850790" duration="1530000" />
+      <workItem from="1766046850790" duration="2681000" />
     </task>
     <task id="LOCAL-00001" summary="Started working on the SMS service.">
       <option name="closed" value="true" />
@@ -141,7 +141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766047137766</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added kwh per kg of product consumption.">
+      <option name="closed" value="true" />
+      <created>1766048742203</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1766048742203</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,6 +161,7 @@
     <MESSAGE value="Added admin page for adding phone number and notification service." />
     <MESSAGE value="Overhauled the UI of the Admin panel." />
     <MESSAGE value="Added an energy consumption dashboard inside of the machine view page." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added an energy consumption dashboard inside of the machine view page." />
+    <MESSAGE value="Added kwh per kg of product consumption." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added kwh per kg of product consumption." />
   </component>
 </project>
