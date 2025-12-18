@@ -49,6 +49,9 @@ import { fetchNotificationsByMachineId } from "@/lib/supabase/notification";
 import NotificationTabs from "../../notifications/tabs";
 import { IntervalType } from "@/types/enum";
 
+/** ✅ NEW: dummy weight assumption (replace later with mold-based weight) */
+const KG_PER_SHOT = 0.45;
+
 const chartConfig = {
     average_shot_time: { label: "Avg. Shot", color: "hsl(0, 70%, 50%)" },
     total_shots: { label: "Total Shots", color: "hsl(200, 70%, 50%)" },
@@ -170,14 +173,22 @@ const MachinePage = () => {
     const kpis = useMemo(() => {
         const rows: any[] = chartData as any[];
 
-        const totalShots = rows.reduce((sum, r) => sum + (Number(r.total_shots) || 0), 0);
+        const totalShots = rows.reduce(
+            (sum, r) => sum + (Number(r.total_shots) || 0),
+            0
+        );
         const avgShot =
             rows.length > 0
-                ? rows.reduce((sum, r) => sum + (Number(r.average_shot_time) || 0), 0) /
-                rows.length
+                ? rows.reduce(
+                (sum, r) => sum + (Number(r.average_shot_time) || 0),
+                0
+            ) / rows.length
                 : 0;
 
-        return { totalShots, avgShot };
+        /** ✅ NEW: derived production mass */
+        const totalKgProduced = totalShots * KG_PER_SHOT;
+
+        return { totalShots, avgShot, totalKgProduced };
     }, [chartData]);
 
     const energy = useMemo(() => {
@@ -222,6 +233,12 @@ const MachinePage = () => {
         return { series, totalKwh, totalCost, totals, pct };
     }, [chartData]);
 
+    /** ✅ NEW: kWh/kg (energy efficiency) */
+    const kwhPerKg = useMemo(() => {
+        if (kpis.totalKgProduced <= 0) return null;
+        return energy.totalKwh / kpis.totalKgProduced;
+    }, [energy.totalKwh, kpis.totalKgProduced]);
+
     const donutData = useMemo(() => {
         return [
             { name: "Heating", value: Number(energy.totals.heating.toFixed(2)), key: "heating" as const },
@@ -240,7 +257,7 @@ const MachinePage = () => {
 
             <div className="container mx-auto space-y-4 p-4">
                 {/* KPI row */}
-                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
                     <Stat
                         label="Status"
                         value={
@@ -266,6 +283,13 @@ const MachinePage = () => {
                 <span className="font-medium text-slate-900">€{energy.totalCost.toFixed(0)}</span>
               </span>
                         }
+                    />
+
+                    {/* ✅ NEW KPI: kWh per kg */}
+                    <Stat
+                        label="Energy efficiency"
+                        value={kwhPerKg === null ? "No data yet." : `${kwhPerKg.toFixed(2)} kWh/kg`}
+                        sub={`Based on ${KG_PER_SHOT} kg / shot`}
                     />
                 </div>
 
@@ -357,7 +381,6 @@ const MachinePage = () => {
                                                 <div className="h-[180px] w-full">
                                                     <ResponsiveContainer width="100%" height="100%">
                                                         <PieChart>
-                                                            {/* ✅ Native Recharts Tooltip: no ChartContainer needed */}
                                                             <Tooltip
                                                                 formatter={(value: any, name: any) => [`${Number(value).toFixed(1)} kWh`, name]}
                                                             />
