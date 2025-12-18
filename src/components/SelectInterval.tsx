@@ -38,7 +38,7 @@ export function SelectInterval({ interval, setInterval, date, autoChangeInterval
       } else if (diff > 1000 * 60 * 60 * 24) {
         setInterval(IntervalType.Hour);
       } else if (diff < 1000 * 60 * 60 * 24 * 2) {
-        setInterval(IntervalType.FiveMinutes);
+        setInterval(IntervalType.FiveMinute);
       }
     }
   }
@@ -57,7 +57,7 @@ export function SelectInterval({ interval, setInterval, date, autoChangeInterval
         <SelectGroup>
           <SelectLabel>Intervals</SelectLabel>
             <SelectItem value={IntervalType.Minute}>Shots per minute</SelectItem>
-            <SelectItem value={IntervalType.FiveMinutes}>Shots per 5 minutes</SelectItem>
+            <SelectItem value={IntervalType.FiveMinute}>Shots per 5 minutes</SelectItem>
             <SelectItem value={IntervalType.Hour}>Shots per hour</SelectItem>
             <SelectItem value={IntervalType.Day}>Shots per day</SelectItem>
             <SelectItem value={IntervalType.Week}>Shots per week</SelectItem>

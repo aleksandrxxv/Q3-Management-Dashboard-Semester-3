@@ -24,7 +24,7 @@ const RPC_FUNCTION_NAME = "get_fake_monitoring_intervals";
  */
 const CACHE_TTL: Record<IntervalType, number> = {
   [IntervalType.Minute]: 30_000,
-  [IntervalType.FiveMinutes]: 60_000,
+  [IntervalType.FiveMinute]: 60_000,
   [IntervalType.Hour]: 5 * 60_000,
   [IntervalType.Day]: 15 * 60_000,
   [IntervalType.Week]: 30 * 60_000,
