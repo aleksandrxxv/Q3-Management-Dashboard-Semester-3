@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Overhauled the UI of the Admin panel.">
-      <change beforePath="$PROJECT_DIR$/src/components/app-sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/app-sidebar.tsx" afterDir="false" />
+    <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Added a link to the admin panel in the sidebar.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +16,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Development" />
+        <entry key="$PROJECT_DIR$" value="feature-UIOverhaul" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -50,7 +51,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature-UIOverhaul&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Development&quot;,
     &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
     &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
@@ -105,6 +106,7 @@
       <workItem from="1765184862649" duration="7164000" />
       <workItem from="1765217334805" duration="3520000" />
       <workItem from="1765268197948" duration="439000" />
+      <workItem from="1765873283408" duration="3859000" />
     </task>
     <task id="LOCAL-00001" summary="Started working on the SMS service.">
       <option name="closed" value="true" />
