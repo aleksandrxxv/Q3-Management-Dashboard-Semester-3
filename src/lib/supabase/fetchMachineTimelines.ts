@@ -1,4 +1,7 @@
 import { supabase } from './client';
+import { IntervalType } from "@/types/interval";
+import { INTERVALS } from "@/config/intervals";
+
 
 // =============================================================================
 // TYPES -
@@ -7,13 +10,7 @@ import { supabase } from './client';
 /**
  * Interval types
  */
-export enum IntervalType {
-  Minute = 'minute',
-  FiveMinute = '5 minute',
-  Hour = 'hour',
-  Day = 'day',
-  Week = 'week',
-}
+
 
 /**
  * Return type from get_monitoring_intervals function

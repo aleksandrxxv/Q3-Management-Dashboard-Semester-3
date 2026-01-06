@@ -29,7 +29,7 @@ export interface Milestone {
 
 export interface MachineTimeline {
 
-    average_shot_time: number;
+    average_shot_time: number | null;
     truncated_timestamp: string;
     total_shots: number;
 }

@@ -4,7 +4,8 @@ import { getNotificationColor, getNotificationHex } from "./util";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 import { useEffect, useState } from "react";
 import { addDays } from "date-fns";
-import { IntervalType } from "@/types/enum";
+import { IntervalType } from "@/types/interval";
+
 
 import TimelineChart from "@/components/timeline/TimelineChart";
 import { Badge } from "@/components/ui/badge";
