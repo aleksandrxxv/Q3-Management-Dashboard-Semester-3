@@ -1,8 +1,9 @@
 "use client";
+
 import { MachineTimeline, Notification } from "@/types/supabase";
 import { getNotificationColor, getNotificationHex } from "./util";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { addDays } from "date-fns";
 import { IntervalType } from "@/types/interval";
 
@@ -16,77 +17,136 @@ interface NotificationItemProps {
     onClick?: () => void;
 }
 
-
+function formatDetectedAt(value: string | Date) {
+    const d = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(d.getTime())) return "—";
+    return d.toLocaleString("nl-NL");
+}
 
 export default function NotificationItem({ notification, onClick }: NotificationItemProps) {
     const [chartData, setChartData] = useState<MachineTimeline[]>([]);
 
-    const startDate = new Date(notification.detected_at);
-
-    const endDate = addDays(startDate, 1);
-
+    const startDate = useMemo(() => new Date(notification.detected_at), [notification.detected_at]);
+    const endDate = useMemo(() => addDays(startDate, 1), [startDate]);
 
     useEffect(() => {
         const loadData = async () => {
-        if (notification.board && notification.port) {
-
-            const data = await fetchChartData(notification.board, notification.port, startDate, endDate, IntervalType.Hour);
-            setChartData(data);
-        }
+            if (!notification.board || !notification.port) return;
+            try {
+                const data = await fetchChartData(
+                    notification.board,
+                    notification.port,
+                    startDate,
+                    endDate,
+                    IntervalType.Hour
+                );
+                setChartData(data);
+            } catch {
+                // swallow: chart is decorative
+            }
         };
 
         loadData();
-    }, [notification]);
+    }, [notification.board, notification.port, startDate, endDate]);
 
     const lineColor = getNotificationHex(notification);
 
-    
+    // A clean “status rail” (uses your util color class)
+    const railClass = getNotificationColor(notification);
+
+    const faded = notification.read_at ? "opacity-70" : "opacity-100";
+
     return (
-        <div className={`flex items-center p-4 rounded-lg shadow-md relative overflow-hidden border-l-8 cursor-pointer ${getNotificationColor(notification)} hover:border-opacity-80 transition-colors duration-300 hover:shadow-lg`}
-        onClick={
-            onClick
-        }
-            >
-            <div className="relative z-20 w-full">
+        <div
+            className={[
+                "group relative overflow-hidden rounded-xl border bg-white p-3",
+                "transition hover:shadow-sm",
+                "cursor-pointer",
+                faded,
+            ].join(" ")}
+            onClick={onClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") onClick?.();
+            }}
+        >
+            {/* left rail */}
+            <div className={`absolute left-0 top-0 h-full w-1.5 ${railClass}`} />
 
+            <div className="flex items-start gap-3 pl-2">
+                {/* Main text */}
+                <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant="secondary" className="shrink-0">
+                            {notification.board} - {notification.port}
+                        </Badge>
 
-            <div className={notification.read_at ? "opacity-80" : ""} >
-                <Badge color="blue" className="absolute top-2 right-2">{notification.board} - {notification.port}</Badge>
-                <div className="flex flex-col">
-                    {/* Mold_id, machine_id */}
-                    <span className="text-sm">
-                        
+                        {notification.resolved_at ? (
+                            <Badge variant="outline" className="shrink-0">
+                                Resolved
+                            </Badge>
+                        ) : null}
 
-                        {
-                            notification.machine_id && <Link href={`/dashboard/machines/${notification.machine_id}`}>
-                            Machine {notification.machine_id}
-                     </Link>
-                        }
+                        {!notification.read_at && !notification.resolved_at ? (
+                            <Badge className="shrink-0">New</Badge>
+                        ) : null}
+                    </div>
 
+                    <div className="mt-2 flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                            <div className="truncate text-sm font-semibold text-slate-900">
+                                {notification.message}
+                            </div>
 
-                        {
-                            notification.mold_id && <Link href={`/dashboard/molds/${notification.mold_id}`}>
-                            Matrijs {notification.mold_id}
-                     </Link>
-                        }
-                        
-                    </span>
-                <h3 className="text-lg font-semibold " onClick={onClick}>{notification.message}</h3>
-                <p className="text-sm">{
-                    new Date(notification.detected_at).toLocaleString('nl-NL')
-                    }</p>
+                            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                                <span>{formatDetectedAt(notification.detected_at)}</span>
+
+                                {notification.machine_id ? (
+                                    <Link
+                                        href={`/dashboard/machines/${notification.machine_id}`}
+                                        className="underline underline-offset-2 hover:text-slate-900"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        Machine {notification.machine_id}
+                                    </Link>
+                                ) : null}
+
+                                {notification.mold_id ? (
+                                    <Link
+                                        href={`/dashboard/molds/${notification.mold_id}`}
+                                        className="underline underline-offset-2 hover:text-slate-900"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        Matrijs {notification.mold_id}
+                                    </Link>
+                                ) : null}
+                            </div>
+                        </div>
+
+                        {/* Sparkline (small + subtle, not overlay) */}
+                        <div className="hidden w-[180px] shrink-0 sm:block">
+                            <div className="h-[46px] w-full rounded-md border bg-slate-50 p-1">
+                                <TimelineChart
+                                    data={chartData}
+                                    interval={IntervalType.Hour}
+                                    hideAxis
+                                    hideTooltip
+                                    lineColor={lineColor}
+                                />
+                            </div>
+                            <div className="mt-1 text-right text-[10px] text-muted-foreground">
+                                last 24h snapshot
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* affordance */}
+                <div className="mt-1 text-xs text-muted-foreground opacity-0 transition group-hover:opacity-100">
+                    Mark read
                 </div>
             </div>
-            </div>
-
-            <div className="absolute top-0 right-0 bottom-0 w-full bg-gradient-to-l from-transparent to-white opacity-50 z-10
-            "></div>
-
-            <div className="absolute top-0 right-0 bottom-0 w-full z-0 opacity-50">
-            <TimelineChart data={chartData} interval={IntervalType.Hour} hideAxis hideTooltip lineColor={lineColor} />
-
-            </div>
-
         </div>
     );
 }
