@@ -48,6 +48,7 @@ import { MoldHistoryTable } from "../../../../components/molds/moldsHistory";
 import { fetchNotificationsByMachineId } from "@/lib/supabase/notification";
 import NotificationTabs from "../../notifications/tabs";
 import { IntervalType } from "@/types/interval";
+import { fillTimeGaps } from "@/lib/utils/chartData";
 
 /** ✅ NEW: dummy weight assumption (replace later with mold-based weight) */
 const KG_PER_SHOT = 0.45;
@@ -161,7 +162,9 @@ const MachinePage = () => {
                     endDate,
                     interval
                 );
-                setChartData(data);
+                // Fill time gaps with zero values for missing intervals
+                const filledData = fillTimeGaps(data, startDate, endDate, interval);
+                setChartData(filledData);
             } catch (error) {
                 console.error("Error loading data:", error);
             }

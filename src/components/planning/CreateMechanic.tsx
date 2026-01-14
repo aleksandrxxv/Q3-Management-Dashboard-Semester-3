@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { PlusCircle } from "lucide-react";
@@ -49,7 +50,9 @@ export default function CreateMechanic(props: Props) {
 
       <DialogContent>
         <DialogTitle className="font-semibold">Add Mechanic</DialogTitle>
-
+        <DialogDescription>
+          Add a new mechanic to the system
+        </DialogDescription>
         <form className="z-form grid grid-cols-1 gap-3" onSubmit={formSubmit}>
 
           {/* Name */}

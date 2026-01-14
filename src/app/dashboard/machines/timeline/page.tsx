@@ -1,12 +1,11 @@
-// src/app/dashboard/machines/[whatever]/page.tsx
-// (path adjusted to your file location)
+// src/app/dashboard/machines/timeline/page.tsx
 
 import { unstable_cache } from "next/cache";
+import { Suspense } from "react";
 
 import Rows from "./rows";
 
 import { getMachines } from "@/lib/data/getMachines";
-import { DATA_MODE } from "@/lib/data/dataMode";
 
 import { Machine, MachineTimeline } from "@/types/supabase";
 
@@ -15,18 +14,44 @@ export interface MachineWithData extends Machine {
   data?: MachineTimeline[];
 }
 
-export default async function Page() {
+// Loading skeleton component
+function TimelineSkeleton() {
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="sticky top-0 z-10 bg-white shadow-sm p-4">
+        <div className="h-8 bg-gray-200 rounded w-48 animate-pulse mb-2" />
+        <div className="h-4 bg-gray-200 rounded w-96 animate-pulse" />
+      </div>
+      <div className="px-4 space-y-2">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="h-20 bg-gray-100 rounded animate-pulse" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Machines data fetcher component
+async function MachinesData() {
+  // Use longer cache time since machines don't change often
   const getMachinesCached = unstable_cache(
     () => getMachines(),
-    ["machines", DATA_MODE],
-    { revalidate: 10 }
+    ["machines-timeline"],
+    { 
+      revalidate: 300, // 5 minutes - machines list doesn't change frequently
+      tags: ['machines']
+    }
   );
 
   const machines = await getMachinesCached();
 
+  return <Rows machines={machines} />;
+}
+
+export default function Page() {
   return (
-    <div>
-      <Rows machines={machines} />
-    </div>
+    <Suspense fallback={<TimelineSkeleton />}>
+      <MachinesData />
+    </Suspense>
   );
 }

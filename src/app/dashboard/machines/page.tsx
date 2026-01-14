@@ -1,7 +1,6 @@
 // src/app/dashboard/machines/page.tsx
 
 import { getMachines } from "@/lib/data/getMachines";
-import { DATA_MODE } from "@/lib/data/dataMode";
 
 import {
   Table,
@@ -23,7 +22,7 @@ import { unstable_cache } from "next/cache";
 export default async function Page() {
   const getMachinesCached = unstable_cache(
     () => getMachines(),
-    ["machines", DATA_MODE],
+    ["machines"],
     { revalidate: 10 }
   );
 
@@ -74,10 +73,14 @@ export default async function Page() {
                 </TableCell>
 
                 <TableCell className="text-right">
-                  {machine.avg_shot_time.toFixed(2)}
+                  {machine.avg_shot_time != null 
+                    ? machine.avg_shot_time.toFixed(2) 
+                    : "0.00"}
                 </TableCell>
 
-                <TableCell>{machine.total_shots}</TableCell>
+                <TableCell>
+                  {machine.total_shots != null ? machine.total_shots : 0}
+                </TableCell>
 
                 <TableCell>
                   {machine.last_update

@@ -117,7 +117,7 @@ export function AppSidebar() {
                           asChild
                           isActive={pathname === subItem.href}
                         >
-                          <a href={subItem.href}>{subItem.label}</a>
+                          <Link href={subItem.href}>{subItem.label}</Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogTitle, DialogDescription, DialogTrigger} from "@/components/ui/dialog";
 import {Plus} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {ChangeEvent, FormEvent, useEffect, useState} from "react";
@@ -83,6 +83,9 @@ export default function CreatePlanDialog(props: Props) {
             <DialogTrigger className="button"><Plus size={20}/> Schedule Maintenance</DialogTrigger>
             <DialogContent className={"rounded-xl"}>
                 <DialogTitle>Schedule Maintenance</DialogTitle>
+                <DialogDescription>
+                  Create a new maintenance schedule for a mold
+                </DialogDescription>
                 <form onSubmit={handleSubmit}>
                     <div className={"flex flex-col z-form items-center gap-3 w-full"}>
 

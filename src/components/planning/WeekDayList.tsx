@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import PlanningCalendarTile from "@/components/planning/PlanningCalendarTile";
 import FullMaintenanceDetails from "@/components/planning/FullMaintenanceDetails";
 import { MaintenanceFull } from "@/types/supabase";
@@ -131,6 +131,9 @@ export default function WeekDayList({ weekDay, onMaintenanceEdited }: Props) {
               </DialogTrigger>
               <DialogContent className="rounded-xl">
                 <DialogTitle>Maintenance Task</DialogTitle>
+                <DialogDescription>
+                  View and edit maintenance task details
+                </DialogDescription>
                 <FullMaintenanceDetails
                   onEdited={onMaintenanceEdited}
                   maintenance={mm}
@@ -152,6 +155,9 @@ export default function WeekDayList({ weekDay, onMaintenanceEdited }: Props) {
           </DialogTrigger>
           <DialogContent className="rounded-xl">
             <DialogTitle>Maintenance Task</DialogTitle>
+            <DialogDescription>
+              View and edit maintenance task details
+            </DialogDescription>
             <FullMaintenanceDetails
               onEdited={onMaintenanceEdited}
               maintenance={maintenancePlan}

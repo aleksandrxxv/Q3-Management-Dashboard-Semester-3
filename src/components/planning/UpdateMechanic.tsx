@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Pencil } from "lucide-react";
@@ -45,7 +46,9 @@ export default function UpdateMechanic(props: Props) {
 
       <DialogContent>
         <DialogTitle className="font-semibold">Mechanic Information</DialogTitle>
-
+        <DialogDescription>
+          Update mechanic details and information
+        </DialogDescription>
         <form className="z-form grid grid-cols-1 gap-3" onSubmit={formSubmit}>
           {/* Name */}
           <div className="grid grid-cols-2 items-center gap-3">

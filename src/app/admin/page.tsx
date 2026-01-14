@@ -244,16 +244,18 @@ export default function AdminPage() {
                     </p>
                 </div>
 
-                <button
-                    onClick={handleNotify}
-                    disabled={loadingNotify || contacts.length === 0}
-                    className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 text-white font-medium shadow-lg hover:bg-orange-600 transition disabled:opacity-50"
-                >
-                    {loadingNotify && (
-                        <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    )}
-                    {loadingNotify ? 'Sending…' : 'Notify all contacts'}
-                </button>
+                <div className="flex gap-3">
+                    <button
+                        onClick={handleNotify}
+                        disabled={loadingNotify || contacts.length === 0}
+                        className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 text-white font-medium shadow-lg hover:bg-orange-600 transition disabled:opacity-50"
+                    >
+                        {loadingNotify && (
+                            <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        )}
+                        {loadingNotify ? 'Sending…' : 'Notify all contacts'}
+                    </button>
+                </div>
             </div>
 
             {/* Messages */}

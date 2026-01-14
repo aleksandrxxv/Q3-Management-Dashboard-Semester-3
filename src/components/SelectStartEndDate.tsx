@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { IntervalType } from "@/types/interval"
 
 
 // props (the setDate function) is passed down from the parent component
@@ -20,13 +21,46 @@ interface DatePickerWithRangeProps {
     setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>
     date: DateRange | undefined,
     className: string
+    interval?: IntervalType
     }
 
 export function SelectStartEndDate({
     setDate,
     date,
     className,
+    interval,
 }: DatePickerWithRangeProps) {
+  // For minute, five_minute, and hour intervals, restrict to 1 day max
+  const isRestrictedInterval = interval === IntervalType.Minute || 
+                               interval === IntervalType.FiveMinute || 
+                               interval === IntervalType.Hour;
+
+  const handleDateSelect = (selectedDate: DateRange | undefined) => {
+    if (!selectedDate?.from) {
+      setDate(selectedDate);
+      return;
+    }
+
+    // If restricted interval and both dates are selected
+    if (isRestrictedInterval && selectedDate.from && selectedDate.to) {
+      const diff = selectedDate.to.getTime() - selectedDate.from.getTime();
+      const oneDay = 1000 * 60 * 60 * 24;
+      
+      // If range exceeds 1 day, cap it to 1 day from the start date
+      if (diff > oneDay) {
+        const maxDate = new Date(selectedDate.from);
+        maxDate.setDate(maxDate.getDate() + 1);
+        maxDate.setHours(23, 59, 59, 999);
+        setDate({
+          from: selectedDate.from,
+          to: maxDate,
+        });
+        return;
+      }
+    }
+
+    setDate(selectedDate);
+  };
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -61,8 +95,18 @@ export function SelectStartEndDate({
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={handleDateSelect}
             numberOfMonths={2}
+            disabled={(day) => {
+              if (!isRestrictedInterval || !date?.from) return false;
+              
+              // If we have a start date, disable dates beyond 1 day from it
+              const maxDate = new Date(date.from);
+              maxDate.setDate(maxDate.getDate() + 1);
+              maxDate.setHours(23, 59, 59, 999);
+              
+              return day > maxDate;
+            }}
           />
         </PopoverContent>
       </Popover>

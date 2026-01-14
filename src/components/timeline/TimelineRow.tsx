@@ -13,39 +13,66 @@ interface Props {
   machine: Machine;
   data?: MachineTimeline[];
   dataPromise?: Promise<MachineTimeline[]>;
-  interval?: IntervalType; // Add interval prop!
+  interval?: IntervalType;
+  startDate?: Date;
+  endDate?: Date;
 }
 
 const TimelineRow: React.FC<Props> = ({ 
   machine, 
   data, 
   dataPromise,
-  interval = IntervalType.Day // Default to Day
+  interval = IntervalType.Day,
+  startDate,
+  endDate,
 }) => {
   const [resolvedData, setResolvedData] = useState<MachineTimeline[]>(
     data ?? []
   );
 
-  // Process data with gap filling
+  // Process data with gap filling - memoized for performance
   const processedData = useMemo(() => {
-    if (!resolvedData.length) return [];
+    // Early return if no date range
+    if (!startDate || !endDate) {
+      return resolvedData.length > 0 ? resolvedData : [];
+    }
+    
+    // If no data, fill with zeros
+    if (!resolvedData.length) {
+      return fillTimeGaps([], startDate, endDate, interval);
+    }
     
     let processed = resolvedData;
     
     // Handle 5-minute aggregation if needed
     if (interval === IntervalType.FiveMinute) {
-      // Note: For 5-min data, you might need a different fetch strategy
-      // This assumes you get minute data and aggregate
       processed = aggregateTo5Minutes(resolvedData);
     }
     
+    // Fill time gaps with zero values for missing intervals
+    processed = fillTimeGaps(processed, startDate, endDate, interval);
+    
     return processed;
-  }, [resolvedData, interval]);
+  }, [resolvedData, interval, startDate, endDate]);
 
-  // Resolve promise if provided
+  // Resolve promise if provided - use AbortController for cleanup
   useEffect(() => {
     if (!dataPromise) return;
-    dataPromise.then(setResolvedData);
+    
+    let cancelled = false;
+    dataPromise.then((data) => {
+      if (!cancelled) {
+        setResolvedData(data);
+      }
+    }).catch((error) => {
+      if (!cancelled) {
+        console.error('Error loading timeline data:', error);
+      }
+    });
+    
+    return () => {
+      cancelled = true;
+    };
   }, [dataPromise]);
 
   return (

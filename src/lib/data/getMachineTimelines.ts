@@ -1,14 +1,14 @@
 // lib/data/getMachineTimelines.ts
-import { DATA_MODE } from "./dataMode";
 import { IntervalType } from "@/types/interval";
 import { MachineTimeline } from "@/types/supabase";
-
-// FAKE
-import { fetchFakeChartData } from "@/lib/supabase/fetchFakeMachineTimelines";
-
-// REAL
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 
+/**
+ * Client-side function for fetching machine timelines
+ * Uses in-memory caching from fetchChartData for fast repeated requests
+ * 
+ * For server-side usage, use getMachineTimelinesCached instead
+ */
 export function getMachineTimelines(
   board: number,
   port: number,
@@ -16,7 +16,5 @@ export function getMachineTimelines(
   to: Date,
   interval: IntervalType
 ): Promise<MachineTimeline[]> {
-  return DATA_MODE === "real"
-    ? fetchChartData(board, port, from, to, interval)
-    : fetchFakeChartData(board, port, from, to, interval);
+  return fetchChartData(board, port, from, to, interval);
 }

@@ -67,6 +67,31 @@ export async function POST() {
             );
         }
 
+        // Check for zero shots notifications that need SMS
+        const { data: zeroShotsNotifications } = await supabaseAdmin
+            .from('i_notifications')
+            .select('id, message')
+            .eq('status', 'error')
+            .eq('send_sms', true)
+            .eq('sms_sent', false)
+            .ilike('message', '%zero shots%')
+            .is('read_at', null)
+            .order('detected_at', { ascending: false })
+            .limit(1);
+
+        // Determine the message to send
+        let smsMessage = defaultMessage;
+        if (zeroShotsNotifications && zeroShotsNotifications.length > 0) {
+            // Use the zero shots notification message
+            smsMessage = `🚨 Alert: ${zeroShotsNotifications[0].message}`;
+            
+            // Mark the notification as SMS sent
+            await supabaseAdmin
+                .from('i_notifications')
+                .update({ sms_sent: true })
+                .eq('id', zeroShotsNotifications[0].id);
+        }
+
         const results: Array<{
             id: string;
             sid?: string;
@@ -77,7 +102,7 @@ export async function POST() {
         for (const c of contacts) {
             try {
                 const msg = await client.messages.create({
-                    body: `${defaultMessage} ${c.name ? '(' + c.name + ')' : ''}`,
+                    body: `${smsMessage} ${c.name ? '(' + c.name + ')' : ''}`,
                     from: fromNumber!,
                     to: c.phone,
                 });

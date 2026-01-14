@@ -40,12 +40,13 @@ interface MonitoringIntervalsParams {
 const RPC_FUNCTION_NAME = 'get_monitoring_intervals';
 
 // Cache TTL based on interval type (milliseconds)
+// Increased TTLs for better cache hit rates since we have server-side caching too
 const CACHE_TTL: Record<IntervalType, number> = {
-  [IntervalType.Minute]: 30 * 1000,       // 30 sec - minute data changes fast
-  [IntervalType.FiveMinute]: 60 * 1000,   // 1 min
-  [IntervalType.Hour]: 5 * 60 * 1000,     // 5 min
-  [IntervalType.Day]: 15 * 60 * 1000,     // 15 min
-  [IntervalType.Week]: 30 * 60 * 1000,    // 30 min - weekly data is stable
+  [IntervalType.Minute]: 60 * 1000,       // 1 min - minute data changes fast
+  [IntervalType.FiveMinute]: 2 * 60 * 1000,   // 2 min
+  [IntervalType.Hour]: 10 * 60 * 1000,     // 10 min
+  [IntervalType.Day]: 30 * 60 * 1000,     // 30 min
+  [IntervalType.Week]: 60 * 60 * 1000,    // 1 hour - weekly data is stable
 };
 
 // =============================================================================
@@ -115,8 +116,8 @@ const setInCache = (
     expiresAt: Date.now() + CACHE_TTL[interval],
   });
 
-  // Prevent memory leaks
-  if (cache.size > 100) {
+  // Prevent memory leaks - increased cache size for better hit rates
+  if (cache.size > 500) {
     pruneCache();
   }
 };
@@ -131,13 +132,69 @@ const pruneCache = (): void => {
     }
   }
 
-  // Remove oldest if still too large
-  if (cache.size > 50) {
+  // Remove oldest if still too large - keep more entries for better performance
+  if (cache.size > 250) {
     const sorted = Array.from(cache.entries())
       .sort((a, b) => a[1].timestamp - b[1].timestamp);
 
-    for (let i = 0; i < cache.size - 50; i++) {
+    for (let i = 0; i < cache.size - 250; i++) {
       cache.delete(sorted[i][0]);
+    }
+  }
+};
+
+// =============================================================================
+// REQUEST THROTTLING
+// =============================================================================
+
+// Limit concurrent database queries to prevent overwhelming the connection pool
+// Increased to 20 for maximum performance (14 machines = 1 batch, all load in parallel)
+// Supabase typically allows 20-50 concurrent connections
+// Maximum concurrent requests - set high for best performance
+// With 14 machines, we want them all to load in parallel
+const MAX_CONCURRENT_REQUESTS = 25;
+let activeRequestCount = 0;
+const requestQueue: Array<{
+  resolve: (value: MachineTimeline[]) => void;
+  reject: (error: Error) => void;
+  params: MonitoringIntervalsParams;
+  cacheKey: string;
+  bypassCache: boolean;
+}> = [];
+
+/**
+ * Process queued requests when slots become available
+ */
+const processQueue = async (): Promise<void> => {
+  while (requestQueue.length > 0 && activeRequestCount < MAX_CONCURRENT_REQUESTS) {
+    const item = requestQueue.shift();
+    if (!item) break;
+
+    activeRequestCount++;
+    const { resolve, reject, params, cacheKey, bypassCache } = item;
+
+    try {
+      const { data, error } = await supabase.rpc(RPC_FUNCTION_NAME, {
+        board_input: params.board_input,
+        port_input: params.port_input,
+        start_date: params.start_date,
+        end_date: params.end_date,
+        interval_input: params.interval_input,
+      });
+
+      if (error) {
+        throw new Error(`RPC error: ${error.message}`);
+      }
+
+      const result: MachineTimeline[] = data ?? [];
+      setInCache(cacheKey, result, params.interval_input);
+      resolve(result);
+    } catch (error) {
+      reject(error as Error);
+    } finally {
+      activeRequestCount--;
+      // Process next item in queue
+      void processQueue();
     }
   }
 };
@@ -147,7 +204,7 @@ const pruneCache = (): void => {
 // =============================================================================
 
 /**
- * Fetches data from PostgreSQL function with caching and deduplication
+ * Fetches data from PostgreSQL function with caching, deduplication, and throttling
  */
 const fetchFromRPC = async (
   params: MonitoringIntervalsParams,
@@ -165,29 +222,42 @@ const fetchFromRPC = async (
   const pending = pendingRequests.get(cacheKey);
   if (pending) return pending;
 
-  // Make request
-  const requestPromise = (async () => {
-    try {
-      const { data, error } = await supabase.rpc(RPC_FUNCTION_NAME, {
-        board_input: params.board_input,
-        port_input: params.port_input,
-        start_date: params.start_date,
-        end_date: params.end_date,
-        interval_input: params.interval_input,
-      });
+  // Create request promise
+  const requestPromise = new Promise<MachineTimeline[]>((resolve, reject) => {
+    // Add to queue if we're at max capacity
+    if (activeRequestCount >= MAX_CONCURRENT_REQUESTS) {
+      requestQueue.push({ resolve, reject, params, cacheKey, bypassCache });
+    } else {
+      // Process immediately
+      activeRequestCount++;
+      (async () => {
+        try {
+          const { data, error } = await supabase.rpc(RPC_FUNCTION_NAME, {
+            board_input: params.board_input,
+            port_input: params.port_input,
+            start_date: params.start_date,
+            end_date: params.end_date,
+            interval_input: params.interval_input,
+          });
 
-      if (error) {
-        throw new Error(`RPC error: ${error.message}`);
-      }
+          if (error) {
+            throw new Error(`RPC error: ${error.message}`);
+          }
 
-      const result: MachineTimeline[] = data ?? [];
-      setInCache(cacheKey, result, params.interval_input);
-
-      return result;
-    } finally {
-      pendingRequests.delete(cacheKey);
+          const result: MachineTimeline[] = data ?? [];
+          setInCache(cacheKey, result, params.interval_input);
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        } finally {
+          activeRequestCount--;
+          pendingRequests.delete(cacheKey);
+          // Process next item in queue
+          void processQueue();
+        }
+      })();
     }
-  })();
+  });
 
   pendingRequests.set(cacheKey, requestPromise);
   return requestPromise;

@@ -25,6 +25,7 @@ import { fetchMaintenanceByMoldId } from "@/lib/supabase/fetchAllMaintenance";
 import { fetchMold } from "@/lib/supabase/fetchMolds";
 import Header from "../../header";
 import { IntervalType } from "@/types/interval";
+import { fillTimeGaps } from "@/lib/utils/chartData";
 
 import { SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByMoldId } from "@/lib/supabase/fetchMoldHistory";
@@ -159,7 +160,9 @@ const MachinePage = () => {
           endDate,
           interval
         );
-        setChartData(data);
+        // Fill time gaps with zero values for missing intervals
+        const filledData = fillTimeGaps(data, startDate, endDate, interval);
+        setChartData(filledData);
 
         const totalShots = data.map((d) => d.total_shots);
         const avg = totalShots.reduce((a, b) => a + b, 0) / totalShots.length;
