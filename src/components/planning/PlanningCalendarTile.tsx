@@ -53,7 +53,7 @@ export default function PlanningCalendarTile(props: Props) {
         >
             <div className="flex">
                 <span className="block text-sm uppercase font-bold mr-auto">
-                    {props.maintenancePlan.mold_name}
+                    {props.maintenancePlan.machine_name}
                 </span>
 
                 <span className="block text-xs">

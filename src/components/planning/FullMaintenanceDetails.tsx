@@ -35,7 +35,8 @@ export default function FullMaintenanceDetails(props: Props) {
             maintenance_type: editedForm.maintenance_type,
             maintenance_action: editedForm.maintenance_action,
             planned_date: new Date(editedForm.planned_date),
-            mold_id: editedForm.mold_id
+            mold_id: editedForm.machine_id,
+            status: editedForm.status
         }).then(() => {
             toast("Maintenance plan has been updated.", { type: 'success' });
             props.onEdited();
@@ -54,8 +55,8 @@ export default function FullMaintenanceDetails(props: Props) {
         return (
             <form onSubmit={handleFormSubmit} className="block w-full h-full z-form">
                 <div className="grid grid-cols-2 gap-4">
-                    <span className="block font-semibold">Mold</span>
-                    <span>{props.maintenance.mold_name || props.maintenance.mold_id}</span>
+                    <span className="block font-semibold">Machine</span>
+                    <span>{props.maintenance.machine_name || props.maintenance.machine_id}</span>
 
                     <span className="block font-semibold">Scheduled for</span>
                     <Input
@@ -64,6 +65,13 @@ export default function FullMaintenanceDetails(props: Props) {
                         type='datetime-local'
                         value={formatDateToISO(new Date(editedForm.planned_date))}
                     />
+
+                    <span className="block font-semibold">Status</span>
+                    <select onChange={updateFormValue} value={editedForm.status} name="status">
+                        <option value="Planned">Planned</option>
+                        <option value="Busy">Busy</option>
+                        <option value="Finished">Finished</option>
+                    </select>
 
                     <span className="block font-semibold">Maintenance Type</span>
                     <select onChange={updateFormValue} value={editedForm.maintenance_type} name="maintenance_type">
@@ -104,8 +112,8 @@ export default function FullMaintenanceDetails(props: Props) {
         return (
             <div className="block w-full h-full">
                 <div className="grid grid-cols-2 gap-4">
-                    <span className="block font-semibold">Mold</span>
-                    <span>{props.maintenance.mold_name || props.maintenance.mold_id}</span>
+                    <span className="block font-semibold">Machine</span>
+                    <span>{props.maintenance.machine_name || props.maintenance.machine_id}</span>
 
                     <span className="block font-semibold">Scheduled for</span>
                     <span>
@@ -114,6 +122,9 @@ export default function FullMaintenanceDetails(props: Props) {
                             timeStyle: "medium"
                         }).format(props.maintenance.planned_date)}
                     </span>
+
+                    <span className="block font-semibold">Status</span>
+                    <span>{props.maintenance.status}</span>
 
                     <span className="block font-semibold">Maintenance Type</span>
                     <span>{props.maintenance.maintenance_type}</span>
