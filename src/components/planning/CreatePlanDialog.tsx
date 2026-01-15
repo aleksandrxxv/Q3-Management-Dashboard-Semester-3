@@ -46,7 +46,7 @@ export default function CreatePlanDialog(props: Props) {
                 console.log(reason);
             })
         } else {
-            insertNewMoldMaintenanceMilestone(maintenanceForm.mold_id!, maintenanceForm.lifespan!).then(() => {
+            insertNewMoldMaintenanceMilestone(maintenanceForm.machine_id!, maintenanceForm.lifespan!).then(() => {
                 toast("Milestone has been set.", { type: "success" });
                 setIsOpened(false);
             }).catch((reason: Error) => {

@@ -112,7 +112,7 @@ export interface Mechanic {
 export interface Maintenance {
     id: number;
     planned_date: Date
-    mold_id: number,
+    machine_id: number,
     maintenance_type: "Preventative" | "Corrective",
     description: string,
     assigned_to: number,

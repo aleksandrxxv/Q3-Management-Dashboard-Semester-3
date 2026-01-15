@@ -35,7 +35,7 @@ export default function FullMaintenanceDetails(props: Props) {
             maintenance_type: editedForm.maintenance_type,
             maintenance_action: editedForm.maintenance_action,
             planned_date: new Date(editedForm.planned_date),
-            mold_id: editedForm.machine_id,
+            machine_id: editedForm.machine_id,
             status: editedForm.status
         }).then(() => {
             toast("Maintenance plan has been updated.", { type: 'success' });
