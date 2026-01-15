@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Added kwh per kg of product consumption.">
+    <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Fixed the notifications UI, making it way more intuitive.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/notifications/tabs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/notifications/tabs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/app-sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/app-sidebar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,7 +18,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Development" />
+        <entry key="$PROJECT_DIR$" value="feature-EnergyConsumption" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -51,7 +53,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature-EnergyConsumption",
+    "git-widget-placeholder": "Development",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
     "junie.onboarding.icon.badge.shown": "true",

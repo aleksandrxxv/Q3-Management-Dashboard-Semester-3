@@ -49,6 +49,7 @@ import { fetchNotificationsByMachineId } from "@/lib/supabase/notification";
 import NotificationTabs from "../../notifications/tabs";
 import { IntervalType } from "@/types/interval";
 import { fillTimeGaps } from "@/lib/utils/chartData";
+import { MachineEnergyDialog } from "@/components/machine-energy-dialog";
 
 /** ✅ NEW: dummy weight assumption (replace later with mold-based weight) */
 const KG_PER_SHOT = 0.45;
@@ -60,6 +61,8 @@ const chartConfig = {
 
 const energyConfig = {
     kwh: { label: "kWh", color: "hsl(142, 71%, 45%)" },
+    kwhPer1k: { label: "kWh / 1k shots", color: "hsl(262, 83%, 58%)" },
+    efficiency: { label: "Efficiency (kWh/kg)", color: "hsl(340, 82%, 52%)" },
     heating: { label: "Heating", color: "hsl(24, 94%, 50%)" },
     production: { label: "Production", color: "hsl(200, 70%, 50%)" },
     idle: { label: "Idle", color: "hsl(220, 9%, 60%)" },
@@ -206,14 +209,24 @@ const MachinePage = () => {
             const heating = shots < 10 ? 0.85 : 0.35;
 
             const kwh = production + idle + heating;
+            
+            // kWh per 1000 shots (avoid division by zero)
+            const kwhPer1k = shots > 0 ? (kwh / shots) * 1000 : 0;
+            
+            // Efficiency: kWh per kg produced
+            const kgProduced = shots * KG_PER_SHOT;
+            const efficiency = kgProduced > 0 ? kwh / kgProduced : 0;
 
             return {
                 truncated_timestamp: r.truncated_timestamp,
                 kwh: Number(kwh.toFixed(2)),
+                kwhPer1k: Number(kwhPer1k.toFixed(2)),
+                efficiency: Number(efficiency.toFixed(2)),
                 heating: Number(heating.toFixed(2)),
                 production: Number(production.toFixed(2)),
                 idle: Number(idle.toFixed(2)),
                 cost: Number((kwh * PRICE_EUR_PER_KWH).toFixed(2)),
+                shots,
             };
         });
 
@@ -277,14 +290,23 @@ const MachinePage = () => {
                         label="Energy"
                         value={
                             <span className="flex items-baseline gap-2">
-                {energy.totalKwh.toFixed(1)} <span className="text-sm font-medium">kWh</span>
-              </span>
+                                {energy.totalKwh.toFixed(1)} <span className="text-sm font-medium">kWh</span>
+                            </span>
                         }
                         sub={
-                            <span className="flex items-center justify-between">
-                <span>Est. cost</span>
-                <span className="font-medium text-slate-900">€{energy.totalCost.toFixed(0)}</span>
-              </span>
+                            <span className="flex items-center justify-between gap-2">
+                                <span className="flex items-center justify-between flex-1">
+                                    <span>Est. cost</span>
+                                    <span className="font-medium text-slate-900">€{energy.totalCost.toFixed(0)}</span>
+                                </span>
+                                <MachineEnergyDialog
+                                    machineName={machine.machine_name || `Machine ${machine.machine_id}`}
+                                    energySeries={energy.series}
+                                    totalKwh={energy.totalKwh}
+                                    totalCost={energy.totalCost}
+                                    totals={energy.totals}
+                                />
+                            </span>
                         }
                     />
 
@@ -449,11 +471,11 @@ const MachinePage = () => {
                                         </div>
                                     </div>
 
-                                    {/* Trend */}
+                                    {/* Trend - kWh per 1000 shots */}
                                     <Card className="shadow-sm min-w-0">
                                         <CardHeader className="border-b">
                                             <CardTitle className="text-base">Energy trend</CardTitle>
-                                            <CardDescription>kWh per bucket</CardDescription>
+                                            <CardDescription>kWh per 1,000 shots</CardDescription>
                                         </CardHeader>
                                         <CardContent className="pt-4">
                                             <ChartContainer config={energyConfig} className="aspect-auto h-[180px] w-full">
@@ -463,22 +485,70 @@ const MachinePage = () => {
                                                     <YAxis hide domain={["auto", "auto"]} />
                                                     <ChartTooltip content={<ChartTooltipContent />} />
                                                     <Area
-                                                        dataKey="kwh"
+                                                        dataKey="kwhPer1k"
                                                         type="monotone"
-                                                        stroke={energyConfig.kwh.color}
-                                                        fill={energyConfig.kwh.color}
+                                                        stroke={energyConfig.kwhPer1k.color}
+                                                        fill={energyConfig.kwhPer1k.color}
                                                         fillOpacity={0.12}
                                                     />
-                                                    <Line dot={false} dataKey="kwh" stroke={energyConfig.kwh.color} strokeWidth={2} />
+                                                    <Line dot={false} dataKey="kwhPer1k" stroke={energyConfig.kwhPer1k.color} strokeWidth={2} />
                                                 </ComposedChart>
                                             </ChartContainer>
 
                                             <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
-                                                <span>Est. cost: €{energy.totalCost.toFixed(0)}</span>
+                                                <span>Lower is better</span>
                                                 <span className="truncate">{formatRangeLabel(date)}</span>
                                             </div>
                                         </CardContent>
                                     </Card>
+                                </div>
+                                
+                                {/* Efficiency Chart */}
+                                <div className="mt-4 rounded-xl border p-4">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div>
+                                            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Machine Efficiency</div>
+                                            <div className="text-xs text-muted-foreground">Energy consumption per kg produced (kWh/kg)</div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                                                {kwhPerKg !== null ? `${kwhPerKg.toFixed(2)} kWh/kg` : "—"}
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">Average efficiency</div>
+                                        </div>
+                                    </div>
+                                    <ChartContainer config={energyConfig} className="aspect-auto h-[150px] w-full">
+                                        <ComposedChart accessibilityLayer data={energy.series}>
+                                            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                                            <XAxis 
+                                                dataKey="truncated_timestamp" 
+                                                tickLine={false}
+                                                axisLine={false}
+                                                tickFormatter={(value) => value && new Date(value).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
+                                            />
+                                            <YAxis 
+                                                hide 
+                                                domain={["auto", "auto"]} 
+                                            />
+                                            <ChartTooltip content={<ChartTooltipContent />} />
+                                            <Area
+                                                dataKey="efficiency"
+                                                type="monotone"
+                                                stroke={energyConfig.efficiency.color}
+                                                fill={energyConfig.efficiency.color}
+                                                fillOpacity={0.15}
+                                            />
+                                            <Line 
+                                                dot={false} 
+                                                dataKey="efficiency" 
+                                                stroke={energyConfig.efficiency.color} 
+                                                strokeWidth={2} 
+                                            />
+                                        </ComposedChart>
+                                    </ChartContainer>
+                                    <div className="mt-2 text-[11px] text-muted-foreground">
+                                        Lower values indicate better efficiency. Based on {KG_PER_SHOT} kg per shot assumption.
+                                    </div>
                                 </div>
                             </div>
                         </div>
