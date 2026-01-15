@@ -53,7 +53,7 @@ export default function PlanningCalendarTile(props: Props) {
         >
             <div className="flex">
                 <span className="block text-sm uppercase font-bold mr-auto">
-                    {props.maintenancePlan.mold_name}
+                    {props.maintenancePlan.machine_name}
                 </span>
 
                 <span className="block text-xs">
@@ -66,6 +66,14 @@ export default function PlanningCalendarTile(props: Props) {
                     {props.maintenancePlan.maintenance_action}
                 </span>
 
+                <span
+                    className={
+                        "block px-2 rounded-full border w-24 text-center " +
+                        (props.maintenancePlan.status === "Finished" ? "border-green-400" : "border-red-400")
+                    }
+                >
+                    {props.maintenancePlan.status}
+                </span>
                 <span
                     className={
                         "block px-2 rounded-full border w-24 text-center " +

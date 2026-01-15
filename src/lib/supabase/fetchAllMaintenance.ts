@@ -8,10 +8,10 @@ export async function fetchAllMaintenance(from: Date | null = null, to: Date | n
 
     const {data, error} = mechanic == null ?
         await supabase
-        .from('v_maintenance')
+        .from('v_machines_maintenance')
         .select('*').lt("planned_date", to.toISOString()).gt("planned_date", from.toISOString()) :
         await supabase
-            .from('v_maintenance')
+            .from('v_machines_maintenance')
             .select('*').lt("planned_date", to.toISOString()).gt("planned_date", from.toISOString()).eq("assigned_to", mechanic)
 
     if (error) {
@@ -25,7 +25,7 @@ export async function fetchAllMaintenance(from: Date | null = null, to: Date | n
 
 export async function fetchMaintenance(id: number): Promise<MaintenanceFull> {
     const {data, error} = await supabase
-        .from('v_maintenance')
+        .from('v_machines_maintenance')
         .select('*').eq("id", id).single()
 
     if (error) {
@@ -40,7 +40,7 @@ export async function fetchMaintenance(id: number): Promise<MaintenanceFull> {
 // get by mold_id
 export async function fetchMaintenanceByMoldId(mold_id: number): Promise<MaintenanceFull[]> {
     const {data, error} = await supabase
-        .from('v_maintenance')
+        .from('v_machines_maintenance')
         .select('*').eq("mold_id", mold_id)
 
     if (error) {

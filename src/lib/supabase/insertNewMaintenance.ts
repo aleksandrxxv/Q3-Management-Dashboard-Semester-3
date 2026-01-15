@@ -7,7 +7,7 @@ export async function insertNewMaintenance(maintenance: Omit<Maintenance, "id" |
     
 
     const {error} = await supabase
-        .from('i_maintenance_plans')
+        .from('i_machines_maintenance')
         .insert(maintenance)
 
     if (error) {

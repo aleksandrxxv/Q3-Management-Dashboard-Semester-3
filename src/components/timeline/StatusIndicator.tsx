@@ -10,6 +10,7 @@ const STATUS_STYLES: Record<string, string> = {
   'Actief': 'bg-green-500 border-green-600',
   'Stilstand': 'bg-red-500 border-red-600',
   'Inactief': 'bg-gray-500 border-gray-600',
+  'Failure': 'bg-red-500 border-red-600'
 };
 
 function StatusIndicator({ status }: StatusIndicatorProps) {
@@ -20,7 +21,7 @@ function StatusIndicator({ status }: StatusIndicatorProps) {
     if (status === 'Actief' || status === 'Stilstand') {
       return <PowerIcon className={iconClass} />;
     }
-    if (status === 'Inactief') {
+    if (status === 'Inactief' || status === 'Failure') {
       return <AlertOctagon className={iconClass} />;
     }
     return null;

@@ -88,14 +88,14 @@ export interface MaintenanceFull {
     mechanic_id: number;
     maintenance_type: "Preventative" | "Corrective";
     description: string;
-    mold_name: string;
-    mold_id: number;
+    machine_name: string;
+    machine_id: number;
     mold_description: string;
     id: number;
     planned_date: Date;
     maintenance_action: string;
     assigned_to: number;
-    status: string;
+    status: "Planned" | "Busy" | "Finished";
     mechanic_specialization: string;
     group_id: number | null;
 }
@@ -112,7 +112,7 @@ export interface Mechanic {
 export interface Maintenance {
     id: number;
     planned_date: Date
-    mold_id: number,
+    machine_id: number,
     maintenance_type: "Preventative" | "Corrective",
     description: string,
     assigned_to: number,
