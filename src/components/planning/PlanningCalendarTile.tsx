@@ -69,6 +69,14 @@ export default function PlanningCalendarTile(props: Props) {
                 <span
                     className={
                         "block px-2 rounded-full border w-24 text-center " +
+                        (props.maintenancePlan.status === "Finished" ? "border-green-400" : "border-red-400")
+                    }
+                >
+                    {props.maintenancePlan.status}
+                </span>
+                <span
+                    className={
+                        "block px-2 rounded-full border w-24 text-center " +
                         (props.maintenancePlan.maintenance_type === "Corrective" ? "border-orange-400" : "")
                     }
                 >

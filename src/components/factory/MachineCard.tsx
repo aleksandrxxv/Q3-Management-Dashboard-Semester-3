@@ -32,6 +32,8 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
         return "bg-yellow-500";
       case "Stilstand":
         return "bg-red-500";
+      case "Failure":
+        return "bg-red-500";
       default:
         return "bg-gray-500";
     }
@@ -44,6 +46,8 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
       case "Inactief":
         return "#F59E0B";
       case "Stilstand":
+        return "#EF4444";
+      case "Failure":
         return "#EF4444";
       default:
         return "#6B7280";
