@@ -2,9 +2,9 @@ import {Maintenance} from "@/types/supabase";
 import {supabase} from "./client";
 
 
-export async function updateMaintenance(maintenance: Omit<Maintenance, "status">) {
+export async function updateMaintenance(maintenance: Maintenance) {
     const {error} = await supabase
-        .from('i_maintenance_plans')
+        .from('i_machines_maintenance')
         .update(maintenance).eq('id', maintenance.id)
 
     if (error) {

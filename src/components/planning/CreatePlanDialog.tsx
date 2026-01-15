@@ -4,7 +4,7 @@ import {Dialog, DialogContent, DialogTitle, DialogDescription, DialogTrigger} fr
 import {Plus} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {ChangeEvent, FormEvent, useEffect, useState} from "react";
-import {Maintenance, Mechanic, Mold} from "@/types/supabase";
+import {Machine, Maintenance, Mechanic, Mold} from "@/types/supabase";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
 import {insertNewMaintenance} from "@/lib/supabase/insertNewMaintenance";
@@ -12,6 +12,7 @@ import {fetchAllMolds} from "@/lib/supabase/fetchMolds";
 import {fetchMechanics} from "@/lib/supabase/fetchMechanics";
 import {formatDateToISO} from "@/lib/utils";
 import {insertNewMoldMaintenanceMilestone} from "@/lib/supabase/insertNewMoldMaintenanceMilestone";
+import { fetchMachines } from "@/lib/supabase/fetchMachines";
 
 interface Props {
     formData: Partial<Omit<Maintenance, "id" | "status">>
@@ -22,6 +23,7 @@ export default function CreatePlanDialog(props: Props) {
     const [maintenanceForm, setMaintenanceForm] = useState<Partial<Omit<Maintenance, "id" | "status"> & {lifespan: number}>>(props.formData);
 
     const [molds, setMolds] = useState<Mold[]>([]);
+    const [machines, setMachines] = useState<Machine[]>([]);
     const [mechanics, setMechanics] = useState<Mechanic[]>([]);
     const [isOpened, setIsOpened] = useState<boolean>(false);
     const [isManual, setIsManual] = useState<boolean>(true);
@@ -44,7 +46,7 @@ export default function CreatePlanDialog(props: Props) {
                 console.log(reason);
             })
         } else {
-            insertNewMoldMaintenanceMilestone(maintenanceForm.mold_id!, maintenanceForm.lifespan!).then(() => {
+            insertNewMoldMaintenanceMilestone(maintenanceForm.machine_id!, maintenanceForm.lifespan!).then(() => {
                 toast("Milestone has been set.", { type: "success" });
                 setIsOpened(false);
             }).catch((reason: Error) => {
@@ -62,6 +64,7 @@ export default function CreatePlanDialog(props: Props) {
     }
 
     useEffect(() => {
+        fetchMachines().then(setMachines);
         fetchAllMolds().then(setMolds);
         fetchMechanics().then(setMechanics);
     }, []);
@@ -84,7 +87,7 @@ export default function CreatePlanDialog(props: Props) {
             <DialogContent className={"rounded-xl"}>
                 <DialogTitle>Schedule Maintenance</DialogTitle>
                 <DialogDescription>
-                  Create a new maintenance schedule for a mold
+                  Create a new maintenance schedule for a machine
                 </DialogDescription>
                 <form onSubmit={handleSubmit}>
                     <div className={"flex flex-col z-form items-center gap-3 w-full"}>
@@ -122,12 +125,12 @@ export default function CreatePlanDialog(props: Props) {
 
                         {/* Mold */}
                         <div className={"grid grid-cols-2 items-center gap-3 w-full"}>
-                            <span className={"text-sm font-semibold"}>Mold</span>
-                            <select required defaultValue={""} name="mold_id" onChange={updateFormValue}>
+                            <span className={"text-sm font-semibold"}>Machine</span>
+                            <select required defaultValue={""} name="machine_id" onChange={updateFormValue}>
                                 <option value="" disabled>Select an option</option>
-                                {molds.map((m, index) => (
-                                    <option value={m.mold_id} key={index}>
-                                        {m.mold_name || m.mold_id} ({m.total_shots} shots)
+                                {machines.map((m, index) => (
+                                    <option value={m.machine_id} key={index}>
+                                        {m.machine_name || m.machine_id}
                                     </option>
                                 ))}
                             </select>

@@ -51,18 +51,27 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default async function Page() {
-  const getMachinesCached = unstable_cache(
-    () => getMachines(),
-    ["machines"],
-    { revalidate: 10 }
-  );
+  // const getMachinesCached = unstable_cache(
+  //   async () => getMachines(),
+  //   ["machines"],
+  //   { revalidate: 10}
+  // );
 
-  const machines = await getMachinesCached();
+  const machines = await getMachines();
 
+<<<<<<< HEAD
   // Calculate stats for footer
   const totalMachines = machines.length;
   const activeMachines = machines.filter(m => m.status === 'Actief').length;
   const standstillMachines = machines.filter(m => m.status === 'Stilstand').length;
+=======
+  const machineStatus = (machine: Machine) => {
+    if (machine.status === "Actief") return "Active";
+    if (machine.status === "Stilstand") return "Standstill";
+    if (machine.status === "Inactief") return "Inactive";
+    if (machine.status === "Failure") return "Failure";
+  };
+>>>>>>> e196602b21667b1b0eb117d60185d596f31f7bc7
 
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950">
