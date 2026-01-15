@@ -51,13 +51,13 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default async function Page() {
-  // const getMachinesCached = unstable_cache(
-  //   async () => getMachines(),
-  //   ["machines"],
-  //   { revalidate: 10}
-  // );
+  const getMachinesCached = unstable_cache(
+    async () => getMachines(),
+    ["machines"],
+    { revalidate: 10 }
+  );
 
-  const machines = await getMachines();
+  const machines = await getMachinesCached();
 
   // Calculate stats for footer
   const totalMachines = machines.length;
