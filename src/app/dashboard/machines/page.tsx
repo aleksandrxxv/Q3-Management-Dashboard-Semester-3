@@ -103,9 +103,9 @@ export default async function Page() {
               </TableHeader>
 
               <TableBody>
-                {machines.map((machine) => (
+                {machines.map((machine, index) => (
                   <TableRow 
-                    key={machine.machine_id}
+                    key={`${machine.machine_id}-${index}`}
                     className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                   >
                     <TableCell className="pl-6">

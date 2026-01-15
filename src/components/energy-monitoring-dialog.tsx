@@ -11,7 +11,6 @@ import {
   Area,
   Bar,
   Legend,
-  Tooltip,
 } from "recharts";
 import {
   Dialog,
