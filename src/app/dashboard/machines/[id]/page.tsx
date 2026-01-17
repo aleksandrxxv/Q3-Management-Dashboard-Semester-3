@@ -33,6 +33,7 @@ import {
 import { fetchMachine } from "@/lib/supabase/fetchMachines";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 import {
+    HourlyEnergyData,
     Machine,
     MachineTimeline,
     MoldHistory,
@@ -50,6 +51,7 @@ import NotificationTabs from "../../notifications/tabs";
 import { IntervalType } from "@/types/interval";
 import { fillTimeGaps } from "@/lib/utils/chartData";
 import { MachineEnergyDialog } from "@/components/machine-energy-dialog";
+import {fetchHourlyEnergy} from "@/lib/supabase/HourlyEnergyData";
 
 /** ✅ NEW: dummy weight assumption (replace later with mold-based weight) */
 const KG_PER_SHOT = 0.45;
@@ -134,6 +136,45 @@ const MachinePage = () => {
         from: new Date(2020, 8, 0),
         to: new Date(2020, 8, 20),
     });
+
+    // 1. Add new state at the top of your component
+    const [realEnergyData, setRealEnergyData] = useState<HourlyEnergyData[]>([]);
+    const realEnergy = useMemo(() => {
+        if (!realEnergyData.length) {
+            return {
+                series: [],
+                totalKwh: 0,
+            };
+        }
+
+        // Map energy per hour
+        const series = realEnergyData.map((row) => ({
+            truncated_timestamp: row.hour_start,
+            kwh: row.total_energy_kwh,
+        }));
+
+        const totalKwh = series.reduce((sum, r) => sum + r.kwh, 0);
+
+        return { series, totalKwh };
+    }, [realEnergyData]);
+
+// 2. Add the useEffect to fetch data
+    useEffect(() => {
+        const loadEnergy = async () => {
+            if (!machine?.machine_name || !date?.from || !date?.to) return;
+
+            // We use the friendly name (A1, B1, etc.) defined in your Supabase View
+            const friendlyName = machine.machine_name;
+
+            try {
+                const data = await fetchHourlyEnergy(friendlyName, date.from, date.to);
+                setRealEnergyData(data);
+            } catch (err) {
+                console.error("Failed to fetch energy:", err);
+            }
+        };
+        loadEnergy();
+    }, [machine, date]);
 
     useEffect(() => {
         if (!id) return;

@@ -150,3 +150,9 @@ export interface Notification {
     mold_id?: number;
     machine_id?: number;
 }
+
+export interface HourlyEnergyData {
+    friendly_name: string;
+    hour_start: string; // ISO string from Postgres
+    total_energy_kwh: number;
+}
