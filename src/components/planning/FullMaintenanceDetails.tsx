@@ -84,8 +84,9 @@ export default function FullMaintenanceDetails(props: Props) {
                         <option value="" disabled>Select an option</option>
 
                         {/* Translated actions */}
-                        <option value="Cleaning">Cleaning</option>
-                        <option value="Calibration">Calibration</option>
+                        <option value="Calibrate">Calibrate</option>
+                        <option value="Clean">Clean</option>
+                        <option value="Inspect">Inspect</option>
                     </select>
 
                     <span className="block font-semibold">Assigned mechanic</span>

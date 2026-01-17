@@ -39,7 +39,7 @@ export interface Machine {
     machine_name: string;
     board: number;
     port: number;
-    status: 'Actief' | 'Inactief' | 'Stilstand';
+    status: 'Actief' | 'Inactief' | 'Stilstand' | 'Failure';
     total_shots: number;
     avg_shot_time: number;
     last_update: string;
