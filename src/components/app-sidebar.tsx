@@ -119,14 +119,14 @@ export function AppSidebar() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {item.badge && (
-                        <Badge 
-                          variant="destructive" 
-                          className="h-5 min-w-5 px-1.5 text-[10px] font-semibold rounded-full"
-                        >
-                          {item.badge}
-                        </Badge>
-                      )}
+                      {/*{item.badge && (*/}
+                      {/*  <Badge */}
+                      {/*    variant="destructive" */}
+                      {/*    className="h-5 min-w-5 px-1.5 text-[10px] font-semibold rounded-full"*/}
+                      {/*  >*/}
+                      {/*    {item.badge}*/}
+                      {/*  </Badge>*/}
+                      {/*)}*/}
                       {active && (
                         <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
                       )}

@@ -36,6 +36,11 @@ export default function CreatePlanDialog(props: Props) {
         e.preventDefault();
 
         if (isManual) {
+            if (typeof maintenanceForm.planned_date === 'string') {
+                const plannedDateUTC = new Date(maintenanceForm.planned_date).toISOString();
+                maintenanceForm.planned_date = new Date(plannedDateUTC);
+            }
+            //console.log(typeof maintenanceForm.planned_date, maintenanceForm.planned_date);
             insertNewMaintenance(maintenanceForm as Required<Omit<Maintenance, "id" | "status">>).then(() => {
                 toast("Maintenance has been scheduled.", { type: "success" });
                 setIsOpened(false);
@@ -169,20 +174,6 @@ export default function CreatePlanDialog(props: Props) {
                                 <option>Calibrate</option>
                                 <option>Clean</option>
                                 <option>Inspect</option>
-                                <option>Lubricate</option>
-                                <option>Check cooling channels</option>
-                                <option>Clean nozzle</option>
-                                <option>Tighten fasteners</option>
-                                <option>Check hot runner</option>
-                                <option>Polish</option>
-                                <option>Replace seals</option>
-                                <option>Test clamping force</option>
-                                <option>Rebuild guides</option>
-                                <option>Inspect electrical connections</option>
-                                <option>Degas</option>
-                                <option>Check alignment</option>
-                                <option>Replace wear strips</option>
-                                <option>Check temperature zones</option>
                             </select>
                         </div>
 
