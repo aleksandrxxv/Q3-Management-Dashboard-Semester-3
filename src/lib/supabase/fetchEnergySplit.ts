@@ -1,10 +1,10 @@
 ﻿import { supabase } from './client';
-import { HourlyEnergyData } from '@/types/supabase'
+import {HourlyEnergySplit} from '@/types/supabase'
 
-export async function fetchHourlyEnergy(friendlyName: string, from: Date, to: Date) {
+export async function fetchEnergySplit(friendlyName: string, from: Date, to: Date) {
 
     const { data, error } = await supabase
-        .from('mv_hourly_device_monitoring')
+        .from('mv_hourly_energy_split')
         .select('*')
         .eq('friendly_name', friendlyName)
         .gte('hour_start', from.toISOString())
@@ -12,5 +12,5 @@ export async function fetchHourlyEnergy(friendlyName: string, from: Date, to: Da
         .order('hour_start', { ascending: true });
 
     if (error) throw error;
-    return data as HourlyEnergyData[];
+    return data as HourlyEnergySplit[];
 }

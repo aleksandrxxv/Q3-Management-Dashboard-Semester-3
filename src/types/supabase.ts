@@ -157,3 +157,12 @@ export interface HourlyEnergyData {
     total_energy_kwh: number;
     total_shots: number;
 }
+
+export interface HourlyEnergySplit {
+    friendly_name: string;
+    hour_start: string;
+    production_energy: number;
+    heating_energy: number;
+    idle_energy: number;
+    total_hour_energy: number;
+}

@@ -53,7 +53,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function MachineIcon({ machine }: {machine: Machine }) {
-    if (machine.machine_name === 'B1' || machine.machine_name == 'A9') {
+    if (machine.machine_name === 'B1') {
         return (
             <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                 <Zap className="h-4 w-4 text-amber-600" />

@@ -33,7 +33,7 @@ import {
 import { fetchMachine } from "@/lib/supabase/fetchMachines";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 import {
-    HourlyEnergyData,
+    HourlyEnergyData, HourlyEnergySplit,
     Machine,
     MachineTimeline,
     MoldHistory,
@@ -52,6 +52,7 @@ import { IntervalType } from "@/types/interval";
 import { fillTimeGaps } from "@/lib/utils/chartData";
 import { MachineEnergyDialog } from "@/components/machine-energy-dialog";
 import {fetchHourlyEnergy} from "@/lib/supabase/HourlyEnergyData";
+import {fetchEnergySplit} from "@/lib/supabase/fetchEnergySplit";
 
 /** ✅ NEW: dummy weight assumption (replace later with mold-based weight) */
 const KG_PER_SHOT = 0.45;
@@ -132,12 +133,26 @@ const MachinePage = () => {
     const [moldsHistory, setMoldsHistory] = useState<MoldHistory[]>([]);
     const [interval, setInterval] = useState<IntervalType>(IntervalType.Hour);
 
+    const hasEnergyMonitoring = (machine?.machine_name === 'B1');
+
     const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(2025, 8, 5),
-        to: new Date(2025, 8, 6),
+        from: new Date(2020, 8, 1),
+        to: new Date(2020, 8, 30)
     });
 
-    // 1. Add new state at the top of your component
+    useEffect(() => {
+        if (hasEnergyMonitoring) {
+            setDate({
+                from: new Date(2025, 8, 16),
+                to: new Date(2025, 8, 18)
+            });
+        } else {
+            setDate({
+                from: new Date(2020, 8, 1),
+                to: new Date(2020, 8, 30)
+            });
+        }
+    }, [hasEnergyMonitoring]);
 
     useEffect(() => {
         if (!id) return;
@@ -203,32 +218,13 @@ const MachinePage = () => {
 
     const [realEnergyData, setRealEnergyData] = useState<HourlyEnergyData[]>([]);
     const realEnergy = useMemo(() => {
-        // if (!realEnergyData.length) {
-        //     return {
-        //         series: [],
-        //         totalKwh: 0,
-        //     };
-        // }
-
         const rows: any[] = realEnergyData as any[];
         const PRICE_EUR_PER_KWH = 0.26;
-
-        // Map energy per hour
-        // const series = realEnergyData.map((row) => ({
-        //     truncated_timestamp: row.hour_start,
-        //     kwh: row.total_energy_kwh,
-        //     total_shots: row.total_shots
-        // }));
 
         const series = rows.map((r) => {
             const shots = Number(r.total_shots) || 0;
 
-            // To be calculated
-            const production = shots * 0.00022;
-            const idle = 0.55;
-            const heating = shots < 10 ? 0.85 : 0.35;
-
-            const kwh = Number(r.total_energy_kwh) || 0;
+            const kwh = (Number(r.total_energy_kwh) || 0) / 1000;
 
             // kWh per 1000 shots (avoid division by zero)
             const kwhPer1k = shots > 0 ? (kwh / shots) * 1000 : 0;
@@ -242,10 +238,7 @@ const MachinePage = () => {
                 kwh: Number(kwh.toFixed(2)),
                 kwhPer1k: Number(kwhPer1k.toFixed(2)),
                 efficiency: Number(efficiency.toFixed(2)),
-                heating: Number(heating.toFixed(2)),
-                production: Number(production.toFixed(2)),
-                idle: Number(idle.toFixed(2)),
-                cost: Number(((kwh / 1000) * PRICE_EUR_PER_KWH).toFixed(2)),
+                cost: Number((kwh * PRICE_EUR_PER_KWH).toFixed(2)),
                 shots,
             };
         });
@@ -253,23 +246,48 @@ const MachinePage = () => {
         const totalKwh = series.reduce((s, x) => s + x.kwh, 0);
         const totalCost = series.reduce((s, x) => s + x.cost, 0);
 
+        return { series, totalKwh, totalCost };
+    }, [realEnergyData]);
+
+    const [energySplitData, setEnergySplitData] = useState<HourlyEnergySplit[]>([]);
+    const energySplit = useMemo(() => {
+        const rows: any[] = energySplitData as any[];
+
+        const series = rows.map((r) => {
+            const production = Number(r.production_energy || 0) / 1000;
+            const idle = Number(r.idle_energy || 0) / 1000;
+            const heating = Number(r.heating_energy || 0) / 1000;
+
+            const kwh = (Number(r.total_hour_energy) || 0) / 1000;
+
+            return {
+                truncated_timestamp: r.hour_start,
+                kwh: Number(kwh.toFixed(2)),
+                heating: Number(heating.toFixed(2)),
+                production: Number(production.toFixed(2)),
+                idle: Number(idle.toFixed(2))
+            };
+        });
+
+        const totalKwh = series.reduce((s, x) => s + x.kwh, 0);
+
         const totals = {
             heating: series.reduce((s, x) => s + x.heating, 0),
             production: series.reduce((s, x) => s + x.production, 0),
             idle: series.reduce((s, x) => s + x.idle, 0),
         };
 
-        const denom = Math.max(1e-6, totalKwh / 1000);
+        const denom = Math.max(1e-6, totalKwh);
         const pct = {
             heating: (totals.heating / denom) * 100,
             production: (totals.production / denom) * 100,
             idle: (totals.idle / denom) * 100,
         };
 
-        return { series, totalKwh, totalCost, totals, pct };
-    }, [realEnergyData]);
+        return { series, totalKwh, totals, pct };
+    }, [energySplitData]);
 
-    // 2. Add the useEffect to fetch data
+    // Add the useEffect to fetch data
     useEffect(() => {
         const loadEnergy = async () => {
             if (!machine?.machine_name || !date?.from || !date?.to) return;
@@ -284,78 +302,43 @@ const MachinePage = () => {
                 console.error("Failed to fetch energy:", err);
             }
         };
+        const loadSplit = async () => {
+            if (!machine?.machine_name || !date?.from || !date?.to) return;
+            const friendlyName = machine.machine_name;
+            try {
+                const data = await fetchEnergySplit(friendlyName, date.from, date.to);
+                setEnergySplitData(data);
+            } catch (err) {
+                console.error("Failed to fetch energy split:", err);
+            }
+        }
         loadEnergy();
+        loadSplit();
     }, [machine, date]);
-
-    // const energy = useMemo(() => {
-    //     const rows: any[] = chartData as any[];
-    //     const PRICE_EUR_PER_KWH = 0.26;
-    //
-    //     const series = rows.map((r) => {
-    //         const shots = Number(r.total_shots) || 0;
-    //
-    //         const production = shots * 0.00022;
-    //         const idle = 0.55;
-    //         const heating = shots < 10 ? 0.85 : 0.35;
-    //
-    //         const kwh = production + idle + heating;
-    //
-    //         // kWh per 1000 shots (avoid division by zero)
-    //         const kwhPer1k = shots > 0 ? (kwh / shots) * 1000 : 0;
-    //
-    //         // Efficiency: kWh per kg produced
-    //         const kgProduced = shots * KG_PER_SHOT;
-    //         const efficiency = kgProduced > 0 ? kwh / kgProduced : 0;
-    //
-    //         return {
-    //             truncated_timestamp: r.truncated_timestamp,
-    //             kwh: Number(kwh.toFixed(2)),
-    //             kwhPer1k: Number(kwhPer1k.toFixed(2)),
-    //             efficiency: Number(efficiency.toFixed(2)),
-    //             heating: Number(heating.toFixed(2)),
-    //             production: Number(production.toFixed(2)),
-    //             idle: Number(idle.toFixed(2)),
-    //             cost: Number((kwh * PRICE_EUR_PER_KWH).toFixed(2)),
-    //             shots,
-    //         };
-    //     });
-    //
-    //     const totalKwh = series.reduce((s, x) => s + x.kwh, 0);
-    //     const totalCost = series.reduce((s, x) => s + x.cost, 0);
-    //
-    //     const totals = {
-    //         heating: series.reduce((s, x) => s + x.heating, 0),
-    //         production: series.reduce((s, x) => s + x.production, 0),
-    //         idle: series.reduce((s, x) => s + x.idle, 0),
-    //     };
-    //
-    //     const denom = Math.max(1e-6, totalKwh);
-    //     const pct = {
-    //         heating: (totals.heating / denom) * 100,
-    //         production: (totals.production / denom) * 100,
-    //         idle: (totals.idle / denom) * 100,
-    //     };
-    //
-    //     return { series, totalKwh, totalCost, totals, pct };
-    // }, [chartData]);
 
     /** ✅ NEW: kWh/kg (energy efficiency) */
     const kwhPerKg = useMemo(() => {
         if (kpis.totalKgProduced <= 0) return null;
-        return (realEnergy.totalKwh / 1000) / kpis.totalKgProduced;
+        return (realEnergy.totalKwh) / kpis.totalKgProduced;
     }, [realEnergy.totalKwh, kpis.totalKgProduced]);
 
     const donutData = useMemo(() => {
         return [
-            { name: "Heating", value: Number(realEnergy.totals.heating.toFixed(2)), key: "heating" as const },
-            { name: "Production", value: Number(realEnergy.totals.production.toFixed(2)), key: "production" as const },
-            { name: "Idle", value: Number(realEnergy.totals.idle.toFixed(2)), key: "idle" as const },
+            { name: "Heating", value: Number(energySplit.totals.heating.toFixed(2)), key: "heating" as const },
+            { name: "Production", value: Number(energySplit.totals.production.toFixed(2)), key: "production" as const },
+            { name: "Idle", value: Number(energySplit.totals.idle.toFixed(2)), key: "idle" as const },
         ];
-    }, [realEnergy.totals.heating, realEnergy.totals.production, realEnergy.totals.idle]);
+    }, [energySplit.totals.heating, energySplit.totals.production, energySplit.totals.idle]);
 
     const donutTotal = useMemo(() => donutData.reduce((s, d) => s + d.value, 0), [donutData]);
 
-    const hasEnergyMonitoring = (machine?.machine_name === 'B1' || machine?.machine_name === 'A9');
+    const machineStatus = (status: string) => {
+        switch (status) {
+            case 'Actief': return 'Active';
+            case 'Inactief': return 'Inactive';
+            case 'Stilstand': return 'Standstill';
+        }
+    }
 
     if (!machine) return <div className="p-4">Loading...</div>;
 
@@ -371,13 +354,13 @@ const MachinePage = () => {
                         value={
                             <span className="flex items-center gap-2 text-base">
                 <StatusIndicator status={machine.status} />
-                                {machine.status}
+                                {machineStatus(machine.status)}
               </span>
                         }
                         sub="Current machine state"
                     />
                     <Stat label="Total shots" value={kpis.totalShots.toLocaleString()} sub="Selected range" />
-                    <Stat label="Avg. shot time" value={`${kpis.avgShot.toFixed(2)}s`} />
+                    <Stat label="Avg. shot time" value={`${kpis.avgShot.toFixed(2)}s`} sub="Selected range" />
                     {!hasEnergyMonitoring &&
                         <div className="flex flex-wrap items-center gap-2">
                             <SelectStartEndDate date={date} setDate={setDate} className="w-min" />
@@ -389,7 +372,7 @@ const MachinePage = () => {
                             label="Energy"
                             value={
                                 <span className="flex items-baseline gap-2">
-                                {(realEnergy.totalKwh / 1000).toFixed(2)} <span className="text-sm font-medium">kWh</span>
+                                {(realEnergy.totalKwh).toFixed(2)} <span className="text-sm font-medium">kWh</span>
                             </span>
                             }
                             sub={
@@ -401,9 +384,10 @@ const MachinePage = () => {
                                 <MachineEnergyDialog
                                     machineName={machine.machine_name || `Machine ${machine.machine_id}`}
                                     energySeries={realEnergy.series}
-                                    totalKwh={(realEnergy.totalKwh / 1000)}
+                                    energySplitSeries={energySplit.series}
+                                    totalKwh={realEnergy.totalKwh}
                                     totalCost={realEnergy.totalCost}
-                                    totals={realEnergy.totals}
+                                    totals={energySplit.totals}
                                 />
                             </span>
                             }
@@ -447,18 +431,18 @@ const MachinePage = () => {
                                     <div className="mt-3 space-y-3">
                                         <MiniBreakdownRow
                                             label="Heating"
-                                            value={`${realEnergy.totals.heating.toFixed(1)} kWh`}
-                                            pct={realEnergy.pct.heating}
+                                            value={`${energySplit.totals.heating.toFixed(1)} kWh`}
+                                            pct={energySplit.pct.heating}
                                         />
                                         <MiniBreakdownRow
                                             label="Production"
-                                            value={`${realEnergy.totals.production.toFixed(1)} kWh`}
-                                            pct={realEnergy.pct.production}
+                                            value={`${energySplit.totals.production.toFixed(1)} kWh`}
+                                            pct={energySplit.pct.production}
                                         />
                                         <MiniBreakdownRow
                                             label="Idle"
-                                            value={`${realEnergy.totals.idle.toFixed(1)} kWh`}
-                                            pct={realEnergy.pct.idle}
+                                            value={`${energySplit.totals.idle.toFixed(1)} kWh`}
+                                            pct={energySplit.pct.idle}
                                         />
                                     </div>
                                     {/*<div className="mt-3 text-[11px] text-muted-foreground">*/}
@@ -470,7 +454,7 @@ const MachinePage = () => {
                                     <div className="text-xs text-muted-foreground">Efficiency</div>
                                     <div className="mt-1 text-sm font-semibold">
                                         {kpis.totalShots > 0
-                                            ? `${(((realEnergy.totalKwh / 1000) / kpis.totalShots) * 1000).toFixed(2)} kWh / 1k shots`
+                                            ? `${((realEnergy.totalKwh / kpis.totalShots) * 1000).toFixed(2)} kWh / 1k shots`
                                             : "—"}
                                     </div>
                                     <div className="mt-1 text-[11px] text-muted-foreground">
@@ -486,7 +470,7 @@ const MachinePage = () => {
                                         <div className="min-w-0">
                                             <div className="text-xs text-muted-foreground">Total</div>
                                             <div className="truncate text-2xl font-semibold text-slate-900">
-                                                {(realEnergy.totalKwh / 1000).toFixed(1)}{" "}
+                                                {realEnergy.totalKwh.toFixed(1)}{" "}
                                                 <span className="text-base font-medium">kWh</span>
                                             </div>
                                         </div>
@@ -538,7 +522,7 @@ const MachinePage = () => {
                                                         <div className="text-center">
                                                             <div className="text-xs text-muted-foreground">Total</div>
                                                             <div className="text-xl font-semibold text-slate-900">
-                                                                {(realEnergy.totalKwh / 1000).toFixed(1)}
+                                                                {realEnergy.totalKwh.toFixed(1)}
                                                             </div>
                                                             <div className="text-xs text-muted-foreground">kWh</div>
                                                         </div>
@@ -628,8 +612,10 @@ const MachinePage = () => {
                                                 <XAxis
                                                     dataKey="truncated_timestamp"
                                                     tickLine={false}
+                                                    tickMargin={10}
                                                     axisLine={false}
-                                                    tickFormatter={(value) => value && new Date(value).toLocaleTimeString("nl-NL", { hour: "numeric" })}
+                                                    interval="preserveStartEnd"
+                                                    tickFormatter={(value) => value && new Date(value).toLocaleTimeString("en-US", { hour: "2-digit" })}
                                                 />
                                                 <YAxis
                                                     hide
@@ -651,9 +637,9 @@ const MachinePage = () => {
                                                 {/*/>*/}
                                             </ComposedChart>
                                         </ChartContainer>
-                                        {/*<div className="mt-2 text-[11px] text-muted-foreground">*/}
-                                        {/*    Lower values indicate better efficiency. Based on {KG_PER_SHOT} kg per shot assumption.*/}
-                                        {/*</div>*/}
+                                        <div className="mt-2 text-[11px] text-muted-foreground">
+                                            Lower values indicate better efficiency. Based on {KG_PER_SHOT} kg per shot assumption.
+                                        </div>
                                     </div>
                                 </div>
                             </div>

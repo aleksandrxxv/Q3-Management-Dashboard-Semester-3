@@ -8,6 +8,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/machine-energy-dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/machine-energy-dialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/types/supabase.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/supabase.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +52,9 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="363ufqiYXxN7qf1HPHa7ncSYblu" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
