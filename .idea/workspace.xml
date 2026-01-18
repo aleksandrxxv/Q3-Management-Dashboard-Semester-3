@@ -6,7 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Fixed the notifications UI, making it way more intuitive.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/machine-energy-dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/machine-energy-dialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/supabase.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/supabase.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/app-sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/app-sidebar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/planning/CreatePlanDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/CreatePlanDialog.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/planning/FullMaintenanceDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/FullMaintenanceDetails.tsx" afterDir="false" />
@@ -18,10 +22,17 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature-EnergyConsumption" />
+        <entry key="$PROJECT_DIR$" value="Development" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -46,6 +57,9 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="363ufqiYXxN7qf1HPHa7ncSYblu" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -56,7 +70,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/maintenance-reports",
+    "git-widget-placeholder": "feature/energy-data",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
     "junie.onboarding.icon.badge.shown": "true",
@@ -113,6 +127,7 @@
       <workItem from="1765268197948" duration="439000" />
       <workItem from="1765873283408" duration="3859000" />
       <workItem from="1766046850790" duration="2681000" />
+      <workItem from="1768559652049" duration="15058000" />
     </task>
     <task id="LOCAL-00001" summary="Started working on the SMS service.">
       <option name="closed" value="true" />

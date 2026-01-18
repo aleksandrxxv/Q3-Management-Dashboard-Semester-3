@@ -14,8 +14,10 @@ import {
 import Link from "next/link";
 import Header from "../header";
 import { unstable_cache } from "next/cache";
-import { Activity, Clock, Cpu } from "lucide-react";
+import { Activity, Clock, Cpu, Zap } from "lucide-react";
 import { EnergyMonitoringDialog } from "@/components/energy-monitoring-dialog";
+import {Machine} from "@/types/supabase";
+import React from "react";
 
 // Status badge component
 function StatusBadge({ status }: { status: string }) {
@@ -56,12 +58,27 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+function MachineIcon({ machine }: {machine: Machine }) {
+    if (machine.machine_name === 'B1') {
+        return (
+            <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                <Zap className="h-4 w-4 text-amber-600" />
+            </div>
+        )
+    } else {
+        return (
+            <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                <Cpu className="h-4 w-4" />
+            </div>
+        )
+    }
+}
+
 const getMachinesCached = unstable_cache(
     async () => getMachines(),
     ["machines"],
     { revalidate: 1 }
 );
-
 export default async function Page() {
 
   const machines = await getMachinesCached();
@@ -126,7 +143,7 @@ export default async function Page() {
                         className="group flex items-center gap-2"
                       >
                         <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                          <Cpu className="h-4 w-4" />
+                            <MachineIcon machine={machine}></MachineIcon>
                         </div>
                         <span className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                           {machine.machine_name || `Machine ${machine.machine_id}`}
