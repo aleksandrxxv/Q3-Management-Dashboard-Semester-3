@@ -337,6 +337,7 @@ const MachinePage = () => {
             case 'Actief': return 'Active';
             case 'Inactief': return 'Inactive';
             case 'Stilstand': return 'Standstill';
+            case 'Failure': return 'Failure';
         }
     }
 
