@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Fixed the notifications UI, making it way more intuitive.">
-      <change afterPath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/types/supabase.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/supabase.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,7 +72,7 @@
     "nodejs_package_manager_path": "npm",
     "npm.Next.js: server-side.executor": "Run",
     "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "D:\\kuliah\\semester 3\\s3-group-project\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\Users\\aless\\Documents\\s3-group-project\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>

@@ -155,4 +155,5 @@ export interface HourlyEnergyData {
     friendly_name: string;
     hour_start: string; // ISO string from Postgres
     total_energy_kwh: number;
+    total_shots: number;
 }

@@ -133,48 +133,11 @@ const MachinePage = () => {
     const [interval, setInterval] = useState<IntervalType>(IntervalType.Hour);
 
     const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(2025, 8, 0),
-        to: new Date(2025, 8, 20),
+        from: new Date(2025, 8, 5),
+        to: new Date(2025, 8, 6),
     });
 
     // 1. Add new state at the top of your component
-    const [realEnergyData, setRealEnergyData] = useState<HourlyEnergyData[]>([]);
-    const realEnergy = useMemo(() => {
-        if (!realEnergyData.length) {
-            return {
-                series: [],
-                totalKwh: 0,
-            };
-        }
-
-        // Map energy per hour
-        const series = realEnergyData.map((row) => ({
-            truncated_timestamp: row.hour_start,
-            kwh: row.total_energy_kwh,
-        }));
-
-        const totalKwh = series.reduce((sum, r) => sum + r.kwh, 0);
-
-        return { series, totalKwh };
-    }, [realEnergyData]);
-
-// 2. Add the useEffect to fetch data
-    useEffect(() => {
-        const loadEnergy = async () => {
-            if (!machine?.machine_name || !date?.from || !date?.to) return;
-
-            // We use the friendly name (A1, B1, etc.) defined in your Supabase View
-            const friendlyName = machine.machine_name;
-
-            try {
-                const data = await fetchHourlyEnergy(friendlyName, date.from, date.to);
-                setRealEnergyData(data);
-            } catch (err) {
-                console.error("Failed to fetch energy:", err);
-            }
-        };
-        loadEnergy();
-    }, [machine, date]);
 
     useEffect(() => {
         if (!id) return;
@@ -238,35 +201,51 @@ const MachinePage = () => {
         return { totalShots, avgShot, totalKgProduced };
     }, [chartData]);
 
-    const energy = useMemo(() => {
-        const rows: any[] = chartData as any[];
+    const [realEnergyData, setRealEnergyData] = useState<HourlyEnergyData[]>([]);
+    const realEnergy = useMemo(() => {
+        // if (!realEnergyData.length) {
+        //     return {
+        //         series: [],
+        //         totalKwh: 0,
+        //     };
+        // }
+
+        const rows: any[] = realEnergyData as any[];
         const PRICE_EUR_PER_KWH = 0.26;
+
+        // Map energy per hour
+        // const series = realEnergyData.map((row) => ({
+        //     truncated_timestamp: row.hour_start,
+        //     kwh: row.total_energy_kwh,
+        //     total_shots: row.total_shots
+        // }));
 
         const series = rows.map((r) => {
             const shots = Number(r.total_shots) || 0;
 
+            // To be calculated
             const production = shots * 0.00022;
             const idle = 0.55;
             const heating = shots < 10 ? 0.85 : 0.35;
 
-            const kwh = production + idle + heating;
-            
+            const kwh = Number(r.total_energy_kwh) || 0;
+
             // kWh per 1000 shots (avoid division by zero)
             const kwhPer1k = shots > 0 ? (kwh / shots) * 1000 : 0;
-            
+
             // Efficiency: kWh per kg produced
             const kgProduced = shots * KG_PER_SHOT;
             const efficiency = kgProduced > 0 ? kwh / kgProduced : 0;
 
             return {
-                truncated_timestamp: r.truncated_timestamp,
+                truncated_timestamp: r.hour_start,
                 kwh: Number(kwh.toFixed(2)),
                 kwhPer1k: Number(kwhPer1k.toFixed(2)),
                 efficiency: Number(efficiency.toFixed(2)),
                 heating: Number(heating.toFixed(2)),
                 production: Number(production.toFixed(2)),
                 idle: Number(idle.toFixed(2)),
-                cost: Number((kwh * PRICE_EUR_PER_KWH).toFixed(2)),
+                cost: Number(((kwh / 1000) * PRICE_EUR_PER_KWH).toFixed(2)),
                 shots,
             };
         });
@@ -280,7 +259,7 @@ const MachinePage = () => {
             idle: series.reduce((s, x) => s + x.idle, 0),
         };
 
-        const denom = Math.max(1e-6, totalKwh);
+        const denom = Math.max(1e-6, totalKwh / 1000);
         const pct = {
             heating: (totals.heating / denom) * 100,
             production: (totals.production / denom) * 100,
@@ -288,23 +267,95 @@ const MachinePage = () => {
         };
 
         return { series, totalKwh, totalCost, totals, pct };
-    }, [chartData]);
+    }, [realEnergyData]);
+
+    // 2. Add the useEffect to fetch data
+    useEffect(() => {
+        const loadEnergy = async () => {
+            if (!machine?.machine_name || !date?.from || !date?.to) return;
+
+            // We use the friendly name (A1, B1, etc.) defined in your Supabase View
+            const friendlyName = machine.machine_name;
+
+            try {
+                const data = await fetchHourlyEnergy(friendlyName, date.from, date.to);
+                setRealEnergyData(data);
+            } catch (err) {
+                console.error("Failed to fetch energy:", err);
+            }
+        };
+        loadEnergy();
+    }, [machine, date]);
+
+    // const energy = useMemo(() => {
+    //     const rows: any[] = chartData as any[];
+    //     const PRICE_EUR_PER_KWH = 0.26;
+    //
+    //     const series = rows.map((r) => {
+    //         const shots = Number(r.total_shots) || 0;
+    //
+    //         const production = shots * 0.00022;
+    //         const idle = 0.55;
+    //         const heating = shots < 10 ? 0.85 : 0.35;
+    //
+    //         const kwh = production + idle + heating;
+    //
+    //         // kWh per 1000 shots (avoid division by zero)
+    //         const kwhPer1k = shots > 0 ? (kwh / shots) * 1000 : 0;
+    //
+    //         // Efficiency: kWh per kg produced
+    //         const kgProduced = shots * KG_PER_SHOT;
+    //         const efficiency = kgProduced > 0 ? kwh / kgProduced : 0;
+    //
+    //         return {
+    //             truncated_timestamp: r.truncated_timestamp,
+    //             kwh: Number(kwh.toFixed(2)),
+    //             kwhPer1k: Number(kwhPer1k.toFixed(2)),
+    //             efficiency: Number(efficiency.toFixed(2)),
+    //             heating: Number(heating.toFixed(2)),
+    //             production: Number(production.toFixed(2)),
+    //             idle: Number(idle.toFixed(2)),
+    //             cost: Number((kwh * PRICE_EUR_PER_KWH).toFixed(2)),
+    //             shots,
+    //         };
+    //     });
+    //
+    //     const totalKwh = series.reduce((s, x) => s + x.kwh, 0);
+    //     const totalCost = series.reduce((s, x) => s + x.cost, 0);
+    //
+    //     const totals = {
+    //         heating: series.reduce((s, x) => s + x.heating, 0),
+    //         production: series.reduce((s, x) => s + x.production, 0),
+    //         idle: series.reduce((s, x) => s + x.idle, 0),
+    //     };
+    //
+    //     const denom = Math.max(1e-6, totalKwh);
+    //     const pct = {
+    //         heating: (totals.heating / denom) * 100,
+    //         production: (totals.production / denom) * 100,
+    //         idle: (totals.idle / denom) * 100,
+    //     };
+    //
+    //     return { series, totalKwh, totalCost, totals, pct };
+    // }, [chartData]);
 
     /** ✅ NEW: kWh/kg (energy efficiency) */
     const kwhPerKg = useMemo(() => {
         if (kpis.totalKgProduced <= 0) return null;
-        return energy.totalKwh / kpis.totalKgProduced;
-    }, [energy.totalKwh, kpis.totalKgProduced]);
+        return (realEnergy.totalKwh / 1000) / kpis.totalKgProduced;
+    }, [realEnergy.totalKwh, kpis.totalKgProduced]);
 
     const donutData = useMemo(() => {
         return [
-            { name: "Heating", value: Number(energy.totals.heating.toFixed(2)), key: "heating" as const },
-            { name: "Production", value: Number(energy.totals.production.toFixed(2)), key: "production" as const },
-            { name: "Idle", value: Number(energy.totals.idle.toFixed(2)), key: "idle" as const },
+            { name: "Heating", value: Number(realEnergy.totals.heating.toFixed(2)), key: "heating" as const },
+            { name: "Production", value: Number(realEnergy.totals.production.toFixed(2)), key: "production" as const },
+            { name: "Idle", value: Number(realEnergy.totals.idle.toFixed(2)), key: "idle" as const },
         ];
-    }, [energy.totals.heating, energy.totals.production, energy.totals.idle]);
+    }, [realEnergy.totals.heating, realEnergy.totals.production, realEnergy.totals.idle]);
 
     const donutTotal = useMemo(() => donutData.reduce((s, d) => s + d.value, 0), [donutData]);
+
+    const hasEnergyMonitoring = (machine?.machine_name === 'B1' || machine?.machine_name === 'A9');
 
     if (!machine) return <div className="p-4">Loading...</div>;
 
@@ -326,275 +377,289 @@ const MachinePage = () => {
                         sub="Current machine state"
                     />
                     <Stat label="Total shots" value={kpis.totalShots.toLocaleString()} sub="Selected range" />
-                    <Stat label="Avg. shot time" value={`${kpis.avgShot.toFixed(2)}s`} sub="Bucket average" />
-                    <Stat
-                        label="Energy"
-                        value={
-                            <span className="flex items-baseline gap-2">
-                                {energy.totalKwh.toFixed(1)} <span className="text-sm font-medium">kWh</span>
-                            </span>
-                        }
-                        sub={
-                            <span className="flex items-center justify-between gap-2">
-                                <span className="flex items-center justify-between flex-1">
-                                    <span>Est. cost</span>
-                                    <span className="font-medium text-slate-900">€{energy.totalCost.toFixed(0)}</span>
-                                </span>
-                                <MachineEnergyDialog
-                                    machineName={machine.machine_name || `Machine ${machine.machine_id}`}
-                                    energySeries={energy.series}
-                                    totalKwh={energy.totalKwh}
-                                    totalCost={energy.totalCost}
-                                    totals={energy.totals}
-                                />
-                            </span>
-                        }
-                    />
-
-                    {/* ✅ NEW KPI: kWh per kg */}
-                    <Stat
-                        label="Energy efficiency"
-                        value={kwhPerKg === null ? "No data yet." : `${kwhPerKg.toFixed(2)} kWh/kg`}
-                        sub={`Based on ${KG_PER_SHOT} kg / shot`}
-                    />
-                </div>
-
-                {/* Energy module */}
-                <Card className="shadow-sm">
-                    <CardHeader className="flex flex-col gap-3 border-b sm:flex-row sm:items-center sm:justify-between">
-                        <div className="min-w-0 space-y-1">
-                            <CardTitle className="text-base">Energy consumption</CardTitle>
-                            <CardDescription className="min-w-0">
-                                Heating vs production vs idle • {formatRangeLabel(date)} (dummy model)
-                            </CardDescription>
-                        </div>
-
+                    <Stat label="Avg. shot time" value={`${kpis.avgShot.toFixed(2)}s`} />
+                    {!hasEnergyMonitoring &&
                         <div className="flex flex-wrap items-center gap-2">
                             <SelectStartEndDate date={date} setDate={setDate} className="w-min" />
                             <SelectInterval setDate={setDate} interval={interval} setInterval={setInterval} />
                         </div>
-                    </CardHeader>
+                    }
+                    {hasEnergyMonitoring &&
+                        <Stat
+                            label="Energy"
+                            value={
+                                <span className="flex items-baseline gap-2">
+                                {(realEnergy.totalKwh / 1000).toFixed(2)} <span className="text-sm font-medium">kWh</span>
+                            </span>
+                            }
+                            sub={
+                                <span className="flex items-center justify-between gap-2">
+                                <span className="flex items-center justify-between flex-1">
+                                    <span>Est. cost</span>
+                                    <span className="font-medium text-slate-900">€{realEnergy.totalCost.toFixed(0)}</span>
+                                </span>
+                                <MachineEnergyDialog
+                                    machineName={machine.machine_name || `Machine ${machine.machine_id}`}
+                                    energySeries={realEnergy.series}
+                                    totalKwh={(realEnergy.totalKwh / 1000)}
+                                    totalCost={realEnergy.totalCost}
+                                    totals={realEnergy.totals}
+                                />
+                            </span>
+                            }
+                        />
+                    }
 
-                    <CardContent className="grid gap-4 pt-4 lg:grid-cols-3">
-                        {/* Left: breakdown */}
-                        <div className="min-w-0 space-y-3">
-                            <div className="rounded-xl border bg-slate-50 p-3">
-                                <div className="text-sm font-semibold text-slate-900">Breakdown</div>
-                                <div className="mt-3 space-y-3">
-                                    <MiniBreakdownRow
-                                        label="Heating"
-                                        value={`${energy.totals.heating.toFixed(1)} kWh`}
-                                        pct={energy.pct.heating}
-                                    />
-                                    <MiniBreakdownRow
-                                        label="Production"
-                                        value={`${energy.totals.production.toFixed(1)} kWh`}
-                                        pct={energy.pct.production}
-                                    />
-                                    <MiniBreakdownRow
-                                        label="Idle"
-                                        value={`${energy.totals.idle.toFixed(1)} kWh`}
-                                        pct={energy.pct.idle}
-                                    />
+                    {/* ✅ NEW KPI: kWh per kg */}
+                    {hasEnergyMonitoring &&
+                        <Stat
+                            label="Energy efficiency"
+                            value={kwhPerKg === null ? "No data yet." : `${kwhPerKg.toFixed(2)} kWh/kg`}
+                            sub={`Based on ${KG_PER_SHOT} kg / shot`}
+                        />
+                    }
+
+                </div>
+
+                {/* Energy module */}
+
+                {hasEnergyMonitoring &&
+                    <Card className="shadow-sm">
+                        <CardHeader className="flex flex-col gap-3 border-b sm:flex-row sm:items-center sm:justify-between">
+                            <div className="min-w-0 space-y-1">
+                                <CardTitle className="text-base">Energy consumption</CardTitle>
+                                <CardDescription className="min-w-0">
+                                    {formatRangeLabel(date)}
+                                </CardDescription>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2">
+                                <SelectStartEndDate date={date} setDate={setDate} className="w-min" />
+                                <SelectInterval setDate={setDate} interval={interval} setInterval={setInterval} />
+                            </div>
+                        </CardHeader>
+
+                        <CardContent className="grid gap-4 pt-4 lg:grid-cols-3">
+                            {/* Left: breakdown */}
+                            <div className="min-w-0 space-y-3">
+                                <div className="rounded-xl border bg-slate-50 p-3">
+                                    <div className="text-sm font-semibold text-slate-900">Breakdown</div>
+                                    <div className="mt-3 space-y-3">
+                                        <MiniBreakdownRow
+                                            label="Heating"
+                                            value={`${realEnergy.totals.heating.toFixed(1)} kWh`}
+                                            pct={realEnergy.pct.heating}
+                                        />
+                                        <MiniBreakdownRow
+                                            label="Production"
+                                            value={`${realEnergy.totals.production.toFixed(1)} kWh`}
+                                            pct={realEnergy.pct.production}
+                                        />
+                                        <MiniBreakdownRow
+                                            label="Idle"
+                                            value={`${realEnergy.totals.idle.toFixed(1)} kWh`}
+                                            pct={realEnergy.pct.idle}
+                                        />
+                                    </div>
+                                    {/*<div className="mt-3 text-[11px] text-muted-foreground">*/}
+                                    {/*    Heating share often increases during low throughput.*/}
+                                    {/*</div>*/}
                                 </div>
-                                <div className="mt-3 text-[11px] text-muted-foreground">
-                                    Heating share often increases during low throughput.
+
+                                <div className="rounded-xl border p-3">
+                                    <div className="text-xs text-muted-foreground">Efficiency</div>
+                                    <div className="mt-1 text-sm font-semibold">
+                                        {kpis.totalShots > 0
+                                            ? `${(((realEnergy.totalKwh / 1000) / kpis.totalShots) * 1000).toFixed(2)} kWh / 1k shots`
+                                            : "—"}
+                                    </div>
+                                    <div className="mt-1 text-[11px] text-muted-foreground">
+                                        Simple estimate for quick comparison.
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="rounded-xl border p-3">
-                                <div className="text-xs text-muted-foreground">Efficiency</div>
-                                <div className="mt-1 text-sm font-semibold">
-                                    {kpis.totalShots > 0
-                                        ? `${((energy.totalKwh / kpis.totalShots) * 1000).toFixed(2)} kWh / 1k shots`
-                                        : "—"}
-                                </div>
-                                <div className="mt-1 text-[11px] text-muted-foreground">
-                                    Simple estimate for quick comparison.
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right: donut + trend */}
-                        <div className="min-w-0 lg:col-span-2 space-y-3">
-                            <div className="rounded-xl border p-3">
-                                <div className="flex items-baseline justify-between gap-4">
-                                    <div className="min-w-0">
-                                        <div className="text-xs text-muted-foreground">Total</div>
-                                        <div className="truncate text-2xl font-semibold text-slate-900">
-                                            {energy.totalKwh.toFixed(1)}{" "}
-                                            <span className="text-base font-medium">kWh</span>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-xs text-muted-foreground">Estimated cost</div>
-                                        <div className="text-lg font-semibold text-slate-900">
-                                            €{energy.totalCost.toFixed(0)}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mt-4 grid gap-4 md:grid-cols-2">
-                                    {/* Donut */}
-                                    <div className="rounded-xl border bg-slate-50 p-3 min-w-0">
-                                        <div className="flex items-center justify-between">
-                                            <div className="text-sm font-semibold text-slate-900">Energy split</div>
-                                            <div className="text-xs text-muted-foreground">kWh</div>
-                                        </div>
-
-                                        <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_180px]">
-                                            <div className="relative min-w-0">
-                                                <div className="h-[180px] w-full">
-                                                    <ResponsiveContainer width="100%" height="100%">
-                                                        <PieChart>
-                                                            <Tooltip
-                                                                formatter={(value: any, name: any) => [`${Number(value).toFixed(1)} kWh`, name]}
-                                                            />
-                                                            <Pie
-                                                                data={donutData}
-                                                                dataKey="value"
-                                                                nameKey="name"
-                                                                cx="50%"
-                                                                cy="50%"
-                                                                innerRadius="62%"
-                                                                outerRadius="82%"
-                                                                paddingAngle={3}
-                                                                stroke="transparent"
-                                                                isAnimationActive={false}
-                                                            >
-                                                                {donutData.map((entry) => (
-                                                                    <Cell key={entry.name} fill={energyConfig[entry.key].color} />
-                                                                ))}
-                                                            </Pie>
-                                                        </PieChart>
-                                                    </ResponsiveContainer>
-                                                </div>
-
-                                                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                                                    <div className="text-center">
-                                                        <div className="text-xs text-muted-foreground">Total</div>
-                                                        <div className="text-xl font-semibold text-slate-900">
-                                                            {energy.totalKwh.toFixed(1)}
-                                                        </div>
-                                                        <div className="text-xs text-muted-foreground">kWh</div>
-                                                    </div>
-                                                </div>
+                            {/* Right: donut + trend */}
+                            <div className="min-w-0 lg:col-span-2 space-y-3">
+                                <div className="rounded-xl border p-3">
+                                    <div className="flex items-baseline justify-between gap-4">
+                                        <div className="min-w-0">
+                                            <div className="text-xs text-muted-foreground">Total</div>
+                                            <div className="truncate text-2xl font-semibold text-slate-900">
+                                                {(realEnergy.totalKwh / 1000).toFixed(1)}{" "}
+                                                <span className="text-base font-medium">kWh</span>
                                             </div>
-
-                                            <div className="min-w-0 space-y-2">
-                                                {donutData.map((d) => {
-                                                    const pct = donutTotal > 0 ? (d.value / donutTotal) * 100 : 0;
-                                                    return (
-                                                        <div key={d.name} className="rounded-lg border bg-white p-2">
-                                                            <div className="flex items-center justify-between gap-2">
-                                                                <div className="flex min-w-0 items-center gap-2">
-                                  <span
-                                      className="h-2.5 w-2.5 shrink-0 rounded-full"
-                                      style={{ background: energyConfig[d.key].color }}
-                                  />
-                                                                    <span className="min-w-0 truncate text-xs font-medium text-slate-900">
-                                    {d.name}
-                                  </span>
-                                                                </div>
-                                                                <span className="shrink-0 text-xs text-slate-600">{pct.toFixed(0)}%</span>
-                                                            </div>
-                                                            <div className="mt-1 text-[11px] text-muted-foreground">
-                                                                {d.value.toFixed(1)} kWh
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-2 text-[11px] text-muted-foreground">
-                                            Heating share tends to rise during low throughput.
-                                        </div>
-                                    </div>
-
-                                    {/* Trend - kWh per 1000 shots */}
-                                    <Card className="shadow-sm min-w-0">
-                                        <CardHeader className="border-b">
-                                            <CardTitle className="text-base">Energy trend</CardTitle>
-                                            <CardDescription>kWh per 1,000 shots</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="pt-4">
-                                            <ChartContainer config={energyConfig} className="aspect-auto h-[180px] w-full">
-                                                <ComposedChart accessibilityLayer data={energy.series}>
-                                                    <CartesianGrid vertical={false} />
-                                                    <XAxis dataKey="truncated_timestamp" hide />
-                                                    <YAxis hide domain={["auto", "auto"]} />
-                                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                                    <Area
-                                                        dataKey="kwhPer1k"
-                                                        type="monotone"
-                                                        stroke={energyConfig.kwhPer1k.color}
-                                                        fill={energyConfig.kwhPer1k.color}
-                                                        fillOpacity={0.12}
-                                                    />
-                                                    <Line dot={false} dataKey="kwhPer1k" stroke={energyConfig.kwhPer1k.color} strokeWidth={2} />
-                                                </ComposedChart>
-                                            </ChartContainer>
-
-                                            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
-                                                <span>Lower is better</span>
-                                                <span className="truncate">{formatRangeLabel(date)}</span>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                                
-                                {/* Efficiency Chart */}
-                                <div className="mt-4 rounded-xl border p-4">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div>
-                                            <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Machine Efficiency</div>
-                                            <div className="text-xs text-muted-foreground">Energy consumption per kg produced (kWh/kg)</div>
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                                                {kwhPerKg !== null ? `${kwhPerKg.toFixed(2)} kWh/kg` : "—"}
+                                            <div className="text-xs text-muted-foreground">Estimated cost</div>
+                                            <div className="text-lg font-semibold text-slate-900">
+                                                €{realEnergy.totalCost.toFixed(0)}
                                             </div>
-                                            <div className="text-xs text-muted-foreground">Average efficiency</div>
                                         </div>
                                     </div>
-                                    <ChartContainer config={energyConfig} className="aspect-auto h-[150px] w-full">
-                                        <ComposedChart accessibilityLayer data={energy.series}>
-                                            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                                            <XAxis 
-                                                dataKey="truncated_timestamp" 
-                                                tickLine={false}
-                                                axisLine={false}
-                                                tickFormatter={(value) => value && new Date(value).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
-                                            />
-                                            <YAxis 
-                                                hide 
-                                                domain={["auto", "auto"]} 
-                                            />
-                                            <ChartTooltip content={<ChartTooltipContent />} />
-                                            <Area
-                                                dataKey="efficiency"
-                                                type="monotone"
-                                                stroke={energyConfig.efficiency.color}
-                                                fill={energyConfig.efficiency.color}
-                                                fillOpacity={0.15}
-                                            />
-                                            <Line 
-                                                dot={false} 
-                                                dataKey="efficiency" 
-                                                stroke={energyConfig.efficiency.color} 
-                                                strokeWidth={2} 
-                                            />
-                                        </ComposedChart>
-                                    </ChartContainer>
-                                    <div className="mt-2 text-[11px] text-muted-foreground">
-                                        Lower values indicate better efficiency. Based on {KG_PER_SHOT} kg per shot assumption.
+
+                                    <div className="mt-4 grid gap-4 md:grid-cols-2">
+                                        {/* Donut */}
+                                        <div className="rounded-xl border bg-slate-50 p-3 min-w-0">
+                                            <div className="flex items-center justify-between">
+                                                <div className="text-sm font-semibold text-slate-900">Energy split</div>
+                                                <div className="text-xs text-muted-foreground">kWh</div>
+                                            </div>
+
+                                            <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_180px]">
+                                                <div className="relative min-w-0">
+                                                    <div className="h-[180px] w-full">
+                                                        <ResponsiveContainer width="100%" height="100%">
+                                                            <PieChart>
+                                                                <Tooltip
+                                                                    formatter={(value: any, name: any) => [`${Number(value).toFixed(1)} kWh`, name]}
+                                                                />
+                                                                <Pie
+                                                                    data={donutData}
+                                                                    dataKey="value"
+                                                                    nameKey="name"
+                                                                    cx="50%"
+                                                                    cy="50%"
+                                                                    innerRadius="62%"
+                                                                    outerRadius="82%"
+                                                                    paddingAngle={3}
+                                                                    stroke="transparent"
+                                                                    isAnimationActive={false}
+                                                                >
+                                                                    {donutData.map((entry) => (
+                                                                        <Cell key={entry.name} fill={energyConfig[entry.key].color} />
+                                                                    ))}
+                                                                </Pie>
+                                                            </PieChart>
+                                                        </ResponsiveContainer>
+                                                    </div>
+
+                                                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                                        <div className="text-center">
+                                                            <div className="text-xs text-muted-foreground">Total</div>
+                                                            <div className="text-xl font-semibold text-slate-900">
+                                                                {(realEnergy.totalKwh / 1000).toFixed(1)}
+                                                            </div>
+                                                            <div className="text-xs text-muted-foreground">kWh</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="min-w-0 space-y-2">
+                                                    {donutData.map((d) => {
+                                                        const pct = donutTotal > 0 ? (d.value / donutTotal) * 100 : 0;
+                                                        return (
+                                                            <div key={d.name} className="rounded-lg border bg-white p-2">
+                                                                <div className="flex items-center justify-between gap-2">
+                                                                    <div className="flex min-w-0 items-center gap-2">
+                                                                  <span
+                                                                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                                                                      style={{ background: energyConfig[d.key].color }}
+                                                                  />
+                                                                        <span className="min-w-0 truncate text-xs font-medium text-slate-900">
+                                                                        {d.name}
+                                                                      </span>
+                                                                    </div>
+                                                                    <span className="shrink-0 text-xs text-slate-600">{pct.toFixed(0)}%</span>
+                                                                </div>
+                                                                <div className="mt-1 text-[11px] text-muted-foreground">
+                                                                    {d.value.toFixed(1)} kWh
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+
+                                            {/*<div className="mt-2 text-[11px] text-muted-foreground">*/}
+                                            {/*    Heating share tends to rise during low throughput.*/}
+                                            {/*</div>*/}
+                                        </div>
+
+                                        {/* Trend - kWh per 1000 shots */}
+                                        <Card className="shadow-sm min-w-0">
+                                            <CardHeader className="border-b">
+                                                <CardTitle className="text-base">Energy trend</CardTitle>
+                                                <CardDescription>kWh per 1,000 shots</CardDescription>
+                                            </CardHeader>
+                                            <CardContent className="pt-4">
+                                                <ChartContainer config={energyConfig} className="aspect-auto h-[180px] w-full">
+                                                    <ComposedChart accessibilityLayer data={realEnergy.series}>
+                                                        <CartesianGrid vertical={false} />
+                                                        <XAxis dataKey="truncated_timestamp" hide />
+                                                        <YAxis hide domain={["auto", "auto"]} />
+                                                        <ChartTooltip content={<ChartTooltipContent />} />
+                                                        <Area
+                                                            dataKey="kwhPer1k"
+                                                            type="monotone"
+                                                            stroke={energyConfig.kwhPer1k.color}
+                                                            fill={energyConfig.kwhPer1k.color}
+                                                            fillOpacity={0.12}
+                                                        />
+                                                        {/*<Line dot={false} dataKey="kwhPer1k" stroke={energyConfig.kwhPer1k.color} strokeWidth={2} />*/}
+                                                    </ComposedChart>
+                                                </ChartContainer>
+
+                                                <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                                                    <span>Lower is better</span>
+                                                    <span className="truncate">{formatRangeLabel(date)}</span>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+
+                                    {/* Efficiency Chart */}
+                                    <div className="mt-4 rounded-xl border p-4">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div>
+                                                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Machine Efficiency</div>
+                                                <div className="text-xs text-muted-foreground">Energy consumption per kg produced (kWh/kg)</div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                                                    {kwhPerKg !== null ? `${kwhPerKg.toFixed(2)} kWh/kg` : "—"}
+                                                </div>
+                                                <div className="text-xs text-muted-foreground">Average efficiency</div>
+                                            </div>
+                                        </div>
+                                        <ChartContainer config={energyConfig} className="aspect-auto h-[150px] w-full">
+                                            <ComposedChart accessibilityLayer data={realEnergy.series}>
+                                                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                                                <XAxis
+                                                    dataKey="truncated_timestamp"
+                                                    tickLine={false}
+                                                    axisLine={false}
+                                                    tickFormatter={(value) => value && new Date(value).toLocaleTimeString("nl-NL", { hour: "numeric" })}
+                                                />
+                                                <YAxis
+                                                    hide
+                                                    domain={["auto", "auto"]}
+                                                />
+                                                <ChartTooltip content={<ChartTooltipContent />} />
+                                                <Area
+                                                    dataKey="efficiency"
+                                                    type="monotone"
+                                                    stroke={energyConfig.efficiency.color}
+                                                    fill={energyConfig.efficiency.color}
+                                                    fillOpacity={0.15}
+                                                />
+                                                {/*<Line */}
+                                                {/*    dot={false} */}
+                                                {/*    dataKey="kwh"*/}
+                                                {/*    stroke={energyConfig.efficiency.color} */}
+                                                {/*    strokeWidth={2} */}
+                                                {/*/>*/}
+                                            </ComposedChart>
+                                        </ChartContainer>
+                                        {/*<div className="mt-2 text-[11px] text-muted-foreground">*/}
+                                        {/*    Lower values indicate better efficiency. Based on {KG_PER_SHOT} kg per shot assumption.*/}
+                                        {/*</div>*/}
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                }
 
                 {/* Production chart */}
                 <Card className="shadow-sm">
