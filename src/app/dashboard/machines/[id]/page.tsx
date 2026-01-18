@@ -133,8 +133,8 @@ const MachinePage = () => {
     const [interval, setInterval] = useState<IntervalType>(IntervalType.Hour);
 
     const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(2020, 8, 0),
-        to: new Date(2020, 8, 20),
+        from: new Date(2025, 8, 0),
+        to: new Date(2025, 8, 20),
     });
 
     // 1. Add new state at the top of your component
