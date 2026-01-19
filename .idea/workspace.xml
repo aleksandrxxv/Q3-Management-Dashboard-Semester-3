@@ -7,15 +7,10 @@
     <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Fixed the notifications UI, making it way more intuitive.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/machine-energy-dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/machine-energy-dialog.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/supabase.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/supabase.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/app-sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/app-sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/planning/CreatePlanDialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/CreatePlanDialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/planning/FullMaintenanceDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/planning/FullMaintenanceDetails.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/supabase/fetchMachines.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/fetchMachines.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/supabase.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/supabase.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/fetchEnergySplit.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/fetchEnergySplit.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/fetchMachineTimelines.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/fetchMachineTimelines.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +65,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "feature/energy-data",
+    "git-widget-placeholder": "supabase-integration",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
     "junie.onboarding.icon.badge.shown": "true",
@@ -82,7 +77,7 @@
     "nodejs_package_manager_path": "npm",
     "npm.Next.js: server-side.executor": "Run",
     "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "C:\\Users\\aless\\Documents\\s3-group-project\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\Users\\PC\\s3-group-project\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -110,8 +105,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
