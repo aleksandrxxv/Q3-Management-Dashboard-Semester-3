@@ -45,7 +45,8 @@ async function benchmark() {
         port,
         testStartDate,
         testEndDate,
-        testInterval
+        testInterval,
+        false // hasEnergyMonitoring
       );
       const requestTime = performance.now() - requestStart;
       requestTimes.push(requestTime);
