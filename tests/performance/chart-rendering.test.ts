@@ -35,7 +35,8 @@ describe('Chart Data Processing and Rendering', () => {
       testMachine.port,
       testStartDate,
       testEndDate,
-      testInterval
+      testInterval,
+      false
     );
     const fetchTime = performance.now() - fetchStart;
 
@@ -95,7 +96,8 @@ describe('Chart Data Processing and Rendering', () => {
       99, // Port that likely has no data
       testStartDate,
       testEndDate,
-      testInterval
+      testInterval,
+      false
     );
 
     // Even with no data, fillTimeGaps should create a continuous series

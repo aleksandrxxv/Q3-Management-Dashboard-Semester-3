@@ -158,7 +158,8 @@ const MachinePage = () => {
           boardPort.port,
           startDate,
           endDate,
-          interval
+          interval,
+          false
         );
         // Fill time gaps with zero values for missing intervals
         const filledData = fillTimeGaps(data, startDate, endDate, interval);

@@ -42,7 +42,7 @@ describe('fetchChartData', () => {
      const startDated = new Date(startDate);
       const endDated = new Date(endDate);
       // Fetch the chart data
-      const response = await fetchChartData(board, port, startDated, endDated, interval);
+      const response = await fetchChartData(board, port, startDated, endDated, interval, false);
 
       // Assert that the response length matches the expected day difference
       expect(response).toHaveLength(difference);

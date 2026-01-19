@@ -82,7 +82,8 @@ describe('Timeline Loading Performance', () => {
         machine.port,
         testStartDate,
         testEndDate,
-        testInterval
+        testInterval,
+        false
       ).then((data) => {
         const requestTime = Date.now() - requestStart;
         requestTimings.push(requestTime);
@@ -142,7 +143,8 @@ describe('Timeline Loading Performance', () => {
         machine.port,
         testStartDate,
         testEndDate,
-        testInterval
+        testInterval,
+        false
       )
     );
 
@@ -178,7 +180,8 @@ describe('Timeline Loading Performance', () => {
         machine.port,
         testStartDate,
         testEndDate,
-        testInterval
+        testInterval,
+        false
       );
       const loadTime = Date.now() - startTime;
       loadOrder.push(machine.machine_id);
@@ -223,7 +226,8 @@ describe('Timeline Loading Performance', () => {
         testMachine.port,
         testStartDate,
         testEndDate,
-        testInterval
+        testInterval,
+        false
       );
       times.push(Date.now() - start);
     }
@@ -269,7 +273,8 @@ describe('Full Page Load Simulation', () => {
           machine.port,
           testStartDate,
           testEndDate,
-          testInterval
+          testInterval,
+          false
         )
       )
     );

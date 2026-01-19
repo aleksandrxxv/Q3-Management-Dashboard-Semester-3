@@ -24,7 +24,7 @@ describe('Request Throttling', () => {
     
     // Fire all requests simultaneously
     const promises = requests.map(({ board, port }) =>
-      fetchChartData(board, port, testStartDate, testEndDate, testInterval)
+      fetchChartData(board, port, testStartDate, testEndDate, testInterval, false)
     );
 
     const results = await Promise.all(promises);
@@ -66,7 +66,7 @@ describe('Request Throttling', () => {
       
       await Promise.all(
         batch.map(({ board, port }) =>
-          fetchChartData(board, port, testStartDate, testEndDate, testInterval)
+          fetchChartData(board, port, testStartDate, testEndDate, testInterval, false)
         )
       );
       

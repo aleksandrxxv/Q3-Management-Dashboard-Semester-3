@@ -24,7 +24,7 @@ export async function getMachineTimelinesCached(
   const cacheKey = `machine-timeline-${board}-${port}-${fromRounded.toISOString()}-${toRounded.toISOString()}-${interval}`;
   
   return unstable_cache(
-    () => fetchChartData(board, port, from, to, interval),
+    () => fetchChartData(board, port, from, to, interval, false),
     [cacheKey],
     {
       revalidate: getCacheRevalidateTime(interval),

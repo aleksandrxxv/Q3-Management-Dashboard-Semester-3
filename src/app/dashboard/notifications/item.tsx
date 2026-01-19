@@ -38,7 +38,8 @@ export default function NotificationItem({ notification, onClick }: Notification
                     notification.port,
                     startDate,
                     endDate,
-                    IntervalType.Hour
+                    IntervalType.Hour,
+                    false
                 );
                 setChartData(data);
             } catch {

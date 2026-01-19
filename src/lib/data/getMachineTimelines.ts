@@ -16,5 +16,5 @@ export function getMachineTimelines(
   to: Date,
   interval: IntervalType
 ): Promise<MachineTimeline[]> {
-  return fetchChartData(board, port, from, to, interval);
+  return fetchChartData(board, port, from, to, interval, false);
 }
