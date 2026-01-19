@@ -182,7 +182,8 @@ const MachinePage = () => {
                     machineData.port,
                     startDate,
                     endDate,
-                    interval
+                    interval,
+                    hasEnergyMonitoring
                 );
                 // Fill time gaps with zero values for missing intervals
                 const filledData = fillTimeGaps(data, startDate, endDate, interval);
@@ -193,7 +194,7 @@ const MachinePage = () => {
         };
 
         loadData();
-    }, [id, date, interval]);
+    }, [id, date, interval, hasEnergyMonitoring]);
 
     const kpis = useMemo(() => {
         const rows: any[] = chartData as any[];

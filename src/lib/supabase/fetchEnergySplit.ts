@@ -1,9 +1,9 @@
-﻿import { supabase } from './client';
+﻿import { supabaseEnergy } from './client';
 import {HourlyEnergySplit} from '@/types/supabase'
 
 export async function fetchEnergySplit(friendlyName: string, from: Date, to: Date) {
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseEnergy
         .from('mv_hourly_energy_split')
         .select('*')
         .eq('friendly_name', friendlyName)
