@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import MachineCard from './MachineCard';
-import { Machine, MachineTimeline, Mold, MoldHistory } from '@/types/supabase';
+import { Machine, MachineTimeline, MoldHistory } from '@/types/supabase';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
-import { supabase } from '@/lib/supabase/client';
 import { addDays } from 'date-fns';
 import { fetchMoldsByDateRange } from '@/lib/supabase/fetchMachineMolds';
-import { IntervalType } from '@/types/enum';
+import { IntervalType } from '@/types/interval';
+import { fillTimeGaps } from '@/lib/utils/chartData';
 
 interface FactoryGridProps {
   machines: Machine[];
@@ -37,15 +37,19 @@ export default function FactoryGrid({ machines, currentTime }: FactoryGridProps)
       const data = await Promise.all(
         machines.map(async (machine) => {
           const matrijzen = await fetchMoldsByDateRange(addDays(today, -1), today, machine.board, machine.port);
+          const startDate = addDays(today, -1);
+          const endDate = rightNow;
           const chartData = await fetchChartData(
             machine.board,
             machine.port,
-            addDays(today, -1),
-            rightNow,
+            startDate,
+            endDate,
             IntervalType.Hour,
             true
           );
-          return { machineId: machine.machine_id, matrijzen, chartData };
+          // Fill time gaps with zero values for missing intervals
+          const filledChartData = fillTimeGaps(chartData, startDate, endDate, IntervalType.Hour);
+          return { machineId: machine.machine_id, matrijzen, chartData: filledChartData };
         })
       );
 

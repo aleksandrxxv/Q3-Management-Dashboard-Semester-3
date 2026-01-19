@@ -8,7 +8,11 @@ const config: Config = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   roots: ['<rootDir>/tests'], // Ensure Jest searches the right paths
-    setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  // Use node environment for performance tests (they need real fetch)
+  testEnvironmentOptions: {
+    customExportConditions: [''],
+  },
 };
 
 export default config;

@@ -29,7 +29,7 @@ export interface Milestone {
 
 export interface MachineTimeline {
 
-    average_shot_time: number;
+    average_shot_time: number | null;
     truncated_timestamp: string;
     total_shots: number;
 }
@@ -39,7 +39,7 @@ export interface Machine {
     machine_name: string;
     board: number;
     port: number;
-    status: 'Actief' | 'Inactief' | 'Stilstand';
+    status: 'Actief' | 'Inactief' | 'Stilstand' | 'Failure';
     total_shots: number;
     avg_shot_time: number;
     last_update: string;
@@ -88,29 +88,31 @@ export interface MaintenanceFull {
     mechanic_id: number;
     maintenance_type: "Preventative" | "Corrective";
     description: string;
-    mold_name: string;
-    mold_id: number;
+    machine_name: string;
+    machine_id: number;
     mold_description: string;
     id: number;
     planned_date: Date;
     maintenance_action: string;
     assigned_to: number;
-    status: string;
+    status: "Planned" | "Busy" | "Finished";
     mechanic_specialization: string;
     group_id: number | null;
 }
 
 
 export interface Mechanic {
-    id: string;
+    id: number;
     name: string;
     specialization: string;
+    phone: string | null;
+    email: string | null;
 }
 
 export interface Maintenance {
     id: number;
     planned_date: Date
-    mold_id: number,
+    machine_id: number,
     maintenance_type: "Preventative" | "Corrective",
     description: string,
     assigned_to: number,
@@ -147,4 +149,20 @@ export interface Notification {
 
     mold_id?: number;
     machine_id?: number;
+}
+
+export interface HourlyEnergyData {
+    friendly_name: string;
+    hour_start: string; // ISO string from Postgres
+    total_energy_kwh: number;
+    total_shots: number;
+}
+
+export interface HourlyEnergySplit {
+    friendly_name: string;
+    hour_start: string;
+    production_energy: number;
+    heating_energy: number;
+    idle_energy: number;
+    total_hour_energy: number;
 }

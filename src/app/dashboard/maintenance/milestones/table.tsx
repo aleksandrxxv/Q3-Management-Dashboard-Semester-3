@@ -1,19 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
     Table,
     TableBody,
     TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
 
-import { Milestone, MoldHistory, MoldMaintenance } from "@/types/supabase";
+import { Milestone, MoldMaintenance } from "@/types/supabase";
 import Link from "next/link";
-import { DateRange } from "react-day-picker";
 import { MilestoneStatus } from "./status";
 import { CheckIcon, XIcon } from "lucide-react";
 
@@ -30,21 +26,21 @@ export const MilestoneTable = ({
     return (
         <Table>
             <TableCaption>
-                Welke type onderhoud bij hoeveel shots
+                Which type of maintenance at how many shots
             </TableCaption>
             <TableHeader>
                 <TableRow>
 
                 <TableHead>
-                        Matrijs actief
+                        Mold active
                     </TableHead>
 
-                    <TableHead>Matrijs</TableHead>
+                    <TableHead>Mold</TableHead>
                     
                     <TableHead>Type</TableHead>
 
                     <TableHead>
-                        SMS versturen
+                        Send SMS
                     </TableHead>
 
 
@@ -73,10 +69,10 @@ export const MilestoneTable = ({
                             <TableRow key={index}>
                                 <TableCell className="flex items-center space-x-2">
                                     {mold.board ? (
-                                        <><CheckIcon size={24} color="green" /> Ja</>
+                                        <><CheckIcon size={24} color="green" /> Yes</>
                                     ) : (
                                         <>
-                                        <XIcon size={24} color="red" /> Nee </>
+                                        <XIcon size={24} color="red" /> No </>
                                     )
                                     }
                                 </TableCell>
@@ -95,7 +91,7 @@ export const MilestoneTable = ({
                                 </TableCell>
 
                                 <TableCell>
-                                    {milestone.send_sms ? "Ja" : "Nee"}
+                                    {milestone.send_sms ? "Yes" : "No"}
                                 </TableCell>
 
                                 <TableCell>

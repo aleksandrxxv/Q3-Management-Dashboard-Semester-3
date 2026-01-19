@@ -1,6 +1,5 @@
 "use client"
 
-
 import {MaintenanceFull} from "@/types/supabase"
 import {useDrag, useDrop} from "react-dnd";
 import {addMaintenanceToGroup} from "@/lib/supabase/createMaintenanceGroup";
@@ -27,10 +26,10 @@ export default function PlanningCalendarTile(props: Props) {
         accept: "PlanningCalendarTile",
         drop: (item: { id: number, planned_date: Date }) => {
             addMaintenanceToGroup(item.id, props.maintenancePlan.id).then(() => {
-                toast("Groep aangemaakt.", {type: "success"})
+                toast("Group created.", {type: "success"})
                 props.refreshCalendar()
             }).catch((e) => {
-                toast("Kon groep niet aanmaken.", {type: "error"})
+                toast("Could not create group.", {type: "error"})
                 console.error(e)
             })
         },
@@ -45,20 +44,45 @@ export default function PlanningCalendarTile(props: Props) {
                 dragRef(el);
                 drop(el)
             }}
-            className={"block rounded border p-2 shadow-lg shadow-black/5 text-left bg-white transition-all hover:opacity-70 hover:shadow-xl " + (isDragging ? "!opacity-50 " : "") + (isOver ? "!bg-blue-50" : "")}
-            key={props.maintenancePlan.id}>
+            className={
+                "block rounded border p-2 shadow-lg shadow-black/5 text-left bg-white transition-all hover:opacity-70 hover:shadow-xl " +
+                (isDragging ? "!opacity-50 " : "") +
+                (isOver ? "!bg-blue-50" : "")
+            }
+            key={props.maintenancePlan.id}
+        >
             <div className="flex">
-    <span
-        className="block text-sm uppercase font-bold mr-auto">
-        {props.maintenancePlan.mold_name}
-        </span>
-                <span
-                    className="block text-xs">{new Intl.DateTimeFormat('nl', {timeStyle: 'short'}).format(props.maintenancePlan.planned_date)}</span>
+                <span className="block text-sm uppercase font-bold mr-auto">
+                    {props.maintenancePlan.machine_name}
+                </span>
+
+                <span className="block text-xs">
+                    {new Intl.DateTimeFormat("en", { timeStyle: "short" }).format(props.maintenancePlan.planned_date)}
+                </span>
             </div>
 
-            <span className="flex w-full gap-2 items-center text-xs"><span
-                className='block mr-auto'>{props.maintenancePlan.maintenance_action}</span><span
-                className={"block px-2 rounded-full border w-24 text-center " + (props.maintenancePlan.maintenance_type == "Corrective" ? "border-orange-400" : "")}>{props.maintenancePlan.maintenance_type}</span></span>
+            <span className="flex w-full gap-2 items-center text-xs">
+                <span className="block mr-auto">
+                    {props.maintenancePlan.maintenance_action}
+                </span>
+
+                <span
+                    className={
+                        "block px-2 rounded-full border w-24 text-center " +
+                        (props.maintenancePlan.status === "Finished" ? "border-green-400" : "border-red-400")
+                    }
+                >
+                    {props.maintenancePlan.status}
+                </span>
+                <span
+                    className={
+                        "block px-2 rounded-full border w-24 text-center " +
+                        (props.maintenancePlan.maintenance_type === "Corrective" ? "border-orange-400" : "")
+                    }
+                >
+                    {props.maintenancePlan.maintenance_type}
+                </span>
+            </span>
         </div>
     )
 }

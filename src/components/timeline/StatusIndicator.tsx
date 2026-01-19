@@ -1,40 +1,37 @@
 import { AlertOctagon, PowerIcon } from 'lucide-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface StatusIndicatorProps {
   status: string;
 }
 
-export default function StatusIndicator({ status }: StatusIndicatorProps) {
-  const getStatusStyle = () => {
-    if (status === 'Actief') return 'bg-green-500 border-green-600';
-    if (status === 'Stilstand') return 'bg-red-500 border-red-600';
-    if (status === 'Inactief') return 'bg-gray-500 border-gray-600';
-    
-  };
+// Memoize status styles and icons to prevent recreation
+const STATUS_STYLES: Record<string, string> = {
+  'Actief': 'bg-green-500 border-green-600',
+  'Stilstand': 'bg-red-500 border-red-600',
+  'Inactief': 'bg-gray-500 border-gray-600',
+  'Failure': 'bg-red-500 border-red-600'
+};
 
-  // Icon
-  const getIcon = (
-    classname: string
-  ) => {
-    if (status === 'Actief') return <PowerIcon
-    className={classname}
-      />;
-    if (status === 'Stilstand') return <PowerIcon
-    className={classname}
-      />;
-    if (status === 'Inactief') return <AlertOctagon 
-    className={classname}
-    />;
-  }
+function StatusIndicator({ status }: StatusIndicatorProps) {
+  const statusStyle = useMemo(() => STATUS_STYLES[status] || 'bg-gray-500 border-gray-600', [status]);
+  
+  const icon = useMemo(() => {
+    const iconClass = 'size-4 text-white';
+    if (status === 'Actief' || status === 'Stilstand') {
+      return <PowerIcon className={iconClass} />;
+    }
+    if (status === 'Inactief' || status === 'Failure') {
+      return <AlertOctagon className={iconClass} />;
+    }
+    return null;
+  }, [status]);
 
   return (
-    <div className={`w-6 h-6 rounded-full border flex justify-center items-center ${getStatusStyle()}`}>
-      <div>
-      {getIcon(
-        'size-4 text-white'
-      )}
-      </div>
+    <div className={`w-6 h-6 rounded-full border flex justify-center items-center ${statusStyle}`}>
+      <div>{icon}</div>
     </div>
   );
 }
+
+export default React.memo(StatusIndicator);

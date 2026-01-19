@@ -1,5 +1,5 @@
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
-import { IntervalType } from '@/types/enum';
+import { IntervalType } from '@/types/interval';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(

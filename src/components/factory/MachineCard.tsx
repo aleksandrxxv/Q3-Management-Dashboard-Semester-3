@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-import { Machine, MachineTimeline, Mold, MoldHistory } from "@/types/supabase";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine } from "recharts";
+import { Machine, MachineTimeline, MoldHistory } from "@/types/supabase";
 
 interface MachineCardProps {
   machine: Machine;
@@ -32,6 +32,8 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
         return "bg-yellow-500";
       case "Stilstand":
         return "bg-red-500";
+      case "Failure":
+        return "bg-red-500";
       default:
         return "bg-gray-500";
     }
@@ -44,6 +46,8 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
       case "Inactief":
         return "#F59E0B";
       case "Stilstand":
+        return "#EF4444";
+      case "Failure":
         return "#EF4444";
       default:
         return "#6B7280";

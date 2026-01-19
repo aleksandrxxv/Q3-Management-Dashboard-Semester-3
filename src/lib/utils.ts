@@ -1,4 +1,4 @@
-import { IntervalType } from '@/types/enum';
+import { IntervalType } from '@/types/interval';
 
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
@@ -32,7 +32,7 @@ export function formatTimestampToInterval(timestamp: string, interval: IntervalT
     switch (interval) {
         case 'minute':
             return `${hours}:${minutes}`;
-        case '5 minute':
+        case 'five_minute':
             return `${hours}:${minutes}`;
         case 'hour':
             return `${hours}:${minutes}`;
@@ -43,15 +43,15 @@ export function formatTimestampToInterval(timestamp: string, interval: IntervalT
     }
 }
 
-export function getDayName(date: Date, locale: string = "nl") {
-    return date.toLocaleDateString(locale, {weekday: 'long'});
+
+export function getDayName(date: Date, locale: string = "en") {
+    return date.toLocaleDateString(locale, { weekday: "long" });
 }
 
 export function sameDay(d1: Date, d2: Date) {
     return d1.getUTCFullYear() === d2.getUTCFullYear() &&
         d1.getMonth() === d2.getMonth() &&
         d1.getDate() === d2.getDate();
-
 }
 
 export function filterObject<T extends object, U extends keyof T>(obj: T, keys: U[]): Pick<T, U> {

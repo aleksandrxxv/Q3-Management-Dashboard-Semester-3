@@ -1,8 +1,6 @@
 "use client";
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import FactoryGrid from '@/components/factory/FactoryGrid';
-import FactoryStats from '@/components/factory/FactoryStats';
-import FactoryHeader from '@/components/factory/FactoryHeader';
 import { Machine } from '@/types/supabase';
 import { fetchMachines } from '@/lib/supabase/fetchMachines';
 

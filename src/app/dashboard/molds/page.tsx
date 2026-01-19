@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import {
     Table,
     TableBody,
@@ -12,12 +10,17 @@ import {
 import { fetchMolds } from "@/lib/supabase/fetchMolds";
 import Link from "next/link";
 import Header from "../header";
-import { Mold, MoldMaintenance } from "@/types/supabase";
+import { MoldMaintenance } from "@/types/supabase";
 import { Progress } from "@/components/ui/progress";
+import { unstable_cache } from "next/cache";
 
 export default async function Page() {
-    
-    const molds = await fetchMolds();
+    const getMoldsCached = unstable_cache(
+    async () => fetchMolds(),
+    ["molds"],
+    { revalidate: 10 }
+  );
+    const molds = await getMoldsCached();
 
     const maintenance_interval = 100000;
     // calculate levels duur
@@ -48,16 +51,16 @@ export default async function Page() {
     
     return (
       <>
-      <Header
-      title={"Levensduur matrijzen"}
-      description="Overzicht van alle matrijzen en hun levensduur"
-      />
+        <Header
+          title={"Mold lifespan"}
+          description="Overview of all molds and their lifespan"
+        />
        <div >
          <Table>
       <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">
-            Matrijs
+            Mold
           </TableHead>
 
           {/* total shots */}
@@ -66,16 +69,16 @@ export default async function Page() {
             </TableHead>
 
             <TableHead>
-            Eerste gebruik
+            First used
             </TableHead>
             
             <TableHead>
-            Laatst gebruikt
+            Last used
             </TableHead>
 
           {/* Levensduur */}
           <TableHead>
-            Levensduur
+            Lifespan
             </TableHead>
 
             
