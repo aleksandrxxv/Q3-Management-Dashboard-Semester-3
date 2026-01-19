@@ -1,6 +1,7 @@
-import { supabase } from './client';
+import { supabase, supabaseEnergy } from './client';
 import { IntervalType } from "@/types/interval";
 import { INTERVALS } from "@/config/intervals";
+import {SupabaseClient} from "@supabase/supabase-js";
 
 
 // =============================================================================
@@ -208,7 +209,8 @@ const processQueue = async (): Promise<void> => {
  */
 const fetchFromRPC = async (
   params: MonitoringIntervalsParams,
-  bypassCache = false
+  bypassCache = false,
+  client: SupabaseClient
 ): Promise<MachineTimeline[]> => {
   const cacheKey = generateCacheKey(params);
 
@@ -232,7 +234,7 @@ const fetchFromRPC = async (
       activeRequestCount++;
       (async () => {
         try {
-          const { data, error } = await supabase.rpc(RPC_FUNCTION_NAME, {
+          const { data, error } = await client.rpc(RPC_FUNCTION_NAME, {
             board_input: params.board_input,
             port_input: params.port_input,
             start_date: params.start_date,
@@ -276,6 +278,7 @@ export const fetchChartData = async (
   startDate: Date,
   endDate: Date,
   interval: IntervalType,
+  hasEnergyMonitoring: boolean,
   realtime = false
 ): Promise<MachineTimeline[]> => {
   const params: MonitoringIntervalsParams = {
@@ -288,7 +291,11 @@ export const fetchChartData = async (
     interval_input: interval,
   };
 
-  return fetchFromRPC(params, realtime);
+  if (hasEnergyMonitoring) {
+      return fetchFromRPC(params, realtime, supabaseEnergy);
+  } else {
+      return fetchFromRPC(params, realtime, supabase);
+  }
 };
 
 /**
@@ -306,7 +313,7 @@ export const fetchRealtimeData = async (
     interval_input: IntervalType.Hour,
   };
 
-  return fetchFromRPC(params, false);
+  return fetchFromRPC(params, false, supabase);
 };
 
 /**
@@ -319,7 +326,7 @@ export const prefetchChartData = (
   endDate: Date,
   interval: IntervalType
 ): void => {
-  fetchChartData(board, port, startDate, endDate, interval).catch(() => {});
+  fetchChartData(board, port, startDate, endDate, interval, false).catch(() => {});
 };
 
 /**

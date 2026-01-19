@@ -6,19 +6,28 @@
   <component name="ChangeListManager">
     <list default="true" id="51f9597f-45fa-4720-98ec-4faecf86502d" name="Changes" comment="Fixed the notifications UI, making it way more intuitive.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/app-sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/app-sidebar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/dashboard/machines/[id]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/HourlyEnergyData.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/fetchEnergySplit.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/fetchEnergySplit.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/supabase/fetchMachineTimelines.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabase/fetchMachineTimelines.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature-EnergyConsumption" />
+        <entry key="$PROJECT_DIR$" value="Development" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -43,10 +52,14 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="363ufqiYXxN7qf1HPHa7ncSYblu" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
@@ -67,6 +80,28 @@
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/Users/adrian/Documents/University/Semester 3/s3-group-project/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "supabase-integration",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.Next.js: server-side.executor": "Run",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\Users\\PC\\s3-group-project\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+>>>>>>> 6b236cb1135f90c8abe0c77ab6b4862d5245863b
   }
 }</component>
   <component name="RecentsManager">
@@ -93,8 +128,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -110,6 +145,7 @@
       <workItem from="1765268197948" duration="439000" />
       <workItem from="1765873283408" duration="3859000" />
       <workItem from="1766046850790" duration="2681000" />
+      <workItem from="1768559652049" duration="15058000" />
     </task>
     <task id="LOCAL-00001" summary="Started working on the SMS service.">
       <option name="closed" value="true" />

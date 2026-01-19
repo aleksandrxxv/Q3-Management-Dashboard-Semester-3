@@ -57,16 +57,22 @@ interface EnergyDataPoint {
   kwh: number;
   kwhPer1k?: number;
   efficiency?: number;
-  heating: number;
-  production: number;
-  idle: number;
   cost: number;
   shots?: number;
+}
+
+interface EnergySplitDataPoint {
+    truncated_timestamp: string;
+    kwh: number;
+    heating: number;
+    production: number;
+    idle: number;
 }
 
 interface MachineEnergyDialogProps {
   machineName: string;
   energySeries: EnergyDataPoint[];
+  energySplitSeries: EnergySplitDataPoint[];
   totalKwh: number;
   totalCost: number;
   totals: {
@@ -79,6 +85,7 @@ interface MachineEnergyDialogProps {
 export function MachineEnergyDialog({
   machineName,
   energySeries,
+    energySplitSeries,
   totalKwh,
   totalCost,
   totals,
@@ -99,6 +106,19 @@ export function MachineEnergyDialog({
         : "",
     }));
   }, [energySeries]);
+
+  const splitChartData = useMemo(() => {
+      return energySplitSeries.map((d) => ({
+          ...d,
+          date: d.truncated_timestamp
+              ? new Date(d.truncated_timestamp).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+              })
+              : "",
+      }));
+  }, [energySplitSeries]);
 
   // Calculate trends data
   const trendsData = useMemo(() => {
@@ -191,7 +211,7 @@ export function MachineEnergyDialog({
               Energy Monitoring - {machineName}
             </DialogTitle>
             <DialogDescription>
-              Detailed energy consumption for this machine (dummy model)
+              Detailed energy consumption for this machine
             </DialogDescription>
           </DialogHeader>
 
@@ -252,13 +272,13 @@ export function MachineEnergyDialog({
                   fill={energyConfig.kwh.color}
                   fillOpacity={0.1}
                 />
-                <Line
-                  type="monotone"
-                  dataKey="kwh"
-                  stroke={energyConfig.kwh.color}
-                  strokeWidth={2}
-                  dot={false}
-                />
+                {/*<Line*/}
+                {/*  type="monotone"*/}
+                {/*  dataKey="kwh"*/}
+                {/*  stroke={energyConfig.kwh.color}*/}
+                {/*  strokeWidth={2}*/}
+                {/*  dot={false}*/}
+                {/*/>*/}
                 <Legend content={<ChartLegendContent />} />
               </ComposedChart>
             </ChartContainer>
@@ -270,7 +290,7 @@ export function MachineEnergyDialog({
               Energy Breakdown by Category
             </h3>
             <ChartContainer config={energyConfig} className="aspect-[2.5/1] h-[300px] w-full">
-              <ComposedChart accessibilityLayer data={chartData}>
+              <ComposedChart accessibilityLayer data={splitChartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis
                   dataKey="date"
@@ -309,10 +329,10 @@ export function MachineEnergyDialog({
             </ChartContainer>
           </div>
 
-          {/* Footer note */}
-          <div className="mt-4 text-xs text-muted-foreground text-center">
-            * Energy data is generated from a dummy model based on shot count
-          </div>
+          {/*/!* Footer note *!/*/}
+          {/*<div className="mt-4 text-xs text-muted-foreground text-center">*/}
+          {/*  * Energy data is generated from a dummy model based on shot count*/}
+          {/*</div>*/}
         </DialogContent>
       </Dialog>
 

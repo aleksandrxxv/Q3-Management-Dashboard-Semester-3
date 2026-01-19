@@ -14,8 +14,10 @@ import {
 import Link from "next/link";
 import Header from "../header";
 import { unstable_cache } from "next/cache";
-import { Activity, Clock, Cpu } from "lucide-react";
+import { Activity, Clock, Cpu, Zap } from "lucide-react";
 import { EnergyMonitoringDialog } from "@/components/energy-monitoring-dialog";
+import {Machine} from "@/types/supabase";
+import React from "react";
 
 // Status badge component
 function StatusBadge({ status }: { status: string }) {
@@ -38,6 +40,12 @@ function StatusBadge({ status }: { status: string }) {
       text: 'text-slate-600 dark:text-slate-400',
       dot: 'bg-slate-400'
     },
+    'Failure': {
+        label: 'Failure',
+        bg: 'bg-red-100 dark:bg-red-800',
+        text: 'text-red-600 dark:text-red-400',
+        dot: 'bg-red-400'
+    }
   };
   
   const style = config[status] || config['Inactief'];
@@ -50,19 +58,36 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-export default async function Page() {
-  const getMachinesCached = unstable_cache(
+function MachineIcon({ machine }: {machine: Machine }) {
+    if (machine.machine_name === 'B1') {
+        return (
+            <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                <Zap className="h-4 w-4 text-amber-600" />
+            </div>
+        )
+    } else {
+        return (
+            <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                <Cpu className="h-4 w-4" />
+            </div>
+        )
+    }
+}
+
+const getMachinesCached = unstable_cache(
     async () => getMachines(),
     ["machines"],
-    { revalidate: 10 }
-  );
+    { revalidate: 1 }
+);
+export default async function Page() {
 
   const machines = await getMachinesCached();
 
   // Calculate stats for footer
-  const totalMachines = machines.length;
   const activeMachines = machines.filter(m => m.status === 'Actief').length;
   const standstillMachines = machines.filter(m => m.status === 'Stilstand').length;
+  const inactiveMachines = machines.filter(m => m.status === 'Inactief').length;
+  const failedMachines = machines.filter(m => m.status === 'Failure').length;
 
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950">
@@ -82,10 +107,10 @@ export default async function Page() {
             </div>
             <div className="flex items-center gap-4">
               <EnergyMonitoringDialog />
-              <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                <Activity className="h-4 w-4" />
-                <span>Live updates every 10s</span>
-              </div>
+              {/*<div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">*/}
+              {/*  <Activity className="h-4 w-4" />*/}
+              {/*  <span>Live updates every 10s</span>*/}
+              {/*</div>*/}
             </div>
           </div>
 
@@ -118,7 +143,7 @@ export default async function Page() {
                         className="group flex items-center gap-2"
                       >
                         <div className="h-8 w-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
-                          <Cpu className="h-4 w-4" />
+                            <MachineIcon machine={machine}></MachineIcon>
                         </div>
                         <span className="font-medium text-slate-900 dark:text-slate-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                           {machine.machine_name || `Machine ${machine.machine_id}`}
@@ -178,7 +203,11 @@ export default async function Page() {
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-slate-400" />
-                  {totalMachines - activeMachines - standstillMachines} inactive
+                  {inactiveMachines} inactive
+                </span>
+                  <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-red-400" />
+                      {failedMachines} failed
                 </span>
               </div>
             </div>

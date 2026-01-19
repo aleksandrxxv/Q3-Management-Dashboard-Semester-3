@@ -8,7 +8,7 @@ export const fetchMachines = async (): Promise<Machine[]> => {
   const { data, error } = await supabase
     .from('v_machine_status')
     .select('*')
-    .order('status', { ascending: false });
+    .order('status', { ascending: true });
 
   if (error) {
     throw new Error(`Error fetching machine timelines: ${error.message}`);
